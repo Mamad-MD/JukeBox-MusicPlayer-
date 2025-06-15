@@ -20,5 +20,10 @@ void HostWindow::on_PushButton_Back_clicked()
     mainWindow->show();
     this->close();
 }
+
+
+void HostWindow::on_textEdit_textChanged()
+{
+
 }
 

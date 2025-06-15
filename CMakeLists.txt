@@ -20,15 +20,19 @@ set(PROJECT_SOURCES
         hostwindow.cpp
         hostwindow.h
         hostwindow.ui
-        joinwindow.cpp
-        joinwindow.h
-        joinwindow.ui
+
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(JukeBox
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        joinwindow.h joinwindow.cpp joinwindow.ui
+
+        client.h client.cpp
+        server.h server.cpp
     )
 else()
     if(ANDROID)
