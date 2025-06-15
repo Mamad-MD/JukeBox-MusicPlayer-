@@ -20,11 +20,8 @@ set(PROJECT_SOURCES
         hostwindow.cpp
         hostwindow.h
         hostwindow.ui
-<<<<<<< HEAD
-=======
         server.h server.cpp
         client.h client.cpp
->>>>>>> 4f218b2 (a mistake in cmake solved)
         message.h message.cpp
 )
 
