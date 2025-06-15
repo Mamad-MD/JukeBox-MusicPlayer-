@@ -41,6 +41,11 @@
       <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
    </widget>
    <widget class="QPushButton" name="PushButton_CreateRoom">
     <property name="geometry">
@@ -114,6 +119,24 @@ font-weight: normal</string>
     </property>
     <property name="openExternalLinks">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButton_Back">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Back</string>
     </property>
    </widget>
   </widget>

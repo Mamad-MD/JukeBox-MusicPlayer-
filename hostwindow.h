@@ -15,6 +15,11 @@ public:
     explicit HostWindow(QWidget *parent = nullptr);
     ~HostWindow();
 
+private slots:
+    void on_PushButton_Back_clicked();
+
+    void on_textEdit_textChanged();
+
 private:
     Ui::HostWindow *ui;
 };

@@ -15,6 +15,9 @@ public:
     explicit JoinWindow(QWidget *parent = nullptr);
     ~JoinWindow();
 
+private slots:
+    void on_PushButton_Back_clicked();
+
 private:
     Ui::JoinWindow *ui;
 };
