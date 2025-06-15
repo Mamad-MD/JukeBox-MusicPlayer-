@@ -20,6 +20,7 @@ set(PROJECT_SOURCES
         hostwindow.cpp
         hostwindow.h
         hostwindow.ui
+		message.h message.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
