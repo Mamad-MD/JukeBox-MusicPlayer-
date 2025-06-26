@@ -1,6 +1,7 @@
 #include "client.h"
+#include "message.h"
 
-client::client(QObject *parent): QObject(parent)
+Client::Client(QObject *parent): QObject(parent), lastReceivedMessage("")
 {
     socket = new QTcpSocket(this);
     connect(socket, &QTcpSocket::connected, this, &connected);
@@ -10,7 +11,19 @@ client::client(QObject *parent): QObject(parent)
     socket->connectToHost(QHostAddress::Any, port);
 }
 
-void client::connected()
+void Client::connected()
 {
+    Message::display(MessageType::Info, "Notice", "Connected successfully!");
+}
 
+void Client::sendMessage(const QString& message)
+{
+    socket->write(message.toUtf8());
+}
+
+void Client::readData()
+{
+    QByteArray data = socket->readAll();
+
+    // Message::display(MessageType::Info, "Message", data);
 }

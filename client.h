@@ -4,11 +4,11 @@
 #include <QObject>
 #include <QTcpSocket>
 
-class client : public QObject {
+class Client : public QObject {
     Q_OBJECT
 
 public:
-    client(QObject* parent = nullptr);
+    Client(QObject* parent = nullptr);
     void sendMessage(const QString& message);
 
 private slots:
@@ -16,6 +16,7 @@ private slots:
     void readData();   // Called when data is received
 
 private:
+    QString lastReceivedMessage;
     QTcpSocket* socket;
 
 };
