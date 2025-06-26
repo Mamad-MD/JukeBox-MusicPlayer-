@@ -16,6 +16,7 @@ public:
     ~JoinWindow();
 
 private slots:
+    void updateRoomsList();
     void on_PushButton_Back_clicked();
 
 private:

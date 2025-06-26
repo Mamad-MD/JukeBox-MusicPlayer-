@@ -18,7 +18,7 @@ public:
 private slots:
     void on_PushButton_Back_clicked();
 
-    void on_textEdit_textChanged();
+    void on_PushButton_CreateRoom_clicked();
 
 private:
     Ui::HostWindow *ui;
