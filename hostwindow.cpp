@@ -31,5 +31,6 @@ void HostWindow::on_PushButton_CreateRoom_clicked()
         return;
     }
 
-    Server server;
+    QString roomName = ui->LineEdit_RoomName->text();
+    Server server(roomName);
 }
