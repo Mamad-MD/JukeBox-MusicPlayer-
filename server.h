@@ -12,16 +12,20 @@ class Server : public QObject {
     Q_OBJECT
 
 public:
-    Server(const QString& roomName, QObject* parent = nullptr);
+    static std::shared_ptr<Server>& getInstance(const QString& roomName);
+    ~Server();
     int getClientCount() const;
     QStringList getClientList() const;
     QString getRoomName() const;
     void broadcastMessage(const QString& message, const QTcpSocket* excludedClientSocket = nullptr);
     void sendMessageToClient(QTcpSocket* client, const QString message);
-    
+    void start();
+    void stop();
 
 signals:
     void serverStarted(int port);
+    void serverStopped();
+    void serverDeleted();
     void serverError(const QString& errorMessage);
     void clientConnected(const QString& username, int clientsCount);
     void clientDisconnection(const QString& username, int clientsCount);
@@ -37,11 +41,19 @@ private slots:
 private:
     QString roomName;
     QTcpServer *TCPServer;
-
     QList<User> clients;
+
     void addClient(User client);
     void removeClientBySocket(QTcpSocket* socket);
     QString findClientBySocket(const QTcpSocket* socket);
+    
+    // Singleton Design Pattern
+    Server(const QString& roomName, QObject* parent = nullptr);
+
+    Server(const Server&) = delete;
+    // Server& operator=(const Server&) = delete;
+    Server(const Server&&) = delete;
+    // Server& operator=(const Server&&) = delete;
 };
 
 #endif // SERVER_H

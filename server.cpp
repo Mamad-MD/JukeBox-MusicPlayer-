@@ -3,8 +3,29 @@
 #include <QApplication>
 #include "message.h"
 
-Server::Server(const QString& roomName, QObject *parent): QObject(parent), roomName(roomName)
+Server::Server(const QString& roomName, QObject *parent): QObject(parent), roomName(roomName), TCPServer(nullptr) {}
+
+Server::~Server()
 {
+    stop();
+    emit serverDeleted();
+}
+
+std::shared_ptr<Server>& Server::getInstance(const QString& roomName)
+{
+    static Server* raw_instance = new Server(roomName);
+    static std::shared_ptr<Server> instance(raw_instance);
+    return instance;
+}
+
+void Server::start()
+{
+    if (TCPServer)
+    {
+        emit serverError("Server already running");
+        return;
+    }
+    
     TCPServer = new QTcpServer(this);
     connect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
 
@@ -21,13 +42,23 @@ Server::Server(const QString& roomName, QObject *parent): QObject(parent), roomN
     }
 }
 
+void Server::stop()
+{
+    disconnect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
+    TCPServer->close();
+    delete TCPServer;
+    emit serverStopped();
+}
+
 void Server::newConnection()
 {
     QTcpSocket* newClient = TCPServer->nextPendingConnection();
     addClient(User(newClient));
     
-    newClient->write(("Hello. This is room " + roomName +
-                      ". You are client #" + QString::number(clients.size()) + ".\n").toUtf8());
+    // newClient->write(("Hello. This is room " + roomName +
+    //                   ". You are client #" + QString::number(clients.size()) + ".\n").toUtf8());
+    newClient->write(roomName.toUtf8());
+
 
 
     // Set up connections for this specific client
