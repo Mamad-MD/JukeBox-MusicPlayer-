@@ -18,12 +18,6 @@ HostWindow::~HostWindow()
     if (server)
     {
         server->stop();
-        // ==================================
-        // The server doesn't stop when the window is closed when user clicks on Back
-
-
-        
-        // qDebug() << "Deleting the host window\n";
         Server::deleteInstance();
     }
     delete ui;
