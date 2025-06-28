@@ -33,10 +33,11 @@ private slots:
 
 private:
     Ui::HostWindow *ui;
-    std::shared_ptr<Server> server; // Smart Pointer
+    Server* server; // Smart Pointer
+    bool hasSetupUIConnections;
     // Interesting fact is that you can't copy a unique_ptr in C++. so
     // when you wanna pass it to a function you must pass its reference
-    void connectServerSignalsToUISlots(const std::shared_ptr<Server>& server);
+    void connectServerSignalsToUISlots(const Server* server);
 };
 
 #endif // HOSTWINDOW_H

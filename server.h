@@ -12,8 +12,8 @@ class Server : public QObject {
     Q_OBJECT
 
 public:
-    static std::shared_ptr<Server>& getInstance(const QString& roomName);
-    ~Server();
+    static Server* getInstance(const QString& roomName);
+    static void deleteInstance();
     int getClientCount() const;
     QStringList getClientList() const;
     QString getRoomName() const;
@@ -48,8 +48,9 @@ private:
     QString findClientBySocket(const QTcpSocket* socket);
     
     // Singleton Design Pattern
+    static Server* instance;
     Server(const QString& roomName, QObject* parent = nullptr);
-
+    ~Server();
     Server(const Server&) = delete;
     // Server& operator=(const Server&) = delete;
     Server(const Server&&) = delete;

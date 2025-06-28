@@ -4,9 +4,11 @@
 #include "message.h"
 #include "server.h"
 
+Server* Server::instance = nullptr; 
+
 HostWindow::HostWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::HostWindow), server(nullptr)
+    , ui(new Ui::HostWindow), server(nullptr), hasSetupUIConnections(false)
 {
     ui->setupUi(this);
 }
@@ -14,12 +16,23 @@ HostWindow::HostWindow(QWidget *parent)
 HostWindow::~HostWindow()
 {
     if (server)
-        server->stop(); // The pointer will get deleted since it's a smart one.
+    {
+        server->stop();
+        // ==================================
+        // The server doesn't stop when the window is closed when user clicks on Back
+
+
+        
+        // qDebug() << "Deleting the host window\n";
+        Server::deleteInstance();
+    }
     delete ui;
 }
 
 void HostWindow::on_PushButton_Back_clicked()
 {
+    Server::deleteInstance();
+    server = nullptr;
     auto mainWindow = new MainWindow;
     mainWindow->show();
     this->close();
@@ -78,16 +91,19 @@ void HostWindow::on_serverDeleted()
     Message::display(MessageType::Info, "Notice", "Server Object was deleted!");
 }
 
-void HostWindow::connectServerSignalsToUISlots(const std::shared_ptr<Server>& server)
+void HostWindow::connectServerSignalsToUISlots(const Server* server)
 {
-    Server* normalPointer = server.get();
-    connect(normalPointer, Server::serverStarted, this, &on_serverStarted);
-    connect(normalPointer, Server::serverError, this, &on_serverError);
-    connect(normalPointer, Server::clientConnected, this, &on_clientConnected);
-    connect(normalPointer, Server::clientDisconnection, this, &on_clientDisconnection);
-    connect(normalPointer, Server::dataReceived, this, &on_dataReceived);
-    connect(normalPointer, Server::serverStopped, this, &on_serverStopped);
-    connect(normalPointer, Server::serverDeleted, this, &on_serverDeleted);
+    // Server* normalPointer = server.get();
+    if (hasSetupUIConnections)
+        return;
+    hasSetupUIConnections = true;
+    connect(server, Server::serverStarted, this, &on_serverStarted);
+    connect(server, Server::serverError, this, &on_serverError);
+    connect(server, Server::clientConnected, this, &on_clientConnected);
+    connect(server, Server::clientDisconnection, this, &on_clientDisconnection);
+    connect(server, Server::dataReceived, this, &on_dataReceived);
+    connect(server, Server::serverStopped, this, &on_serverStopped);
+    connect(server, Server::serverDeleted, this, &on_serverDeleted);
     qDebug() << "Connected signals and slots\n";
 }
 

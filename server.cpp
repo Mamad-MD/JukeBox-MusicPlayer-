@@ -11,11 +11,16 @@ Server::~Server()
     emit serverDeleted();
 }
 
-std::shared_ptr<Server>& Server::getInstance(const QString& roomName)
+Server* Server::getInstance(const QString& roomName)
 {
-    static Server* raw_instance = new Server(roomName);
-    static std::shared_ptr<Server> instance(raw_instance);
+    if (!instance)
+        instance = new Server(roomName);
     return instance;
+}
+
+void Server::deleteInstance()
+{
+    delete instance;
 }
 
 void Server::start()
@@ -31,15 +36,9 @@ void Server::start()
 
     int port = 6000;
     if (TCPServer->listen(QHostAddress::Any, port))
-    {
         emit serverStarted(port);
-        // Message::display(MessageType::Info, "Connection", "Listening on port " + QString::number(port));
-    }
     else
-    {
         emit serverError("Failed to listen on port" + QString::number(port));
-        // Message::display(MessageType::Warning , "Error", "Failed to Listen on port " + QString::number(port));
-    }
 }
 
 void Server::stop()
@@ -47,6 +46,8 @@ void Server::stop()
     disconnect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
     TCPServer->close();
     delete TCPServer;
+    TCPServer = nullptr;
+    instance = nullptr;
     emit serverStopped();
 }
 
