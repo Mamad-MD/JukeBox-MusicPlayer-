@@ -64,8 +64,21 @@ void JoinWindow::on_PushButton_LookForRooms_clicked()
     QString username = ui->LineEdit_Username->text();
     
     client = Client::getInstance(username);
+    
+    ui->PushButton_LookForRooms->setEnabled(false);
+    ui->PushButton_Back->setEnabled(false);
+
     client->connectToHost(enteredPort);
     connectClientSignalsToUISlots(client);
+    // QTimer::singleShot(1000, this, [=]() {
+    // if (client->socket->state() != QAbstractSocket::ConnectedState)
+    // {
+    //     socket->abort(); // cancel the connection attempt
+    //     Message::display(MessageType::Critical, "Notice", "Connection timed out");
+    // }
+    // });
+
+    
 }
 
 void JoinWindow::connectClientSignalsToUISlots(const Client* client)
@@ -85,18 +98,18 @@ void JoinWindow::connectClientSignalsToUISlots(const Client* client)
 // Slots:
 void JoinWindow::on_connectedToServer()
 {
-    qDebug() << "connected to the main server\n";
     Message::display(MessageType::Info, "Notice", "Connected to the Main Server");
 }
 
 void JoinWindow::on_ReceivedRoomName(const QString& roomName)
 {
+    ui->PushButton_LookForRooms->setEnabled(true);
+    ui->PushButton_Back->setEnabled(true);
     Message::display(MessageType::Info, "Notice", "RoomName Received: " + roomName);
 }
 
 void JoinWindow::on_disconnection()
 {
-    qDebug() << "disconnected\n";
     Message::display(MessageType::Info, "Critical", "You got disconnected!");
 }
 
@@ -108,6 +121,8 @@ void JoinWindow::on_dataReceived(const QByteArray& data)
 
 void JoinWindow::on_clientError(const QString& errorMessage)
 {
+    ui->PushButton_LookForRooms->setEnabled(true);
+    ui->PushButton_Back->setEnabled(true);
     Message::display(MessageType::Critical, "Error", errorMessage);
 }
 

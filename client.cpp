@@ -11,7 +11,7 @@ Client* Client::getInstance(const QString& username)
 
 void Client::deleteInstance()
 {
-    delete instance;
+    instance->deleteLater();
     instance = nullptr;
 }
 
@@ -27,7 +27,10 @@ void Client::connectToHost(const int& port)
 {
     if (socket)
     {
-        emit clientError("Already connected!");
+        if (socket->state() == QAbstractSocket::ConnectedState)
+            emit clientError("Already connected!");
+        else
+            emit clientError("Already trying to connect!");
         return;
     }
     
@@ -45,8 +48,10 @@ void Client::disconnect()
     if (socket)
     {
         socket->abort();
-        delete socket;
-        socket = nullptr;
+        disconnect(socket, &QTcpSocket::connected, this, &connected);
+        disconnect(socket, &QTcpSocket::readyRead, this, &readData);
+        disconnect(socket, &QTcpSocket::disconnected, this, &disconnected);
+        disconnect(socket, &QTcpSocket::errorOccurred, this, &on_errorOccurred);
         hasReceivedRoomName = false;
     }
 }
@@ -79,18 +84,18 @@ void Client::readData()
 
 void Client::disconnected()
 {
+    // socket->deleteLater();
+    // socket = nullptr;
+    disconnect();
     emit disconnection();
 }
 
 void Client::on_errorOccurred(QAbstractSocket::SocketError socketError)
 {
-    qDebug() << "connection error\n";
     emit clientError(socket->errorString());
-    if (socket->errorString() == "Connection refused")
-    {
-        delete socket;
-        socket = nullptr;
-    }
+    disconnect();
+    // socket->deleteLater();
+    // socket = nullptr;
 }
 
 void Client::sendMessage(const QString& message)
