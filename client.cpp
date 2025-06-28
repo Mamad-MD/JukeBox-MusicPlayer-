@@ -1,15 +1,54 @@
 #include "client.h"
 #include "message.h"
 
-Client::Client(QObject *parent): QObject(parent), lastReceivedMessage(""), hasReceivedRoomName(false)
+
+Client* Client::getInstance(const QString& username)
 {
+    if (!instance)
+        instance = new Client(username);
+    return instance;
+}
+
+void Client::deleteInstance()
+{
+    delete instance;
+    instance = nullptr;
+}
+
+Client::Client(const QString& username, QObject *parent): QObject(parent), lastReceivedMessage(""), hasReceivedRoomName(false), username(username){}
+
+Client::~Client()
+{
+    disconnect();
+    emit clientObjectDeleted();
+}
+
+void Client::connectToHost(const int& port)
+{
+    if (socket)
+    {
+        emit clientError("Already connected!");
+        return;
+    }
+    
     socket = new QTcpSocket(this);
     connect(socket, &QTcpSocket::connected, this, &connected);
     connect(socket, &QTcpSocket::readyRead, this, &readData);
     connect(socket, &QTcpSocket::disconnected, this, &disconnected);
+    connect(socket, &QTcpSocket::errorOccurred, this, &on_errorOccurred);
 
-    int port = 6000;
-    socket->connectToHost(QHostAddress::Any, port);
+    socket->connectToHost(QHostAddress::LocalHost, port);
+}
+
+void Client::disconnect()
+{
+    if (socket)
+    {
+        socket->abort();
+        delete socket;
+        socket = nullptr;
+        hasReceivedRoomName = false;
+    }
 }
 
 // Slots:
@@ -17,7 +56,6 @@ Client::Client(QObject *parent): QObject(parent), lastReceivedMessage(""), hasRe
 void Client::connected()
 {
     emit connectedToServer();
-    // Message::display(MessageType::Info, "Notice", "Connected to the main server!");
 }
 
 void Client::readData()
@@ -28,6 +66,7 @@ void Client::readData()
     {
         hasReceivedRoomName = true;
         emit receivedRoomName(QString::fromUtf8(data));
+        socket->write(username.toUtf8());
         return;
     }
 
@@ -40,7 +79,18 @@ void Client::readData()
 
 void Client::disconnected()
 {
-    emit disconnected();
+    emit disconnection();
+}
+
+void Client::on_errorOccurred(QAbstractSocket::SocketError socketError)
+{
+    qDebug() << "connection error\n";
+    emit clientError(socket->errorString());
+    if (socket->errorString() == "Connection refused")
+    {
+        delete socket;
+        socket = nullptr;
+    }
 }
 
 void Client::sendMessage(const QString& message)

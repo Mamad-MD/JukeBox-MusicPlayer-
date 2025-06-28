@@ -29,14 +29,14 @@ private slots:
     void on_clientConnected(const QString& username, int clientsCount);
     void on_clientDisconnection(const QString& username, int clientsCount);
     void on_dataReceived(const QString& username, const QByteArray& message);
+    void on_clientConnectedToMainServer();
 
 
 private:
     Ui::HostWindow *ui;
-    Server* server; // Smart Pointer
+    Server* server;
     bool hasSetupUIConnections;
-    // Interesting fact is that you can't copy a unique_ptr in C++. so
-    // when you wanna pass it to a function you must pass its reference
+    
     void connectServerSignalsToUISlots(const Server* server);
 };
 

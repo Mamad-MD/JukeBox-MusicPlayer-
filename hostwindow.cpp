@@ -34,9 +34,17 @@ void HostWindow::on_PushButton_Back_clicked()
 
 void HostWindow::on_PushButton_CreateRoom_clicked()
 {
-    if (ui->LineEdit_RoomName->text().isEmpty())
+    if (ui->LineEdit_RoomName->text().isEmpty() || ui->LineEdit_Port->text().isEmpty())
     {
-        Message::display(MessageType::Critical, "Error", "Room name cannot be empty!");
+        Message::display(MessageType::Critical, "Error", "Room name or port cannot be empty!");
+        return;
+    }
+
+    bool isEnteredPortANumber = false;
+    int enteredPort = ui->LineEdit_Port->text().toInt(&isEnteredPortANumber);
+    if (!isEnteredPortANumber || enteredPort > 20000 || enteredPort < 6000)
+    {
+        Message::display(MessageType::Critical, "Error", "Your entered port is invalid or not a number!");
         return;
     }
 
@@ -47,7 +55,7 @@ void HostWindow::on_PushButton_CreateRoom_clicked()
     
     server = Server::getInstance(roomName);
     connectServerSignalsToUISlots(server);
-    server->start();
+    server->start(enteredPort);
 }
 
 void HostWindow::on_serverStarted(int port)
@@ -62,12 +70,12 @@ void HostWindow::on_serverError(const QString& errorMessage)
 
 void HostWindow::on_clientConnected(const QString& username, int clientsCount)
 {
-    Message::display(MessageType::Info, "Connection", username);
+    Message::display(MessageType::Info, "Connection", username + " has joined the room!");
 }
 
 void HostWindow::on_clientDisconnection(const QString& username, int clientsCount)
 {
-    Message::display(MessageType::Info, "Disconnection", username);
+    Message::display(MessageType::Info, "Disconnection", username + " disconnected!");
 }
 
 void HostWindow::on_dataReceived(const QString& username, const QByteArray& message)
@@ -85,9 +93,13 @@ void HostWindow::on_serverDeleted()
     Message::display(MessageType::Info, "Notice", "Server Object was deleted!");
 }
 
+void HostWindow::on_clientConnectedToMainServer()
+{
+    Message::display(MessageType::Info, "Notice", "Somebody connected to the main server!");
+}
+
 void HostWindow::connectServerSignalsToUISlots(const Server* server)
 {
-    // Server* normalPointer = server.get();
     if (hasSetupUIConnections)
         return;
     hasSetupUIConnections = true;
@@ -98,6 +110,7 @@ void HostWindow::connectServerSignalsToUISlots(const Server* server)
     connect(server, Server::dataReceived, this, &on_dataReceived);
     connect(server, Server::serverStopped, this, &on_serverStopped);
     connect(server, Server::serverDeleted, this, &on_serverDeleted);
+    connect(server, Server::clientConnectedToMainServer, this, &on_clientConnectedToMainServer);
     qDebug() << "Connected signals and slots\n";
 }
 

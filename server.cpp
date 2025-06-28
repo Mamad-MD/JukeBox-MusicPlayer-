@@ -21,9 +21,10 @@ Server* Server::getInstance(const QString& roomName)
 void Server::deleteInstance()
 {
     delete instance;
+    instance = nullptr;
 }
 
-void Server::start()
+void Server::start(const int& port)
 {
     if (TCPServer)
     {
@@ -32,32 +33,44 @@ void Server::start()
     }
     
     TCPServer = new QTcpServer(this);
-    connect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
 
-    int port = 6000;
     if (TCPServer->listen(QHostAddress::Any, port))
+    {
         emit serverStarted(port);
+        connect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
+    }
     else
-        emit serverError("Failed to listen on port" + QString::number(port));
+    {
+        delete TCPServer;
+        TCPServer = nullptr;
+        emit serverError("Failed to listen on port " + QString::number(port));
+    }
 }
 
 void Server::stop()
 {
     disconnect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
-    TCPServer->close();
-    delete TCPServer;
-    TCPServer = nullptr;
-    instance = nullptr;
+    if (TCPServer)
+    {
+        TCPServer->close();
+        delete TCPServer;
+        TCPServer = nullptr;
+    }
     emit serverStopped();
 }
 
 void Server::newConnection()
 {
     QTcpSocket* newClient = TCPServer->nextPendingConnection();
+
+    // emit clientConnectedToMainServer();  // This line is not needed that much.
+    
     addClient(User(newClient));
     
     // newClient->write(("Hello. This is room " + roomName +
     //                   ". You are client #" + QString::number(clients.size()) + ".\n").toUtf8());
+
+    
     newClient->write(roomName.toUtf8());
 
 
@@ -69,8 +82,6 @@ void Server::newConnection()
     connect(newClient, &QTcpSocket::readyRead, this, &readData);
 
     // We're gonna emit clientConnected later after we received the username.
-    
-    // Message::display(MessageType::Info, "New Connection", "We've just got a new connection");
 }
 
 void Server::readData()
@@ -79,9 +90,8 @@ void Server::readData()
     // The sender() method returns the object that emitted the signal
     QTcpSocket* senderSocket = qobject_cast<QTcpSocket*>(sender());
 
-    if (!senderSocket) {
+    if (!senderSocket)
         return; // Safety check - this shouldn't happen
-    }
 
     // Read the data from the specific client who sent it
     QByteArray data = senderSocket->readAll();
@@ -134,9 +144,9 @@ void Server::readData()
         // We're gonna remove the second line and just handle showing the messages using
         // dataReceived signal that a UI Component catches. Basically I'm not gonna deal with
         // showing the message in my server class.
-        emit dataReceived("-1", data);
-        QString announcement = message + " has joined the room! \n";
-        broadcastMessage(announcement);
+        // emit dataReceived("-1", data);
+        // QString announcement = message + " has joined the room! \n";
+        // broadcastMessage(announcement);
     }
     
     // Message::display(MessageType::Info, "Message", "Username: " + data);
@@ -146,9 +156,8 @@ void Server::clientDisconnected()
 {              
     // Again, we need to identify which client disconnected
     QTcpSocket* disconnectedSocket = qobject_cast<QTcpSocket*>(sender());
-    if (!disconnectedSocket) {
+    if (!disconnectedSocket)
         return;
-    }
 
     QString clientName = findClientBySocket(disconnectedSocket);
 
@@ -157,11 +166,12 @@ void Server::clientDisconnected()
 
     // We're gonna move this to another class that's gonna handle our message displaying.
     // Announce to remaining clients that someone left
-    QString announcement = clientName + " has left the room!\n";
-    broadcastMessage(announcement);
+    // QString announcement = clientName + " has left the room!\n";
+    // broadcastMessage(announcement);
 
     // Emit signal for UI updates
-    emit clientDisconnection(roomName, clients.size());
+    // Message::display(MessageType::Info, "Notice", clientName + " disconnected");
+    emit clientDisconnection(clientName, clients.size());
 }
 
 void Server::broadcastMessage(const QString& message, const QTcpSocket* excludedClientSocket)

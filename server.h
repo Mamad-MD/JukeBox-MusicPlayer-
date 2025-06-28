@@ -19,7 +19,7 @@ public:
     QString getRoomName() const;
     void broadcastMessage(const QString& message, const QTcpSocket* excludedClientSocket = nullptr);
     void sendMessageToClient(QTcpSocket* client, const QString message);
-    void start();
+    void start(const int& port);
     void stop();
 
 signals:
@@ -30,7 +30,7 @@ signals:
     void clientConnected(const QString& username, int clientsCount);
     void clientDisconnection(const QString& username, int clientsCount);
     void dataReceived(const QString& username, const QByteArray& message);
-
+    void clientConnectedToMainServer();
 
 private slots:
     void newConnection();  // Called when a client connects

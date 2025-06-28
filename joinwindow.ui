@@ -36,7 +36,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>260</y>
+      <y>330</y>
       <width>621</width>
       <height>201</height>
      </rect>
@@ -45,8 +45,8 @@
    <widget class="QLabel" name="Label_Username">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>100</y>
+      <x>140</x>
+      <y>70</y>
       <width>161</width>
       <height>51</height>
      </rect>
@@ -64,7 +64,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>200</y>
+      <y>270</y>
       <width>171</width>
       <height>41</height>
      </rect>
@@ -78,19 +78,76 @@
      <string>Rooms to join:</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="Textedit_Username">
+   <widget class="QPushButton" name="PushButton_LookForRooms">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>110</y>
+      <x>290</x>
+      <y>200</y>
+      <width>181</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Look For Rooms</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="LineEdit_Username">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>80</y>
       <width>281</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>16</pointsize>
+      <pointsize>12</pointsize>
      </font>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Label_Username_2">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>120</y>
+      <width>161</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Port:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="LineEdit_Port">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>130</y>
+      <width>281</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>6000</string>
+    </property>
+    <property name="maxLength">
+     <number>5</number>
     </property>
    </widget>
   </widget>

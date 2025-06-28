@@ -36,7 +36,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>120</y>
+      <y>180</y>
       <width>161</width>
       <height>51</height>
      </rect>
@@ -135,8 +135,50 @@ font-weight: normal</string>
     </property>
     <property name="font">
      <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>MyRoom</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Label_RoomName_2">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>90</y>
+      <width>161</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
       <pointsize>14</pointsize>
      </font>
+    </property>
+    <property name="text">
+     <string>Port:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="LineEdit_Port">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>100</y>
+      <width>271</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>6000</string>
+    </property>
+    <property name="maxLength">
+     <number>5</number>
     </property>
    </widget>
   </widget>

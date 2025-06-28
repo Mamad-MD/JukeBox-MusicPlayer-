@@ -9,25 +9,38 @@ class Client : public QObject {
     Q_OBJECT
 
 public:
-    Client(QObject* parent = nullptr);
+    static Client* getInstance(const QString& username);
+    static void deleteInstance();
+    void connectToHost(const int& port);
+    void disconnect();
     void sendMessage(const QString& message);
 
 signals:
     void connectedToServer(); // Called when connected to the main server
-    void receivedRoomName(QString roomName); // Called when room names are received
+    void receivedRoomName(const QString& roomName); // Called when room names are received
     void disconnection();
+    void dataReceived(const QByteArray& data);
+    void clientObjectDeleted();
+    void clientError(const QString& message);
 
 private slots:
     void connected();  // Called when connection is established
-
     void readData();   // Called when data is received
     void disconnected();
+    void on_errorOccurred(QAbstractSocket::SocketError socketError);
 
 private:
+    QString username;
     QString lastReceivedMessage;
     QTcpSocket* socket;
     bool hasReceivedRoomName;
 
+    // Singleton Implementation
+    static Client* instance;
+    Client(const QString& username, QObject* parent = nullptr);
+    ~Client();
+    Client(const Client&) = delete;
+    Client(const Client&&) = delete; 
 };
 
 #endif // CLIENT_H
