@@ -23,6 +23,7 @@ set(PROJECT_SOURCES
         server.h server.cpp
         client.h client.cpp
         message_displayer.h message_displayer.cpp
+        resources.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
