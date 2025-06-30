@@ -1,5 +1,5 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef MESSAGE_DISPLAYER_H
+#define MESSAGE_DISPLAYER_H
 
 #include <QString>
 
@@ -10,10 +10,10 @@ enum class MessageType {
 };
 
 
-class Message
+class MessageDisplayer
 {
 public:
     static void display(const MessageType, QString title, QString description);
 };
 
-#endif // MESSAGE_H
+#endif // MESSAGE_DISPLAYER_H

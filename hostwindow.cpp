@@ -1,7 +1,7 @@
 #include "hostwindow.h"
 #include "mainwindow.h"
 #include "ui_hostwindow.h"
-#include "message.h"
+#include "message_displayer.h"
 #include "server.h"
 
 Server* Server::instance = nullptr; 
@@ -35,7 +35,7 @@ void HostWindow::on_PushButton_CreateRoom_clicked()
 {
     if (ui->LineEdit_RoomName->text().isEmpty() || ui->LineEdit_Port->text().isEmpty())
     {
-        Message::display(MessageType::Critical, "Error", "Room name or port cannot be empty!");
+        MessageDisplayer::display(MessageType::Critical, "Error", "Room name or port cannot be empty!");
         return;
     }
 
@@ -43,7 +43,7 @@ void HostWindow::on_PushButton_CreateRoom_clicked()
     int enteredPort = ui->LineEdit_Port->text().toInt(&isEnteredPortANumber);
     if (!isEnteredPortANumber || enteredPort > 20000 || enteredPort < 6000)
     {
-        Message::display(MessageType::Critical, "Error", "Your entered port is invalid or not a number!");
+        MessageDisplayer::display(MessageType::Critical, "Error", "Your entered port is invalid or not a number!");
         return;
     }
 
@@ -63,10 +63,10 @@ void HostWindow::updateClientsList()
     qDebug() << "updateRoomsList\n";
     qDebug() << server;
     qDebug() << QString::number(server->getClientCount());
-    if (server->getClientCount() == 0)
-        ui->PushButton_GoToMusicRoom->setEnabled(false);
-    else
-        ui->PushButton_GoToMusicRoom->setEnabled(true);
+    // if (server->getClientCount() == 0)
+    //     ui->PushButton_GoToMusicRoom->setEnabled(false);
+    // else
+    //     ui->PushButton_GoToMusicRoom->setEnabled(true);
 
     ui->TableWidget_Clients->setRowCount(server->getClientCount());
     ui->TableWidget_Clients->setColumnCount(3);
@@ -87,49 +87,54 @@ void HostWindow::updateClientsList()
 
 void HostWindow::on_serverStarted(int port)
 {
-    Message::display(MessageType::Info, "Notice", "Server started listening on port " + QString::number(port));
+    MessageDisplayer::display(MessageType::Info, "Notice", "Server started listening on port " + QString::number(port));
 }
 
 void HostWindow::on_serverError(const QString& errorMessage)
 {
-    Message::display(MessageType::Critical, "Error", errorMessage);
+    MessageDisplayer::display(MessageType::Critical, "Error", errorMessage);
     ui->PushButton_GoToMusicRoom->setEnabled(false);
 }
 
 void HostWindow::on_clientConnected(const QString& username, int clientsCount)
 {
-    // Message::display(MessageType::Info, "Connection", username + " has joined the room!");
+    // MessageDisplayer::display(MessageType::Info, "Connection", username + " has joined the room!");
     updateClientsList();
 }
 
 void HostWindow::on_clientDisconnection(const QString& username, int clientsCount)
 {
-    Message::display(MessageType::Info, "Disconnection", username + " disconnected!");
+    MessageDisplayer::display(MessageType::Info, "Disconnection", username + " disconnected!");
     updateClientsList();
 }
 
 void HostWindow::on_dataReceived(const QString& username, const QByteArray& message)
 {
-    Message::display(MessageType::Info, "Data Received", username);
+    MessageDisplayer::display(MessageType::Info, "Data Received", username);
 }
 
 void HostWindow::on_serverStopped()
 {
-    Message::display(MessageType::Info, "Notice", "Server Stopped!");
+    MessageDisplayer::display(MessageType::Info, "Notice", "Server Stopped!");
     ui->PushButton_GoToMusicRoom->setEnabled(false);
     updateClientsList();
 }
 
 void HostWindow::on_serverDeleted()
 {
-    Message::display(MessageType::Info, "Notice", "Server Object was deleted!");
+    MessageDisplayer::display(MessageType::Info, "Notice", "Server Object was deleted!");
     ui->PushButton_GoToMusicRoom->setEnabled(false);
     updateClientsList();
 }
 
 void HostWindow::on_clientConnectedToMainServer()
 {
-    Message::display(MessageType::Info, "Notice", "Somebody connected to the main server!");
+    MessageDisplayer::display(MessageType::Info, "Notice", "Somebody connected to the main server!");
+}
+
+void HostWindow::on_messageReceived(const QString& username, const QString& content)
+{
+    MessageDisplayer::display(MessageType::Info, "You got a message", username + ": " + content);
 }
 
 void HostWindow::connectServerSignalsToUISlots(const Server* server)
@@ -145,12 +150,13 @@ void HostWindow::connectServerSignalsToUISlots(const Server* server)
     connect(server, Server::serverStopped, this, &on_serverStopped);
     connect(server, Server::serverDeleted, this, &on_serverDeleted);
     connect(server, Server::clientConnectedToMainServer, this, &on_clientConnectedToMainServer);
+    connect(server, Server::messageReceived, this, &on_messageReceived);
     qDebug() << "Connected signals and slots\n";
 }
 
 
 void HostWindow::on_PushButton_GoToMusicRoom_clicked()
 {
-
+    
 }
 

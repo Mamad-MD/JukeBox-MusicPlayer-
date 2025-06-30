@@ -22,6 +22,7 @@ public:
 private slots:
     void on_PushButton_Back_clicked();
     void on_PushButton_CreateRoom_clicked();
+    void on_PushButton_GoToMusicRoom_clicked();
 
     // Slots for Server
     void on_serverStarted(int port);
@@ -32,7 +33,7 @@ private slots:
     void on_clientDisconnection(const QString& username, int clientsCount);
     void on_dataReceived(const QString& username, const QByteArray& message);
     void on_clientConnectedToMainServer();
-
+    void on_messageReceived(const QString& username, const QString& content);
 
 private:
     Ui::HostWindow *ui;

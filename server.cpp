@@ -1,7 +1,8 @@
 #include "server.h"
 #include <QMessageBox>
 #include <QApplication>
-#include "message.h"
+#include "message_displayer.h"
+#include "command.h"
 
 bool Server::deletingInProcess = false;
 
@@ -25,10 +26,7 @@ void Server::deleteInstance()
     instance->deleteLater();
     deletingInProcess = true;
     if (!deletingInProcess)
-    {
-        qDebug() << "7\n";
         instance = nullptr;
-    }
 }
 
 void Server::start(const int& port)
@@ -39,9 +37,7 @@ void Server::start(const int& port)
         return;
     }
 
-    qDebug() << "starting\n";
     TCPServer = new QTcpServer(this);
-    qDebug() << "new tcp\n";
 
     if (TCPServer->listen(QHostAddress::Any, port))
     {
@@ -63,31 +59,22 @@ void Server::stop()
     {
         if (!client.socket)
             continue;
-        qDebug() << "1";
         client.socket->disconnect();
         if (client.socket->state() != QAbstractSocket::UnconnectedState)
                 client.socket->disconnectFromHost();
         
-        qDebug() << "2";
         client.socket->deleteLater();
-        qDebug() << "3";
         client.socket = nullptr;
     }
     clients.clear();
     
-    qDebug() << "I'm here";
-    
     if (TCPServer)
     {
-        qDebug() << "4";
         TCPServer->close();
-        qDebug() << "5";
         TCPServer->deleteLater();
-        qDebug() << "6";
         TCPServer = nullptr;
     }
     emit serverStopped();
-    qDebug() << "8";
     deletingInProcess = false;
 }
 
@@ -123,15 +110,13 @@ void Server::readData()
     // We'll here expect the client to send a message and say who they are and
     // then we're gonna emit clientConnected signal
     
-    // Check if this looks like a username (simple example)
-    QString message = QString::fromUtf8(data).trimmed();
-    QStringList commandAndArgs = message.split(" ");
-    int command = commandAndArgs[0].toInt();
-    switch (command)
+    // Process the message
+    Command command = byteArrayToCommand(&data);
+    switch (command.commandType)
     {
-        case 1: // join request
+        case CommandType::Join_Request: // join request
         {
-            QString username = commandAndArgs[1];
+        QString username = command.username;
             // Now We realize this is the first message this client has sent. So
             // we'll consider it as their username
             for (auto& client : clients)
@@ -143,13 +128,13 @@ void Server::readData()
                 }
             }
             
-            emit clientConnected(message, clients.size());
+            emit clientConnected(username, clients.size());
             
             break;
         }
-        case 2: // message
+        case CommandType::Message: // message
         {
-            QString username = commandAndArgs[1];
+            QString username = command.username;
             bool isFound = false;
             for (auto& client : clients)
             {
@@ -161,11 +146,8 @@ void Server::readData()
             }
             if (isFound)
             {
-                // Now We recognize this as a message and not a username
-                // Do something with this message
-                // QString text = username + ": " + commandAndArgs[2] + "\n";
-
-                // emit dataReceived(username, data);
+                broadcastMessage(command);
+                emit messageReceived(command.username, command.content);
             }
 
             break;
@@ -189,12 +171,13 @@ void Server::clientDisconnected()
     emit clientDisconnection(clientName, clients.size());
 }
 
-void Server::broadcastMessage(const QString& message, const QTcpSocket* excludedClientSocket)
+void Server::broadcastMessage(Command& command, const QTcpSocket* excludedClientSocket)
 {
+    QByteArray toBeSent = commandToByteArray(&command);
     for (auto& client : clients)
     {
         if (client.socket != excludedClientSocket && client.socket->state() == QTcpSocket::ConnectedState)
-            client.socket->write(message.toUtf8());
+            client.socket->write(toBeSent);
     }
 }
 

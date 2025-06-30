@@ -1,5 +1,5 @@
 #include "client.h"
-#include "message.h"
+#include "message_displayer.h"
 
 
 Client* Client::getInstance(const QString& username)
@@ -77,7 +77,7 @@ void Client::readData()
     // We'll deal with how to interpret messages later we did this on the server side.
     
     
-    // Message::display(MessageType::Info, "Message", data);
+    // MessageDisplayer::display(MessageType::Info, "Message", data);
 }
 
 void Client::disconnected()
