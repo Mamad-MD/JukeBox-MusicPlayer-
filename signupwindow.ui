@@ -1,18 +1,226 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>signupwindow</class>
- <widget class="QWidget" name="signupwindow">
+ <class>SignUpWindow</class>
+ <widget class="QMainWindow" name="SignUpWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>800</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>MainWindow</string>
   </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="backgroundlabel">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>800</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">  background-image: url(:/images/signup.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; /* یا contain */</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="firstNameLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>148</x>
+      <y>140</y>
+      <width>210</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lastNameLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>371</x>
+      <y>140</y>
+      <width>210</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="passwordLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>235</y>
+      <width>211</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::EchoMode::PasswordEchoOnEdit</enum>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="emailLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>148</x>
+      <y>235</y>
+      <width>210</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="usernameLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>148</x>
+      <y>188</y>
+      <width>433</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="confirmPasswordLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>148</x>
+      <y>281</y>
+      <width>433</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::EchoMode::PasswordEchoOnEdit</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="registerButton">
+    <property name="geometry">
+     <rect>
+      <x>271</x>
+      <y>338</y>
+      <width>181</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"> background-color: transparent;  /* پس‌زمینه شفاف */
+   /* خط دور به رنگ بنفش */
+    border-radius: 10px;            /* گوشه‌های گرد با شعاع 10 */
+    color: white;   </string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+  </widget>
  </widget>
  <resources/>
  <connections/>
