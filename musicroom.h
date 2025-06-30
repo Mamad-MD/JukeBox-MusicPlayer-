@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMediaPlayer>
+#include <QMediaMetaData>
 #include <QAudioOutput>
 
 namespace Ui {
@@ -36,6 +37,7 @@ private slots:
     void on_positionChanged(qint64 position);
     void on_durationChanged(qint64 duration);
     void on_sliderReleased();
+    void on_metaDataChanged();
 
 private:
     Ui::MusicRoom *ui;

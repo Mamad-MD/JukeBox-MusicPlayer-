@@ -24,7 +24,6 @@ private slots:
     void on_PushButton_CreateRoom_clicked();
     void on_PushButton_GoToMusicRoom_clicked();
 
-    // Slots for Server
     void on_serverStarted(int port);
     void on_serverStopped();
     void on_serverDeleted();

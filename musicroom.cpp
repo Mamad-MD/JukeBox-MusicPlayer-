@@ -7,6 +7,7 @@ MusicRoom::MusicRoom(QWidget *parent)
     , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), isPlaying(false), currentlyPlayingDuration(0)
 {
     ui->setupUi(this);
+    ui->Label_AlbumCover->setScaledContents(true);
     for (int i = 0; i < ui->TreeWidget_Category->topLevelItemCount(); i++)
     {
         QTreeWidgetItem* topItem = ui->TreeWidget_Category->topLevelItem(i);
@@ -27,9 +28,10 @@ MusicRoom::MusicRoom(QWidget *parent)
         qDebug() << "Error:" << error << errorString;
     });
     
-    connect(player, &QMediaPlayer::positionChanged, this, on_positionChanged);
-    connect(player, &QMediaPlayer::durationChanged, this, on_durationChanged);
-    connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, on_sliderReleased);
+    connect(player, &QMediaPlayer::positionChanged, this, &MusicRoom::on_positionChanged);
+    connect(player, &QMediaPlayer::durationChanged, this, &MusicRoom::on_durationChanged);
+    connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
+    connect(player, &QMediaPlayer::metaDataChanged, this, &MusicRoom::on_metaDataChanged);
 }
 
 void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)
@@ -136,6 +138,8 @@ void MusicRoom::play(const QString& filePath)
         on_musicPlayed();
         return;
     }
+
+    //  extract music cover                                                       =============
 
     // player->stop();
     player->setSource(QUrl::fromLocalFile(filePath));
@@ -259,6 +263,39 @@ void MusicRoom::on_PushButton_Prev_clicked()
     {
         play(musicPathsFromFolder[currentlyPlayingIndex - 1]);
         changeActiveTrackInListView(currentlyPlayingIndex);
+    }
+}
+
+void MusicRoom::on_metaDataChanged()
+{
+    qDebug() << "metaDataChanged() called!";
+    const QMediaMetaData meta = player->metaData();
+    const QList<QMediaMetaData::Key> metaKeys = meta.keys();
+    qDebug() << "All meta keys:" << metaKeys;
+
+    QVariant cover;
+
+    // اول سعی می‌کنیم از CoverArtImage بگیریم، اگر نبود ThumbnailImage
+    if (metaKeys.contains(QMediaMetaData::CoverArtImage)) {
+        cover = meta.value(QMediaMetaData::CoverArtImage);
+        qDebug() << "CoverArtImage found!";
+    } else if (metaKeys.contains(QMediaMetaData::ThumbnailImage)) {
+        cover = meta.value(QMediaMetaData::ThumbnailImage);
+        qDebug() << "ThumbnailImage used as cover!";
+    } else {
+        qDebug() << "No image metadata found.";
+    }
+
+    if (cover.isValid()) {
+        QImage image = qvariant_cast<QImage>(cover);
+        if (!image.isNull()) {
+            ui->Label_AlbumCover->setPixmap(QPixmap::fromImage(image));
+            qDebug() << "Cover image set!";
+        } else {
+            qDebug() << "Image variant is null.";
+        }
+    } else {
+        ui->Label_AlbumCover->clear();
     }
 }
 

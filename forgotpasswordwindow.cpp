@@ -1,7 +1,7 @@
 #include "forgotpasswordwindow.h"
 #include "ui_forgotpasswordwindow.h"
 #include "message_displayer.h"
-#include <QPushButton>  // اضافه کردن چون از QPushButton استفاده می‌کنیم
+#include <QPushButton>
 
 ForgotPasswordWindow::ForgotPasswordWindow(Authmanager* authManager, QWidget *parent) :
     QMainWindow(parent),
@@ -10,7 +10,6 @@ ForgotPasswordWindow::ForgotPasswordWindow(Authmanager* authManager, QWidget *pa
 {
     ui->setupUi(this);
 
-    // اتصال سیگنال دکمه به اسلات
     connect(ui->recoverButton, &QPushButton::clicked, this, &ForgotPasswordWindow::handleRecover);
 }
 
@@ -31,7 +30,6 @@ void ForgotPasswordWindow::handleRecover()
     QString result = auth->recoverPassword(email);
     if(result.startsWith("[TEST MODE]")) {
         MessageDisplayer::display(MessageType::Info, "Recover Password", "Recovery info sent:\n" + result);
-        // اینجا می‌تونی پنجره رو ببندی یا صفحه‌ی بعدی رو باز کنی
     }
     else {
         MessageDisplayer::display(MessageType::Warning, "Recover Password", "Email not found.");

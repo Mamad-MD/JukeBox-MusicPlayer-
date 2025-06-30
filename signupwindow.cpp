@@ -17,7 +17,6 @@ SignUpWindow::~SignUpWindow()
 
 void SignUpWindow::on_registerButton_clicked()
 {
-    // گرفتن داده‌های ورودی از فرم
     QString firstname = ui->firstNameLineEdit->text().trimmed();
     QString lastname = ui->lastNameLineEdit->text().trimmed();
     QString username = ui->usernameLineEdit->text().trimmed();
@@ -25,7 +24,6 @@ void SignUpWindow::on_registerButton_clicked()
     QString confirmPassword = ui->confirmPasswordLineEdit->text();
     QString email = ui->emailLineEdit->text().trimmed();
 
-    // بررسی پر بودن همه فیلدها
     if (firstname.isEmpty() || lastname.isEmpty() || username.isEmpty()
         || password.isEmpty() || confirmPassword.isEmpty() || email.isEmpty())
     {
@@ -33,15 +31,12 @@ void SignUpWindow::on_registerButton_clicked()
         return;
     }
 
-    // بررسی تطابق پسورد و تایید آن
     if (password != confirmPassword) {
         MessageDisplayer::display(MessageType::Warning, "Registration", "Password and confirmation do not match.");
         return;
     }
 
-    // می‌توان اینجا اعتبارسنجی ایمیل یا پسورد رو هم اضافه کرد (مثل regex)
 
-    // ثبت نام در Authmanager
     bool success = auth->registerUser(firstname, lastname, username, password, email);
 
     if (success) {
@@ -49,7 +44,6 @@ void SignUpWindow::on_registerButton_clicked()
 
         emit registrationSucceeded();
 
-        // پنجره ثبت نام را مخفی کن (به کنترلر اصلی اجازه بده که مدیریت کنه)
         this->hide();
 
     } else {

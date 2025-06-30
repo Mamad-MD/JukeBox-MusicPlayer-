@@ -277,7 +277,7 @@
      <string>==&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QLabel" name="Label_AlbumCover">
     <property name="geometry">
      <rect>
       <x>930</x>
@@ -290,7 +290,7 @@
      <string notr="true">border: 1px solid black;</string>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="PushButton_PlayPause_2">
@@ -313,7 +313,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

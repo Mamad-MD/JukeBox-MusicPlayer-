@@ -4,7 +4,6 @@
 
 void MessageDisplayer::display(const MessageType type, QString title, QString description)
 {
-    // The parent of the QMessage will be the active window which is the main window now
     QWidget* activeWindow = QApplication::activeWindow();
 
     switch (type)
