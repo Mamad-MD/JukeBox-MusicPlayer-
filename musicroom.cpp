@@ -207,6 +207,19 @@ void MusicRoom::on_positionChanged(qint64 position)
     QString currentTimeStr = formatTime(position);
     QString totalTimeStr = formatTime(currentlyPlayingDuration);
     ui->Label_Timer->setText(currentTimeStr + " / " + totalTimeStr);
+    if (position == currentlyPlayingDuration)
+    {
+        if (currentlyPlayingIndex == musicPathsFromFolder.size() - 1)
+        {
+            play(musicPathsFromFolder[0]);
+            changeActiveTrackInListView(0);
+        }
+        else
+        {
+            play(musicPathsFromFolder[currentlyPlayingIndex + 1]);
+            changeActiveTrackInListView(currentlyPlayingIndex);
+        }
+    }
 }
 
 void MusicRoom::on_durationChanged(qint64 duration)
