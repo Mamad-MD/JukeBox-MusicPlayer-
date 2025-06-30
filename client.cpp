@@ -1,5 +1,5 @@
 #include "client.h"
-#include "message.h"
+#include "message_displayer.h"
 
 
 Client* Client::getInstance(const QString& username)
@@ -62,22 +62,29 @@ void Client::connected()
 }
 
 void Client::readData()
-{
+{   
     QByteArray data = socket->readAll();
-    
-    if (!hasReceivedRoomName)
-    {
-        hasReceivedRoomName = true;
-        emit receivedRoomName(QString::fromUtf8(data));
-        socket->write(username.toUtf8());
-        return;
-    }
+    Command command = byteArrayToCommand(&data);
 
+    switch (command.commandType)
+    {
+        case CommandType::RoomName_Sending:
+        {
+            if (hasReceivedRoomName)
+                break;
+            
+            hasReceivedRoomName = true;
+            emit receivedRoomName(command.content);
+             
+            break;
+        }
+        case CommandType::Message:
+        {
+            break;
+        }
+    }
     // =====================
     // We'll deal with how to interpret messages later we did this on the server side.
-    
-    
-    // Message::display(MessageType::Info, "Message", data);
 }
 
 void Client::disconnected()

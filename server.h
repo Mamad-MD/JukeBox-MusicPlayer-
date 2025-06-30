@@ -7,6 +7,7 @@
 #include <QList>
 #include <QMap>
 #include "user.h"
+#include "command.h"
 
 class Server : public QObject {
     Q_OBJECT
@@ -17,7 +18,7 @@ public:
     int getClientCount() const;
     QList<User>& getClientList();
     QString getRoomName() const;
-    void broadcastMessage(const QString& message, const QTcpSocket* excludedClientSocket = nullptr);
+    void broadcastMessage(Command& command, const QTcpSocket* excludedClientSocket = nullptr);
     void sendMessageToClient(QTcpSocket* client, const QString message);
     void start(const int& port);
     void stop();
@@ -31,6 +32,7 @@ signals:
     void clientDisconnection(const QString& username, int clientsCount);
     void dataReceived(const QString& username, const QByteArray& message);
     void clientConnectedToMainServer();
+    void messageReceived(const QString& username, const QString& content);
 
 private slots:
     void newConnection();  // Called when a client connects

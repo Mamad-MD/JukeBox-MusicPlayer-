@@ -3,7 +3,7 @@
 #include "ui_joinwindow.h"
 #include "client.h"
 #include <QTimer>
-#include "message.h"
+#include "message_displayer.h"
 #include <QString>
 
 Client* Client::instance = nullptr;
@@ -43,7 +43,7 @@ void JoinWindow::on_PushButton_LookForRooms_clicked()
 {
     if (ui->LineEdit_Username->text().isEmpty() || ui->LineEdit_Port->text().isEmpty())
     {
-        Message::display(MessageType::Critical, "Error", "Username or port cannot be empty!");
+        MessageDisplayer::display(MessageType::Critical, "Error", "Username or port cannot be empty!");
         return;
     }
 
@@ -51,7 +51,7 @@ void JoinWindow::on_PushButton_LookForRooms_clicked()
     int enteredPort = ui->LineEdit_Port->text().toInt(&isEnteredPortANumber);
     if (!isEnteredPortANumber || enteredPort > 20000 || enteredPort < 6000)
     {
-        Message::display(MessageType::Critical, "Error", "Your entered port is invalid or not a number!");
+        MessageDisplayer::display(MessageType::Critical, "Error", "Your entered port is invalid or not a number!");
         return;
     }
 
@@ -70,7 +70,7 @@ void JoinWindow::on_PushButton_LookForRooms_clicked()
     // if (client->socket->state() != QAbstractSocket::ConnectedState)
     // {
     //     socket->abort(); // cancel the connection attempt
-    //     Message::display(MessageType::Critical, "Notice", "Connection timed out");
+    //     MessageDisplayer::display(MessageType::Critical, "Notice", "Connection timed out");
     // }
     // });
 
@@ -104,7 +104,7 @@ void JoinWindow::updateRoomsList(const QString& roomName)
 // Slots:
 void JoinWindow::on_connectedToServer()
 {
-    // Message::display(MessageType::Info, "Notice", "Connected to the Main Server");
+    // MessageDisplayer::display(MessageType::Info, "Notice", "Connected to the Main Server");
     ui->Label_NetworkStatus->setText("Connected");
     ui->Label_NetworkStatus->setStyleSheet("QLabel { color: green; }");
     ui->PushButton_LookForRooms->setEnabled(true);
@@ -115,21 +115,21 @@ void JoinWindow::on_ReceivedRoomName(const QString& roomName)
 {
     ui->PushButton_LookForRooms->setEnabled(true);
     ui->PushButton_Back->setEnabled(true);
-    // Message::display(MessageType::Info, "Notice", "RoomName Received: " + roomName);
+    // MessageDisplayer::display(MessageType::Info, "Notice", "RoomName Received: " + roomName);
     updateRoomsList(roomName);
 }
 
 void JoinWindow::on_disconnection()
 {
     updateRoomsList("");
-    Message::display(MessageType::Info, "Critical", "You got disconnected!");
+    MessageDisplayer::display(MessageType::Info, "Critical", "You got disconnected!");
     ui->PushButton_LookForRooms->setEnabled(true);
     ui->PushButton_Back->setEnabled(true);
 }
 
 void JoinWindow::on_dataReceived(const QByteArray& data)
 {
-    Message::display(MessageType::Info, "Notice", "Received this data: " + QString::fromUtf8(data));
+    MessageDisplayer::display(MessageType::Info, "Notice", "Received this data: " + QString::fromUtf8(data));
 }
 
 
@@ -139,19 +139,17 @@ void JoinWindow::on_clientError(const QString& errorMessage)
     ui->Label_NetworkStatus->setStyleSheet("QLabel { color: red; }");
     ui->PushButton_LookForRooms->setEnabled(true);
     ui->PushButton_Back->setEnabled(true);
-    Message::display(MessageType::Critical, "Error", errorMessage);
+    MessageDisplayer::display(MessageType::Critical, "Error", errorMessage);
 }
 
 void JoinWindow::on_clientObjectDeleted()
 {
-    Message::display(MessageType::Info, "Notice", "Client object deleted!");
+    MessageDisplayer::display(MessageType::Info, "Notice", "Client object deleted!");
 }
-
 
 void JoinWindow::on_TableWidget_Rooms_cellClicked(int row, int column)
 {
-    // 1 means join request
-    QString command = "1 " + client->username;
-    client->socket->write(command.toUtf8());
+    Command clientCommand(CommandType::Join_Request, client->username, "");
+    QByteArray commandInByteArray = commandToByteArray(&clientCommand);
+    client->socket->write(commandInByteArray);
 }
-
