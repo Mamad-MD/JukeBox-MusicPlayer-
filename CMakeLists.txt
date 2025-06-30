@@ -26,7 +26,9 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(JukeBox
+
+
+qt_add_executable(JukeBox
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         joinwindow.h joinwindow.cpp joinwindow.ui
@@ -42,6 +44,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         authmanager.h
         authmanager.cpp
         resources.qrc
+        authmanager.h
+        authmanager.cpp
+        resources.qrc
+        loginwindow.h loginwindow.cpp loginwindow.ui
     )
 else()
     if(ANDROID)
