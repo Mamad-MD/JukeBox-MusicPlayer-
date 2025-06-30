@@ -41,10 +41,6 @@ qt_add_executable(JukeBox
         commandtype.h
         command.h command.cpp
         musicroom.h musicroom.cpp musicroom.ui
-        musicroom.h musicroom.cpp musicroom.ui
-        authmanager.h
-        authmanager.cpp
-        resources.qrc
         authmanager.h
         authmanager.cpp
         resources.qrc

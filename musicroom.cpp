@@ -144,8 +144,6 @@ void MusicRoom::play(const QString& filePath)
     isPlaying = true;
     currentlyPlayingPath = filePath;
     currentlyPlayingIndex = findIndexFromPath(filePath);
-    // qDebug() << "index: " << currentlyPlayingIndex;
-    // qDebug() << player->playbackState();
     on_musicPlayed();
 }
 
@@ -221,7 +219,6 @@ void MusicRoom::on_sliderReleased()
 {
     player->setPosition(ui->Slider_MusicSlider->value());
 }
-
 
 void MusicRoom::on_PushButton_Next_clicked()
 {

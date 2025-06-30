@@ -50,6 +50,7 @@ private:
     QString currentlyPlayingPath;
     int currentlyPlayingIndex;
     qint64 currentlyPlayingDuration;
+	
     int findIndexFromPath(const QString& path);
     bool isPlaying;
 
