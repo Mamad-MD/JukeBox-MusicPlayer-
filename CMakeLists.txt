@@ -39,6 +39,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         commandtype.h
         command.h command.cpp
+        musicroom.h musicroom.cpp musicroom.ui
+
+        musicroom.h musicroom.cpp musicroom.ui
     )
 else()
     if(ANDROID)

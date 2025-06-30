@@ -165,6 +165,8 @@ void Server::clientDisconnected()
 
 void Server::broadcastMessage(Command& command, const QTcpSocket* excludedClientSocket)
 {
+    if (clients.size() == 0)
+        return;
     QByteArray toBeSent = commandToByteArray(&command);
     for (auto& client : clients)
     {

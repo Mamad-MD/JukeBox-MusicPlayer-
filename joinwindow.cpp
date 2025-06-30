@@ -58,23 +58,20 @@ void JoinWindow::on_PushButton_LookForRooms_clicked()
     ui->LineEdit_Username->setReadOnly(true);
     
     QString username = ui->LineEdit_Username->text();
-    
+
+    qDebug() << "before getting the instance";
     client = Client::getInstance(username);
+    qDebug() << "got the instance";
     
     ui->PushButton_LookForRooms->setEnabled(false);
     ui->PushButton_Back->setEnabled(false);
-
-    client->connectToHost(enteredPort);
-    connectClientSignalsToUISlots(client);
-    // QTimer::singleShot(1000, this, [=]() {
-    // if (client->socket->state() != QAbstractSocket::ConnectedState)
-    // {
-    //     socket->abort(); // cancel the connection attempt
-    //     MessageDisplayer::display(MessageType::Critical, "Notice", "Connection timed out");
-    // }
-    // });
-
     
+    qDebug() << "before connecting";
+    client->connectToHost(enteredPort);
+    qDebug() << "after connecting";
+    qDebug() << "before connecting signals";
+    connectClientSignalsToUISlots(client); 
+    qDebug() << "after connecting signals";
 }
 
 void JoinWindow::connectClientSignalsToUISlots(const Client* client)
