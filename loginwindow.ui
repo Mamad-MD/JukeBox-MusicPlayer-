@@ -6,37 +6,55 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>646</width>
-    <height>461</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/images/login.jpg);
-background-repeat: no-repeat;
-background-position: center;
-</string>
+   <string notr="true"/>
   </property>
-  <widget class="QWidget" name="LoginWindow_2">
+  <widget class="QWidget" name="Widget">
    <property name="styleSheet">
     <string notr="true"/>
    </property>
+   <widget class="QLabel" name="backgroundLabel">
+    <property name="geometry">
+     <rect>
+      <x>-2</x>
+      <y>-5</y>
+      <width>800</width>
+      <height>600</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
    <widget class="QFrame" name="loginPanel">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>150</y>
-      <width>291</width>
-      <height>181</height>
+      <x>650</x>
+      <y>331</y>
+      <width>21</width>
+      <height>20</height>
      </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
     <property name="styleSheet">
-     <string notr="true">QFrame {
-    background-color: rgba(255, 255, 255, 180); 
-    border-radius: 10px;
-}</string>
+     <string notr="true">background-color: rgba(255, 255, 255, 1);
+border-radius: 10px;
+</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Shape::StyledPanel</enum>
@@ -44,65 +62,74 @@ background-position: center;
     <property name="frameShadow">
      <enum>QFrame::Shadow::Raised</enum>
     </property>
-    <widget class="QLineEdit" name="usernameEdit">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>80</y>
-       <width>113</width>
-       <height>24</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="passwordEdit">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>120</y>
-       <width>113</width>
-       <height>24</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="loginButton">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>50</y>
-       <width>80</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PushButton</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="goToSignupButton">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>90</y>
-       <width>80</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PushButton</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="forgotPasswordButton">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>30</y>
-       <width>80</width>
-       <height>24</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PushButton</string>
-     </property>
-    </widget>
+   </widget>
+   <widget class="QLineEdit" name="usernameEdit">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>260</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Username</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="passwordEdit">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>310</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Password</string>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::EchoMode::Password</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="loginButton">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>410</y>
+      <width>80</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Login</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="goToSignupButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>470</y>
+      <width>221</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Don't have an account? Sign up</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="forgotPasswordButton">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>200</y>
+      <width>80</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Forgot Password?</string>
+    </property>
    </widget>
   </widget>
  </widget>
