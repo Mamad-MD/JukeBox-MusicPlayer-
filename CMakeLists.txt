@@ -35,13 +35,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         message_displayer.h message_displayer.cpp
         user.h
         user.cpp
-
-
         commandtype.h
         command.h command.cpp
         musicroom.h musicroom.cpp musicroom.ui
-
         musicroom.h musicroom.cpp musicroom.ui
+        authmanager.h
+        authmanager.cpp
+        resources.qrc
     )
 else()
     if(ANDROID)
