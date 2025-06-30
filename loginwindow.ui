@@ -56,6 +56,7 @@
     </property>
     <property name="font">
      <font>
+      <family>Fira Code</family>
       <pointsize>14</pointsize>
       <bold>true</bold>
      </font>
@@ -89,6 +90,11 @@ QLineEdit:focus {
       <width>255</width>
       <height>35</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+     </font>
     </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {

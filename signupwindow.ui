@@ -23,6 +23,11 @@
       <height>451</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">  background-image: url(:/images/signup.jpg);
     background-repeat: no-repeat;
@@ -41,6 +46,13 @@
       <width>210</width>
       <height>36</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+      <pointsize>14</pointsize>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
@@ -69,6 +81,13 @@ QLineEdit:focus {
       <height>36</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+      <pointsize>14</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
     background-color: transparent;       
@@ -95,6 +114,13 @@ QLineEdit:focus {
       <width>211</width>
       <height>36</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+      <pointsize>14</pointsize>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
@@ -126,6 +152,13 @@ QLineEdit:focus {
       <height>36</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+      <pointsize>14</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
     background-color: transparent;       
@@ -153,6 +186,13 @@ QLineEdit:focus {
       <height>36</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+      <pointsize>14</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
     background-color: transparent;       
@@ -179,6 +219,13 @@ QLineEdit:focus {
       <width>433</width>
       <height>36</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Code</family>
+      <pointsize>14</pointsize>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
