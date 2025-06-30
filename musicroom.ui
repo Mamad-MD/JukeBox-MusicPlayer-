@@ -89,8 +89,8 @@
    <widget class="QPushButton" name="PushButton_PlayPause">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>210</y>
+      <x>590</x>
+      <y>230</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -102,8 +102,8 @@
    <widget class="QPushButton" name="PushButton_Next">
     <property name="geometry">
      <rect>
-      <x>730</x>
-      <y>210</y>
+      <x>720</x>
+      <y>230</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -118,8 +118,8 @@
    <widget class="QPushButton" name="PushButton_Prev">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>210</y>
+      <x>460</x>
+      <y>230</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -131,8 +131,8 @@
    <widget class="QPushButton" name="PushButton_Shuffle">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>280</y>
+      <x>500</x>
+      <y>300</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -186,8 +186,8 @@
    <widget class="QPushButton" name="PushButton_Repeat">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>280</y>
+      <x>630</x>
+      <y>300</y>
       <width>191</width>
       <height>61</height>
      </rect>
@@ -196,7 +196,7 @@
      <string>RepeatMode: No-Repeat</string>
     </property>
    </widget>
-   <widget class="QSlider" name="horizontalSlider">
+   <widget class="QSlider" name="Slider_MusicSlider">
     <property name="geometry">
      <rect>
       <x>390</x>
@@ -210,6 +210,22 @@
     </property>
     <property name="orientation">
      <enum>Qt::Orientation::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Label_Timer">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>200</y>
+      <width>211</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
   </widget>

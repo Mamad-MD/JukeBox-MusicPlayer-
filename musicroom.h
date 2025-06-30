@@ -33,6 +33,9 @@ private slots:
     void loadFolderSelection();
     void on_musicPlayed();
     void on_musicPaused();
+    void on_positionChanged(qint64 position);
+    void on_durationChanged(qint64 duration);
+    void on_sliderReleased();
 
 private:
     Ui::MusicRoom *ui;
@@ -46,6 +49,7 @@ private:
     QAudioOutput* audioOutput;
     QString currentlyPlayingPath;
     int currentlyPlayingIndex;
+    qint64 currentlyPlayingDuration;
     int findIndexFromPath(const QString& path);
     bool isPlaying;
 
@@ -56,6 +60,7 @@ private:
     void play(const QString& filePath = "");
     void pause();
     void changeActiveTrackInListView(int index);
+    QString formatTime(qint64 pos);
 };
 
 #endif // MUSICROOM_H

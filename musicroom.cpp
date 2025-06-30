@@ -4,7 +4,7 @@
 
 MusicRoom::MusicRoom(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), isPlaying(false)
+    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), isPlaying(false), currentlyPlayingDuration(0)
 {
     ui->setupUi(this);
     for (int i = 0; i < ui->TreeWidget_Category->topLevelItemCount(); i++)
@@ -27,6 +27,9 @@ MusicRoom::MusicRoom(QWidget *parent)
         qDebug() << "Error:" << error << errorString;
     });
     
+    connect(player, &QMediaPlayer::positionChanged, this, on_positionChanged);
+    connect(player, &QMediaPlayer::durationChanged, this, on_durationChanged);
+    connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, on_sliderReleased);
 }
 
 void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)
@@ -141,8 +144,8 @@ void MusicRoom::play(const QString& filePath)
     isPlaying = true;
     currentlyPlayingPath = filePath;
     currentlyPlayingIndex = findIndexFromPath(filePath);
-    qDebug() << "index: " << currentlyPlayingIndex;
-    qDebug() << player->playbackState();
+    // qDebug() << "index: " << currentlyPlayingIndex;
+    // qDebug() << player->playbackState();
     on_musicPlayed();
 }
 
@@ -151,6 +154,16 @@ void MusicRoom::pause()
     player->pause();
     isPlaying = false;
     on_musicPaused();
+}
+
+QString MusicRoom::formatTime(qint64 pos)
+{
+    int seconds = pos / 1000;
+    int minutes = seconds / 60;
+    seconds %= 60;
+    return QString("%1:%2")
+        .arg(minutes, 2, 10, QChar('0'))
+        .arg(seconds, 2, 10, QChar('0'));
 }
 
 int MusicRoom::findIndexFromPath(const QString& path)
@@ -188,6 +201,25 @@ void MusicRoom::on_musicPlayed()
 void MusicRoom::on_musicPaused()
 {
     ui->PushButton_PlayPause->setText("Play");
+}
+
+void MusicRoom::on_positionChanged(qint64 position)
+{
+    ui->Slider_MusicSlider->setValue(static_cast<int>(position));
+    QString currentTimeStr = formatTime(position);
+    QString totalTimeStr = formatTime(currentlyPlayingDuration);
+    ui->Label_Timer->setText(currentTimeStr + " / " + totalTimeStr);
+}
+
+void MusicRoom::on_durationChanged(qint64 duration)
+{
+    currentlyPlayingDuration = duration;
+    ui->Slider_MusicSlider->setMaximum(static_cast<int>(duration));
+}
+
+void MusicRoom::on_sliderReleased()
+{
+    player->setPosition(ui->Slider_MusicSlider->value());
 }
 
 
