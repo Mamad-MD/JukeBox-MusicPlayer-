@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>971</width>
-    <height>791</height>
+    <width>1280</width>
+    <height>812</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -89,8 +89,8 @@
    <widget class="QPushButton" name="PushButton_PlayPause">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>230</y>
+      <x>540</x>
+      <y>210</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -102,8 +102,8 @@
    <widget class="QPushButton" name="PushButton_Next">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>230</y>
+      <x>670</x>
+      <y>210</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -118,8 +118,8 @@
    <widget class="QPushButton" name="PushButton_Prev">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>230</y>
+      <x>410</x>
+      <y>210</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -131,8 +131,8 @@
    <widget class="QPushButton" name="PushButton_Shuffle">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>300</y>
+      <x>450</x>
+      <y>280</y>
       <width>121</width>
       <height>61</height>
      </rect>
@@ -144,8 +144,8 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>0</y>
+      <x>340</x>
+      <y>20</y>
       <width>541</width>
       <height>101</height>
      </rect>
@@ -186,8 +186,8 @@
    <widget class="QPushButton" name="PushButton_Repeat">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>300</y>
+      <x>580</x>
+      <y>280</y>
       <width>191</width>
       <height>61</height>
      </rect>
@@ -199,8 +199,8 @@
    <widget class="QSlider" name="Slider_MusicSlider">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>160</y>
+      <x>340</x>
+      <y>140</y>
       <width>531</width>
       <height>41</height>
      </rect>
@@ -215,8 +215,8 @@
    <widget class="QLabel" name="Label_Timer">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>200</y>
+      <x>490</x>
+      <y>180</y>
       <width>211</width>
       <height>31</height>
      </rect>
@@ -228,13 +228,91 @@
      <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QListView" name="ListView_PlayLists">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>400</y>
+      <width>311</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::EditTrigger::EditKeyPressed</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>360</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>PlayLists:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButton_Prev_2">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>540</y>
+      <width>91</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>==&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>50</y>
+      <width>311</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid black;</string>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButton_PlayPause_2">
+    <property name="geometry">
+     <rect>
+      <x>1030</x>
+      <y>400</y>
+      <width>121</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cover</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>971</width>
+     <width>1280</width>
      <height>25</height>
     </rect>
    </property>
