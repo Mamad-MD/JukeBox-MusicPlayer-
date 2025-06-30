@@ -26,7 +26,9 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(JukeBox
+
+
+qt_add_executable(JukeBox
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         joinwindow.h joinwindow.cpp joinwindow.ui
@@ -41,31 +43,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         commandtype.h
         command.h command.cpp
 =======
+<<<<<<< HEAD
+>>>>>>> b40b632 (add auth manager for login page & add BackGroung Picture)
+=======
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+>>>>>>> b7e9982 (add 3 file)
 
         authmanager.h
         authmanager.cpp
-
-
-
         resources.qrc
->>>>>>> b40b632 (add auth manager for login page & add BackGroung Picture)
+        loginwindow.h loginwindow.cpp loginwindow.ui
     )
 else()
     if(ANDROID)
