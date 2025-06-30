@@ -4,7 +4,6 @@
 #include <QString>
 #include <QTcpSocket>
 #include <QDateTime>
-#include "server.h"
 
 class User {
 private:
@@ -16,6 +15,10 @@ private:
 public:
     User(QTcpSocket* socket, const QString& username = "-1"): username(username), socket(socket),
         joinTime(QDateTime::currentDateTime()) {}
+    QString getUsername();
+    QDateTime getJoinTime();
+    QTcpSocket* getSocket();
+    bool operator==(const User& user) const;
 };
 
 

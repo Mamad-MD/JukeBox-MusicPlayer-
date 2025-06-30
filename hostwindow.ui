@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>825</width>
-    <height>632</height>
+    <width>822</width>
+    <height>743</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,16 +48,6 @@
     </property>
     <property name="text">
      <string>Create Room</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="listView">
-    <property name="geometry">
-     <rect>
-      <x>120</x>
-      <y>360</y>
-      <width>591</width>
-      <height>201</height>
-     </rect>
     </property>
    </widget>
    <widget class="QLabel" name="Label_List">
@@ -181,13 +171,47 @@ font-weight: normal</string>
      <number>5</number>
     </property>
    </widget>
+   <widget class="QTableWidget" name="TableWidget_Clients">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>370</y>
+      <width>581</width>
+      <height>241</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PushButton_GoToMusicRoom">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>630</y>
+      <width>231</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Enter Music Room</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>825</width>
+     <width>822</width>
      <height>25</height>
     </rect>
    </property>

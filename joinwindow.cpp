@@ -38,10 +38,6 @@ void JoinWindow::on_PushButton_Back_clicked()
     this->close();
 }
 
-void JoinWindow::updateRoomsList()
-{
-    qDebug() << "hey\n";
-}
 
 void JoinWindow::on_PushButton_LookForRooms_clicked()
 {
@@ -91,26 +87,44 @@ void JoinWindow::connectClientSignalsToUISlots(const Client* client)
     connect(client, Client::disconnection, this, on_disconnection);
     connect(client, Client::dataReceived, this, on_dataReceived);
     connect(client, Client::clientError, this, on_clientError);
+    connect(client, Client::clientObjectDeleted, this, on_clientObjectDeleted);
     
     qDebug() << "Connected signals and slots\n";
+}
+
+void JoinWindow::updateRoomsList(const QString& roomName)
+{
+    ui->TableWidget_Rooms->setRowCount(1);
+    ui->TableWidget_Rooms->setColumnCount(1);
+    ui->TableWidget_Rooms->setHorizontalHeaderLabels(QStringList() << "Room Name");
+
+    ui->TableWidget_Rooms->setItem(0, 0, new QTableWidgetItem(roomName));
 }
 
 // Slots:
 void JoinWindow::on_connectedToServer()
 {
-    Message::display(MessageType::Info, "Notice", "Connected to the Main Server");
+    // Message::display(MessageType::Info, "Notice", "Connected to the Main Server");
+    ui->Label_NetworkStatus->setText("Connected");
+    ui->Label_NetworkStatus->setStyleSheet("QLabel { color: green; }");
+    ui->PushButton_LookForRooms->setEnabled(true);
+    ui->PushButton_Back->setEnabled(true);
 }
 
 void JoinWindow::on_ReceivedRoomName(const QString& roomName)
 {
     ui->PushButton_LookForRooms->setEnabled(true);
     ui->PushButton_Back->setEnabled(true);
-    Message::display(MessageType::Info, "Notice", "RoomName Received: " + roomName);
+    // Message::display(MessageType::Info, "Notice", "RoomName Received: " + roomName);
+    updateRoomsList(roomName);
 }
 
 void JoinWindow::on_disconnection()
 {
+    updateRoomsList("");
     Message::display(MessageType::Info, "Critical", "You got disconnected!");
+    ui->PushButton_LookForRooms->setEnabled(true);
+    ui->PushButton_Back->setEnabled(true);
 }
 
 void JoinWindow::on_dataReceived(const QByteArray& data)
@@ -121,8 +135,23 @@ void JoinWindow::on_dataReceived(const QByteArray& data)
 
 void JoinWindow::on_clientError(const QString& errorMessage)
 {
+    ui->Label_NetworkStatus->setText("Disconnected");
+    ui->Label_NetworkStatus->setStyleSheet("QLabel { color: red; }");
     ui->PushButton_LookForRooms->setEnabled(true);
     ui->PushButton_Back->setEnabled(true);
     Message::display(MessageType::Critical, "Error", errorMessage);
+}
+
+void JoinWindow::on_clientObjectDeleted()
+{
+    Message::display(MessageType::Info, "Notice", "Client object deleted!");
+}
+
+
+void JoinWindow::on_TableWidget_Rooms_cellClicked(int row, int column)
+{
+    // 1 means join request
+    QString command = "1 " + client->username;
+    client->socket->write(command.toUtf8());
 }
 

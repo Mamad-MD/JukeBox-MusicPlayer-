@@ -47,11 +47,9 @@ void Client::disconnect()
 {
     if (socket)
     {
-        socket->abort();
-        disconnect(socket, &QTcpSocket::connected, this, &connected);
-        disconnect(socket, &QTcpSocket::readyRead, this, &readData);
-        disconnect(socket, &QTcpSocket::disconnected, this, &disconnected);
-        disconnect(socket, &QTcpSocket::errorOccurred, this, &on_errorOccurred);
+        // socket->abort();
+        socket->deleteLater();
+        socket = nullptr;
         hasReceivedRoomName = false;
     }
 }
@@ -84,18 +82,16 @@ void Client::readData()
 
 void Client::disconnected()
 {
-    // socket->deleteLater();
-    // socket = nullptr;
-    disconnect();
+    cleanupSocket();
     emit disconnection();
 }
 
 void Client::on_errorOccurred(QAbstractSocket::SocketError socketError)
 {
+    if (!socket)
+        return;
     emit clientError(socket->errorString());
-    disconnect();
-    // socket->deleteLater();
-    // socket = nullptr;
+    cleanupSocket();
 }
 
 void Client::sendMessage(const QString& message)
@@ -103,3 +99,15 @@ void Client::sendMessage(const QString& message)
     socket->write(message.toUtf8());
 }
 
+void Client::cleanupSocket()
+{
+    static bool cleanupInProgress = false;
+    if (socket && !cleanupInProgress)
+    {
+        cleanupInProgress = true;
+        socket->abort();
+        socket->deleteLater();
+        socket = nullptr;
+        cleanupInProgress = false;
+    }
+}

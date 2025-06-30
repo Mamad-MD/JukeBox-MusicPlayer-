@@ -3,7 +3,9 @@
 #include <QApplication>
 #include "message.h"
 
-Server::Server(const QString& roomName, QObject *parent): QObject(parent), roomName(roomName), TCPServer(nullptr) {}
+bool Server::deletingInProcess = false;
+
+Server::Server(const QString& roomName, QObject *parent): QObject(parent), roomName(roomName), TCPServer(nullptr){}
 
 Server::~Server()
 {
@@ -20,8 +22,13 @@ Server* Server::getInstance(const QString& roomName)
 
 void Server::deleteInstance()
 {
-    delete instance;
-    instance = nullptr;
+    instance->deleteLater();
+    deletingInProcess = true;
+    if (!deletingInProcess)
+    {
+        qDebug() << "7\n";
+        instance = nullptr;
+    }
 }
 
 void Server::start(const int& port)
@@ -31,8 +38,10 @@ void Server::start(const int& port)
         emit serverError("Server already running");
         return;
     }
-    
+
+    qDebug() << "starting\n";
     TCPServer = new QTcpServer(this);
+    qDebug() << "new tcp\n";
 
     if (TCPServer->listen(QHostAddress::Any, port))
     {
@@ -50,30 +59,45 @@ void Server::start(const int& port)
 void Server::stop()
 {
     disconnect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
+    for (auto& client : clients)
+    {
+        if (!client.socket)
+            continue;
+        qDebug() << "1";
+        client.socket->disconnect();
+        if (client.socket->state() != QAbstractSocket::UnconnectedState)
+                client.socket->disconnectFromHost();
+        
+        qDebug() << "2";
+        client.socket->deleteLater();
+        qDebug() << "3";
+        client.socket = nullptr;
+    }
+    clients.clear();
+    
+    qDebug() << "I'm here";
+    
     if (TCPServer)
     {
+        qDebug() << "4";
         TCPServer->close();
-        delete TCPServer;
+        qDebug() << "5";
+        TCPServer->deleteLater();
+        qDebug() << "6";
         TCPServer = nullptr;
     }
     emit serverStopped();
+    qDebug() << "8";
+    deletingInProcess = false;
 }
 
 void Server::newConnection()
 {
     QTcpSocket* newClient = TCPServer->nextPendingConnection();
-
-    // emit clientConnectedToMainServer();  // This line is not needed that much.
     
     addClient(User(newClient));
     
-    // newClient->write(("Hello. This is room " + roomName +
-    //                   ". You are client #" + QString::number(clients.size()) + ".\n").toUtf8());
-
-    
     newClient->write(roomName.toUtf8());
-
-
 
     // Set up connections for this specific client
     // Note: We need to be careful about how we handle the readyRead signal
@@ -91,9 +115,8 @@ void Server::readData()
     QTcpSocket* senderSocket = qobject_cast<QTcpSocket*>(sender());
 
     if (!senderSocket)
-        return; // Safety check - this shouldn't happen
+        return;
 
-    // Read the data from the specific client who sent it
     QByteArray data = senderSocket->readAll();
 
 
@@ -102,54 +125,52 @@ void Server::readData()
     
     // Check if this looks like a username (simple example)
     QString message = QString::fromUtf8(data).trimmed();
-    bool isFound = false;
-    for (auto& client : clients)
+    QStringList commandAndArgs = message.split(" ");
+    int command = commandAndArgs[0].toInt();
+    switch (command)
     {
-        if (client.username == message)
+        case 1: // join request
         {
-            isFound = true;
+            QString username = commandAndArgs[1];
+            // Now We realize this is the first message this client has sent. So
+            // we'll consider it as their username
+            for (auto& client : clients)
+            {
+                if (client.socket == senderSocket)
+                {
+                    client.username = username;
+                    break;
+                }
+            }
+            
+            emit clientConnected(message, clients.size());
+            
             break;
         }
-    }
-    if (isFound)
-    {
-        // Now We recognize this as a message and not a username
-        // Do something with this message
-        QString text = findClientBySocket(senderSocket) + ": " + message + "\n";
-
-        // ======================
-        // We're gonna remove the second line and just handle showing the messages using
-        // dataReceived signal that a UI Component gets. Basically I'm not gonna deal with
-        // showing the message in my server class.
-        emit dataReceived(findClientBySocket(senderSocket), data);
-        broadcastMessage(text);
-    }
-    else
-    {
-        // Now We realize this is the first message this client has sent. So
-        // we'll consider it as their username
-        for (auto& client : clients)
+        case 2: // message
         {
-            if (client.socket == senderSocket)
+            QString username = commandAndArgs[1];
+            bool isFound = false;
+            for (auto& client : clients)
             {
-                client.username = message;
-                break;
+                if (client.username == username)
+                {
+                    isFound = true;
+                    break;
+                }
             }
-        }
+            if (isFound)
+            {
+                // Now We recognize this as a message and not a username
+                // Do something with this message
+                // QString text = username + ": " + commandAndArgs[2] + "\n";
 
-        emit clientConnected(message, clients.size());
-        
+                // emit dataReceived(username, data);
+            }
 
-        // ======================
-        // We're gonna remove the second line and just handle showing the messages using
-        // dataReceived signal that a UI Component catches. Basically I'm not gonna deal with
-        // showing the message in my server class.
-        // emit dataReceived("-1", data);
-        // QString announcement = message + " has joined the room! \n";
-        // broadcastMessage(announcement);
+            break;
+        }    
     }
-    
-    // Message::display(MessageType::Info, "Message", "Username: " + data);
 }
 
 void Server::clientDisconnected()
@@ -162,15 +183,9 @@ void Server::clientDisconnected()
     QString clientName = findClientBySocket(disconnectedSocket);
 
     // Remove this client from our collections
-    removeClientBySocket(disconnectedSocket);
-
-    // We're gonna move this to another class that's gonna handle our message displaying.
-    // Announce to remaining clients that someone left
-    // QString announcement = clientName + " has left the room!\n";
-    // broadcastMessage(announcement);
-
-    // Emit signal for UI updates
-    // Message::display(MessageType::Info, "Notice", clientName + " disconnected");
+    // removeClientBySocket(disconnectedSocket);
+    removeClientByUsername(clientName);
+    
     emit clientDisconnection(clientName, clients.size());
 }
 
@@ -192,9 +207,30 @@ void Server::sendMessageToClient(QTcpSocket* client, const QString message)
 
 void Server::removeClientBySocket(QTcpSocket* socket)
 {
-    clients.removeIf([socket](const User& client) {
-        return client.socket == socket;
-    });
+    for (auto& client : clients)
+    {
+        if (client.socket == socket)
+        {
+            client.socket->deleteLater();
+            client.socket = nullptr;
+            clients.removeOne(client);
+            break;
+        }
+    }
+}
+
+void Server::removeClientByUsername(const QString& username)
+{
+    for (auto& client : clients)
+    {
+        if (client.username == username)
+        {
+            client.socket->deleteLater();
+            client.socket = nullptr;
+            clients.removeOne(client);
+            break;
+        }
+    }
 }
 
 void Server::addClient(User client)
@@ -218,13 +254,9 @@ int Server::getClientCount() const
     return clients.size();
 }
 
-QStringList Server::getClientList() const
+QList<User>& Server::getClientList()
 {
-    QStringList usernames;
-    for (auto& client : clients)
-        usernames.append(client.username);
-        
-    return usernames;
+    return clients;
 }
 
 QString Server::getRoomName() const

@@ -26,7 +26,6 @@ HostWindow::~HostWindow()
 void HostWindow::on_PushButton_Back_clicked()
 {
     Server::deleteInstance();
-    server = nullptr;
     auto mainWindow = new MainWindow;
     mainWindow->show();
     this->close();
@@ -54,8 +53,36 @@ void HostWindow::on_PushButton_CreateRoom_clicked()
     //     server->stop();
     
     server = Server::getInstance(roomName);
+    qDebug() << "got the instance";
     connectServerSignalsToUISlots(server);
     server->start(enteredPort);
+}
+
+void HostWindow::updateClientsList()
+{
+    qDebug() << "updateRoomsList\n";
+    qDebug() << server;
+    qDebug() << QString::number(server->getClientCount());
+    if (server->getClientCount() == 0)
+        ui->PushButton_GoToMusicRoom->setEnabled(false);
+    else
+        ui->PushButton_GoToMusicRoom->setEnabled(true);
+
+    ui->TableWidget_Clients->setRowCount(server->getClientCount());
+    ui->TableWidget_Clients->setColumnCount(3);
+    ui->TableWidget_Clients->setHorizontalHeaderLabels(QStringList() << "Username" << "Join Time" << "Socket");
+
+    for (int i = 0; i < server->getClientCount(); ++i) 
+    {
+        User& client = server->getClientList()[i];
+
+        ui->TableWidget_Clients->setItem(i, 0, new QTableWidgetItem(client.getUsername()));
+        ui->TableWidget_Clients->setItem(i, 1, new QTableWidgetItem(client.getJoinTime().toString()));
+        QString socketInfo = QString("%1:%2")
+        .arg(client.getSocket()->peerAddress().toString())
+        .arg(client.getSocket()->peerPort());
+        ui->TableWidget_Clients->setItem(i, 2, new QTableWidgetItem(socketInfo));
+    }
 }
 
 void HostWindow::on_serverStarted(int port)
@@ -66,16 +93,19 @@ void HostWindow::on_serverStarted(int port)
 void HostWindow::on_serverError(const QString& errorMessage)
 {
     Message::display(MessageType::Critical, "Error", errorMessage);
+    ui->PushButton_GoToMusicRoom->setEnabled(false);
 }
 
 void HostWindow::on_clientConnected(const QString& username, int clientsCount)
 {
-    Message::display(MessageType::Info, "Connection", username + " has joined the room!");
+    // Message::display(MessageType::Info, "Connection", username + " has joined the room!");
+    updateClientsList();
 }
 
 void HostWindow::on_clientDisconnection(const QString& username, int clientsCount)
 {
     Message::display(MessageType::Info, "Disconnection", username + " disconnected!");
+    updateClientsList();
 }
 
 void HostWindow::on_dataReceived(const QString& username, const QByteArray& message)
@@ -86,11 +116,15 @@ void HostWindow::on_dataReceived(const QString& username, const QByteArray& mess
 void HostWindow::on_serverStopped()
 {
     Message::display(MessageType::Info, "Notice", "Server Stopped!");
+    ui->PushButton_GoToMusicRoom->setEnabled(false);
+    updateClientsList();
 }
 
 void HostWindow::on_serverDeleted()
 {
     Message::display(MessageType::Info, "Notice", "Server Object was deleted!");
+    ui->PushButton_GoToMusicRoom->setEnabled(false);
+    updateClientsList();
 }
 
 void HostWindow::on_clientConnectedToMainServer()
@@ -112,5 +146,11 @@ void HostWindow::connectServerSignalsToUISlots(const Server* server)
     connect(server, Server::serverDeleted, this, &on_serverDeleted);
     connect(server, Server::clientConnectedToMainServer, this, &on_clientConnectedToMainServer);
     qDebug() << "Connected signals and slots\n";
+}
+
+
+void HostWindow::on_PushButton_GoToMusicRoom_clicked()
+{
+
 }
 

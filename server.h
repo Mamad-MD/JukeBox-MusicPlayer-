@@ -15,7 +15,7 @@ public:
     static Server* getInstance(const QString& roomName);
     static void deleteInstance();
     int getClientCount() const;
-    QStringList getClientList() const;
+    QList<User>& getClientList();
     QString getRoomName() const;
     void broadcastMessage(const QString& message, const QTcpSocket* excludedClientSocket = nullptr);
     void sendMessageToClient(QTcpSocket* client, const QString message);
@@ -45,7 +45,9 @@ private:
 
     void addClient(User client);
     void removeClientBySocket(QTcpSocket* socket);
+    void removeClientByUsername(const QString& username);
     QString findClientBySocket(const QTcpSocket* socket);
+    static bool deletingInProcess;
     
     // Singleton Design Pattern
     static Server* instance;

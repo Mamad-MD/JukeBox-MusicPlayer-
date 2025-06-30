@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QString>
 
+class JoinWindow;
+
 class Client : public QObject {
     Q_OBJECT
 
@@ -35,12 +37,15 @@ private:
     QTcpSocket* socket;
     bool hasReceivedRoomName;
 
+    void cleanupSocket();
     // Singleton Implementation
     static Client* instance;
     Client(const QString& username, QObject* parent = nullptr);
     ~Client();
     Client(const Client&) = delete;
     Client(const Client&&) = delete; 
+
+    friend class JoinWindow;
 };
 
 #endif // CLIENT_H

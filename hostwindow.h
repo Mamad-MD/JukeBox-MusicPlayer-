@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include "server.h"
+#include "user.h"
+#include <QDateTime>
 #include <memory>
 
 namespace Ui {
@@ -38,6 +40,7 @@ private:
     bool hasSetupUIConnections;
     
     void connectServerSignalsToUISlots(const Server* server);
+    void updateClientsList();
 };
 
 #endif // HOSTWINDOW_H

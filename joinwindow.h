@@ -20,13 +20,16 @@ private slots:
     void on_PushButton_Back_clicked();
     void on_PushButton_LookForRooms_clicked();
     
-    void updateRoomsList();
+    void updateRoomsList(const QString& roomName);
     // Network Slots:
     void on_connectedToServer();
     void on_ReceivedRoomName(const QString& roomName);
     void on_disconnection();
     void on_dataReceived(const QByteArray& data);
     void on_clientError(const QString& errorMessage);
+    void on_clientObjectDeleted();
+
+    void on_TableWidget_Rooms_cellClicked(int row, int column);
 
 private:
     Ui::JoinWindow *ui;

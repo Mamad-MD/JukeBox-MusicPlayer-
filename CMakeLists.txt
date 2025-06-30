@@ -34,6 +34,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         client.h client.cpp
         message.h message.cpp
         user.h
+        user.cpp
     )
 else()
     if(ANDROID)

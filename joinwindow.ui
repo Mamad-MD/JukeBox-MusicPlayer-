@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>698</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,16 +30,6 @@
     </property>
     <property name="text">
      <string>Back</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="Listview_Rooms">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>330</y>
-      <width>621</width>
-      <height>201</height>
-     </rect>
     </property>
    </widget>
    <widget class="QLabel" name="Label_Username">
@@ -110,6 +100,9 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="text">
+     <string>someone</string>
+    </property>
    </widget>
    <widget class="QLabel" name="Label_Username_2">
     <property name="geometry">
@@ -148,6 +141,52 @@
     </property>
     <property name="maxLength">
      <number>5</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Label_List_2">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>580</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Network Status:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Label_NetworkStatus">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>580</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="TableWidget_Rooms">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>330</y>
+      <width>601</width>
+      <height>231</height>
+     </rect>
     </property>
    </widget>
   </widget>
