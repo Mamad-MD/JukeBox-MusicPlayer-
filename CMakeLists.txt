@@ -37,18 +37,8 @@ qt_add_executable(JukeBox
         message_displayer.h message_displayer.cpp
         user.h
         user.cpp
-<<<<<<< HEAD
-
-
         commandtype.h
         command.h command.cpp
-=======
-<<<<<<< HEAD
->>>>>>> b40b632 (add auth manager for login page & add BackGroung Picture)
-=======
-
->>>>>>> b7e9982 (add 3 file)
-
         authmanager.h
         authmanager.cpp
         resources.qrc
