@@ -1,22 +1,27 @@
 #ifndef FORGOTPASSWORDWINDOW_H
 #define FORGOTPASSWORDWINDOW_H
 
-#include <QWidget>
+#include <QMainWindow>
+#include "authmanager.h"
 
 namespace Ui {
-class forgotpasswordwindow;
+class ForgotPasswordWindow;
 }
 
-class forgotpasswordwindow : public QWidget
+class ForgotPasswordWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit forgotpasswordwindow(QWidget *parent = nullptr);
-    ~forgotpasswordwindow();
+    explicit ForgotPasswordWindow(Authmanager* authManager, QWidget *parent = nullptr);
+    ~ForgotPasswordWindow();
+
+private slots:
+    void handleRecover();
 
 private:
-    Ui::forgotpasswordwindow *ui;
+    Ui::ForgotPasswordWindow *ui;
+    Authmanager* auth;
 };
 
 #endif // FORGOTPASSWORDWINDOW_H

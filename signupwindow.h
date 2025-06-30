@@ -1,22 +1,30 @@
 #ifndef SIGNUPWINDOW_H
 #define SIGNUPWINDOW_H
 
-#include <QWidget>
+#include <QMainWindow>
+#include "authmanager.h"
 
 namespace Ui {
-class signupwindow;
+class SignUpWindow;
 }
 
-class signupwindow : public QWidget
+class SignUpWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit signupwindow(QWidget *parent = nullptr);
-    ~signupwindow();
+    explicit SignUpWindow(Authmanager* authManager, QWidget *parent = nullptr);
+    ~SignUpWindow();
+
+signals:
+    void registrationSucceeded();
+
+private slots:
+    void on_registerButton_clicked();
 
 private:
-    Ui::signupwindow *ui;
+    Ui::SignUpWindow *ui;
+    Authmanager* auth;
 };
 
 #endif // SIGNUPWINDOW_H

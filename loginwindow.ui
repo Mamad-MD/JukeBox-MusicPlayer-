@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,77 +16,99 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QWidget" name="Widget">
+  <widget class="QWidget" name="loginPanel">
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;</string>
    </property>
    <widget class="QLabel" name="backgroundLabel">
     <property name="geometry">
      <rect>
-      <x>-2</x>
-      <y>-5</y>
-      <width>800</width>
-      <height>600</height>
+      <x>0</x>
+      <y>0</y>
+      <width>801</width>
+      <height>451</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">  background-image: url(:/images/login.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; /* یا contain */</string>
+    </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QFrame" name="loginPanel">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>331</y>
-      <width>21</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgba(255, 255, 255, 1);
-border-radius: 10px;
-</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="usernameEdit">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>260</y>
-      <width>113</width>
-      <height>24</height>
+      <x>239</x>
+      <y>171</y>
+      <width>255</width>
+      <height>35</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
     <property name="text">
-     <string>Username</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="passwordEdit">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>310</y>
-      <width>113</width>
-      <height>24</height>
+      <x>239</x>
+      <y>215</y>
+      <width>255</width>
+      <height>35</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+    background-color: transparent;       
+    border-style: solid;                    
+    border-width: 2px;                   
+    border-color: rgba(128, 0, 128, 1);  
+    border-radius: 10px;               
+    color: white; 
+padding-left: 7px;
+}
+
+QLineEdit:focus {
+    background-color: rgba(0, 0, 128, 0.5); 
+    border-color: rgba(75, 0, 130, 0.8);    
+}
+</string>
+    </property>
     <property name="text">
-     <string>Password</string>
+     <string/>
     </property>
     <property name="echoMode">
      <enum>QLineEdit::EchoMode::Password</enum>
@@ -95,40 +117,58 @@ border-radius: 10px;
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>410</y>
-      <width>80</width>
-      <height>24</height>
+      <x>238</x>
+      <y>262</y>
+      <width>256</width>
+      <height>40</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"> background-color: transparent;  /* پس‌زمینه شفاف */
+   /* خط دور به رنگ بنفش */
+    border-radius: 10px;            /* گوشه‌های گرد با شعاع 10 */
+    color: white;   </string>
+    </property>
     <property name="text">
-     <string>Login</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="goToSignupButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>470</y>
-      <width>221</width>
-      <height>31</height>
+      <x>398</x>
+      <y>309</y>
+      <width>61</width>
+      <height>25</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"> background-color: transparent;  /* پس‌زمینه شفاف */
+    border: 0.1px solid purple;       /* خط دور به رنگ بنفش */
+    border-radius: 10px;            /* گوشه‌های گرد با شعاع 10 */
+    color: white;   </string>
+    </property>
     <property name="text">
-     <string>Don't have an account? Sign up</string>
+     <string/>
     </property>
    </widget>
    <widget class="QPushButton" name="forgotPasswordButton">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>200</y>
-      <width>80</width>
-      <height>24</height>
+      <x>287</x>
+      <y>354</y>
+      <width>161</width>
+      <height>30</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"> background-color: transparent;  /* پس‌زمینه شفاف */
+
+    border-radius: 10px;            /* گوشه‌های گرد با شعاع 10 */
+    color: white;   </string>
+    </property>
     <property name="text">
-     <string>Forgot Password?</string>
+     <string/>
     </property>
    </widget>
   </widget>

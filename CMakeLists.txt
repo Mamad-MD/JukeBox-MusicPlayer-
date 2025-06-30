@@ -44,6 +44,8 @@ qt_add_executable(JukeBox
         authmanager.cpp
         resources.qrc
         loginwindow.h loginwindow.cpp loginwindow.ui
+        signupwindow.h signupwindow.cpp signupwindow.ui
+        forgotpasswordwindow.h forgotpasswordwindow.cpp forgotpasswordwindow.ui
     )
 else()
     if(ANDROID)
