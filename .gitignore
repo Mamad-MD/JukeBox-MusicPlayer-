@@ -139,3 +139,42 @@ _deps/            # وابستگی‌های دانلود شده توسط CMake
 .DS_Store
 Thumbs.db
 desktop.ini
+# پوشه‌های ساخت
+build/
+CMakeFiles/
+
+# فایل‌های موقت CMake
+CMakeCache.txt
+CMakeLists.txt.user
+*.cmake
+install_manifest.txt
+Makefile
+cmake_install.cmake
+
+# فایل‌های موقت Qt
+moc_*
+ui_*
+qrc_*
+*.moc
+*.qmake.stash
+*.pro.user
+
+# فایل‌های اجرایی و کامپایل شده
+*.exe
+*.app
+*.dll
+*.so
+*.o
+*.obj
+*.ilk
+*.pdb
+
+# فایل‌های IDE و ویرایشگرها
+.vscode/
+.idea/
+*.userprefs
+*.sublime-workspace
+
+# فایل‌های سیستم
+.DS_Store
+Thumbs.db

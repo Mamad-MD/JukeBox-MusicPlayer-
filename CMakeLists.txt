@@ -35,10 +35,37 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         message_displayer.h message_displayer.cpp
         user.h
         user.cpp
+<<<<<<< HEAD
 
 
         commandtype.h
         command.h command.cpp
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        authmanager.h
+        authmanager.cpp
+
+
+
+        resources.qrc
+>>>>>>> b40b632 (add auth manager for login page & add BackGroung Picture)
     )
 else()
     if(ANDROID)
