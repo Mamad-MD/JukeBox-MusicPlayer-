@@ -147,11 +147,9 @@ void JoinWindow::on_clientObjectDeleted()
     MessageDisplayer::display(MessageType::Info, "Notice", "Client object deleted!");
 }
 
-
 void JoinWindow::on_TableWidget_Rooms_cellClicked(int row, int column)
 {
-    // 1 means join request
-    QString command = "1 " + client->username;
-    client->socket->write(command.toUtf8());
+    Command clientCommand(CommandType::Join_Request, client->username, "");
+    QByteArray commandInByteArray = commandToByteArray(&clientCommand);
+    client->socket->write(commandInByteArray);
 }
-

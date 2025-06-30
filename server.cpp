@@ -84,11 +84,10 @@ void Server::newConnection()
     
     addClient(User(newClient));
     
-    newClient->write(roomName.toUtf8());
+    Command command(CommandType::RoomName_Sending, "", roomName);
+    QByteArray commandInBytes = commandToByteArray(&command);
+    newClient->write(commandInBytes);
 
-    // Set up connections for this specific client
-    // Note: We need to be careful about how we handle the readyRead signal
-    // since multiple clients might send data simultaneously
     connect(newClient, &QTcpSocket::disconnected, this, &clientDisconnected);
     connect(newClient, &QTcpSocket::readyRead, this, &readData);
 
@@ -97,8 +96,6 @@ void Server::newConnection()
 
 void Server::readData()
 {
-    // Here's a crucial concept: we need to figure out which client sent the data
-    // The sender() method returns the object that emitted the signal
     QTcpSocket* senderSocket = qobject_cast<QTcpSocket*>(sender());
 
     if (!senderSocket)
@@ -114,11 +111,9 @@ void Server::readData()
     Command command = byteArrayToCommand(&data);
     switch (command.commandType)
     {
-        case CommandType::Join_Request: // join request
+        case CommandType::Join_Request:
         {
-        QString username = command.username;
-            // Now We realize this is the first message this client has sent. So
-            // we'll consider it as their username
+            QString username = command.username;
             for (auto& client : clients)
             {
                 if (client.socket == senderSocket)
@@ -132,7 +127,7 @@ void Server::readData()
             
             break;
         }
-        case CommandType::Message: // message
+        case CommandType::Message:
         {
             QString username = command.username;
             bool isFound = false;
@@ -157,15 +152,12 @@ void Server::readData()
 
 void Server::clientDisconnected()
 {              
-    // Again, we need to identify which client disconnected
     QTcpSocket* disconnectedSocket = qobject_cast<QTcpSocket*>(sender());
     if (!disconnectedSocket)
         return;
 
     QString clientName = findClientBySocket(disconnectedSocket);
 
-    // Remove this client from our collections
-    // removeClientBySocket(disconnectedSocket);
     removeClientByUsername(clientName);
     
     emit clientDisconnection(clientName, clients.size());

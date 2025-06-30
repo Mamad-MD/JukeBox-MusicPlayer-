@@ -3,6 +3,7 @@
 
 enum class CommandType {
     Unset = 0,
+    RoomName_Sending,
     Join_Request,
     Message,
     GoToMusicRoom,

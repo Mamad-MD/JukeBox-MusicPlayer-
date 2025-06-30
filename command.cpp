@@ -1,5 +1,6 @@
 #include "command.h"
 #include <QIODevice>
+#include <QDebug>
 
 Command::Command(CommandType commandType, QString username, QString content):
 commandType(commandType), username(username), content(content) {}
@@ -12,8 +13,9 @@ QDataStream& operator<<(QDataStream& out, const Command& command)
 
 QDataStream& operator>>(QDataStream& in, Command& command)
 {
-    int typeInt = 5;
-    in >> typeInt >> command.username >> command.content;
+    int index;
+    in >> index >> command.username >> command.content;
+    command.commandType = static_cast<CommandType>(index);
     return in;
 }
 

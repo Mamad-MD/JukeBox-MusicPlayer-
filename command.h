@@ -6,6 +6,7 @@
 #include <QDataStream>
 
 class Server;
+class Client;
 
 class Command
 {
@@ -18,6 +19,7 @@ public:
     friend Command byteArrayToCommand(QByteArray* byteArray);
     friend QByteArray commandToByteArray(Command* command);
     friend class Server;
+    friend class Client;
 private:
     CommandType commandType;
     QString username;
