@@ -8,7 +8,7 @@ namespace Ui {
 class LoginWindow;
 }
 
-class Authmanager;  // فرض می‌کنیم داری استفاده می‌کنی
+class Authmanager;
 
 class LoginWindow : public QMainWindow
 {
@@ -20,7 +20,9 @@ public:
 
 signals:
     void goToSignup();
+    void loginSucceeded(const QString &username);
     void goToForgotPassword();
+
 
 private slots:
     void handleLogin();
