@@ -47,8 +47,10 @@ private:
     bool hasAQueue;
 
     QStringListModel* model;
+    
     QMediaPlayer* player;
     QAudioOutput* audioOutput;
+    
     QString currentlyPlayingPath;
     int currentlyPlayingIndex;
     qint64 currentlyPlayingDuration;
