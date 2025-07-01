@@ -17,12 +17,12 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        hostwindow.cpp
-        hostwindow.h
-        hostwindow.ui
-        server.h server.cpp
-        client.h client.cpp
-        message_displayer.h message_displayer.cpp
+        HostWindow/hostwindow.cpp
+        HostWindow/hostwindow.h
+        HostWindow/hostwindow.ui
+        Network/ServerLogic/server.h Network/ServerLogic/server.cpp
+        Network/ClientLogic/client.h Network/ClientLogic/client.cpp
+        MessageDisplayer/message_displayer.h MessageDisplayer/message_displayer.cpp
         resources.qrc
 )
 
@@ -33,21 +33,21 @@ qt_add_executable(JukeBox
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         main.cpp
-        joinwindow.h joinwindow.cpp joinwindow.ui
-        server.h server.cpp
-        client.h client.cpp
-        message_displayer.h message_displayer.cpp
+        JoinWindow/joinwindow.h JoinWindow/joinwindow.cpp JoinWindow/joinwindow.ui
+        Network/ServerLogic/server.h Network/ServerLogic/server.cpp
+        Network/ClientLogic/client.h Network/ClientLogic/client.cpp
+        MessageDisplayer/message_displayer.h MessageDisplayer/message_displayer.cpp
         user.h
         user.cpp
-        commandtype.h
-        command.h command.cpp
-        musicroom.h musicroom.cpp musicroom.ui
-        authmanager.h
-        authmanager.cpp
+        Network/Command/commandtype.h
+        Network/Command/command.h Network/Command/command.cpp
+        MusicRoom/musicroom.h MusicRoom/musicroom.cpp MusicRoom/musicroom.ui
+        Login/authmanager.h
+        Login/authmanager.cpp
         resources.qrc
-        loginwindow.h loginwindow.cpp loginwindow.ui
-        signupwindow.h signupwindow.cpp signupwindow.ui
-        forgotpasswordwindow.h forgotpasswordwindow.cpp forgotpasswordwindow.ui
+        Login/loginwindow.h Login/loginwindow.cpp Login/loginwindow.ui
+        Login/signupwindow.h Login/signupwindow.cpp Login/signupwindow.ui
+        Login/forgotpasswordwindow.h Login/forgotpasswordwindow.cpp Login/forgotpasswordwindow.ui
     )
 else()
     if(ANDROID)
