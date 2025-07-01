@@ -6,10 +6,14 @@
 #include <QStringListModel>
 #include <QFileInfoList>
 #include <QDir>
+#include <QDebug>
 #include <QFileDialog>
 #include <QMediaPlayer>
 #include <QMediaMetaData>
 #include <QAudioOutput>
+#include <QVBoxLayout>
+#include "visualizerwidget.h"
+
 
 namespace Ui {
 class MusicRoom;
@@ -38,6 +42,7 @@ private slots:
     void on_durationChanged(qint64 duration);
     void on_sliderReleased();
     void on_metaDataChanged();
+    void on_PushButton_SwitchView_clicked();
 
 private:
     Ui::MusicRoom *ui;
@@ -64,6 +69,10 @@ private:
     void pause();
     void changeActiveTrackInListView(int index);
     QString formatTime(qint64 pos);
+
+    VisualizerWidget* visualizer;
+
+    bool isShowingCover = true;
 };
 
 #endif // MUSICROOM_H

@@ -9,6 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Multimedia)
 
@@ -27,6 +29,7 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+
 
 
 qt_add_executable(JukeBox
@@ -48,6 +51,7 @@ qt_add_executable(JukeBox
         loginwindow.h loginwindow.cpp loginwindow.ui
         signupwindow.h signupwindow.cpp signupwindow.ui
         forgotpasswordwindow.h forgotpasswordwindow.cpp forgotpasswordwindow.ui
+        visualizerwidget.h visualizerwidget.cpp
     )
 else()
     if(ANDROID)
