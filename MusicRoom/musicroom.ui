@@ -208,6 +208,35 @@
       <height>41</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QSlider::groove:horizontal {
+    border: 1px solid #444;
+    height: 6px;
+    background: #222;
+    margin: 0px;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    background: #00bcd4;
+    border: 1px solid #00acc1;
+    width: 14px;
+    height: 14px;
+    margin: -5px 0; /* centers the handle */
+    border-radius: 7px;
+}
+
+QSlider::sub-page:horizontal {
+    background: #00acc1;
+    border-radius: 3px;
+}
+
+QSlider::add-page:horizontal {
+    background: #555;
+    border-radius: 3px;
+}
+</string>
+    </property>
     <property name="value">
      <number>0</number>
     </property>
@@ -307,6 +336,57 @@
     </property>
     <property name="text">
      <string>Cover</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="Slider_Volume">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>200</y>
+      <width>18</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QSlider::groove:vertical {
+    background: #222;
+    border: 1px solid #444;
+    width: 6px;
+    border-radius: 3px;
+    margin: 0px;
+}
+
+QSlider::handle:vertical {
+    background: yellow;
+    border: 1px solid black;
+    height: 14px;
+    width: 14px;
+    margin: 0 -5px; /* centers the handle horizontally */
+    border-radius: 7px;
+}
+
+QSlider::sub-page:vertical {
+    background: #555;
+    border-radius: 3px;
+}
+
+QSlider::add-page:vertical {
+    background: yellow;
+	border: 0.8px solid black;
+	border-radius: 3px;
+}</string>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+    <property name="value">
+     <number>50</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Vertical</enum>
     </property>
    </widget>
   </widget>

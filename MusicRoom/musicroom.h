@@ -41,8 +41,11 @@ private slots:
     void on_musicPaused();
     void on_positionChanged(qint64 position);
     void on_durationChanged(qint64 duration);
-    void on_sliderReleased();
     void on_metaDataChanged();
+
+    void on_Slider_Volume_sliderReleased();
+    void on_Slider_Volume_valueChanged(int value);
+    void on_Slider_MusicSlider_sliderReleased();
 
 private:
     Ui::MusicRoom *ui;

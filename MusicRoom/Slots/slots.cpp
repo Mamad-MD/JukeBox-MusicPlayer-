@@ -75,7 +75,7 @@ void MusicRoom::on_durationChanged(qint64 duration)
     ui->Slider_MusicSlider->setMaximum(static_cast<int>(duration));
 }
 
-void MusicRoom::on_sliderReleased()
+void MusicRoom::on_Slider_MusicSlider_sliderReleased()
 {
     musicPlayer->player->setPosition(ui->Slider_MusicSlider->value());
 }
@@ -219,4 +219,10 @@ void MusicRoom::on_PushButton_Repeat_clicked()
         break;
     }
     }
+}
+
+
+void MusicRoom::on_Slider_Volume_valueChanged(int value)
+{
+    musicPlayer->setVolume((float)value / 100);
 }

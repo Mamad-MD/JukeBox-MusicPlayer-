@@ -9,8 +9,8 @@ MusicPlayer* MusicPlayer::instance = nullptr;
 
 MusicRoom::MusicRoom(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), shuffleOn(false),
-    repeatType(RepeatType::No_Repeat)
+    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), shuffleOn(false), currentlyPlayingIndex(0)
+    ,repeatType(RepeatType::No_Repeat)
 {
     ui->setupUi(this);
     ui->Label_AlbumCover->setScaledContents(true);
@@ -22,8 +22,9 @@ MusicRoom::MusicRoom(QWidget *parent)
     }
     
     musicPlayer = MusicPlayer::getInstance(this);
+    musicPlayer->setVolume((float)ui->Slider_Volume->value() / 100);
     
-    connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
+    // connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
     connectPlayerSignalsToUISlots();
 }
 
@@ -161,6 +162,9 @@ void MusicRoom::clearTracksListView()
 
 void MusicRoom::playNext()
 {
+    if (tracksInListView.size() == 0)
+        return;
+        
     if (shuffleOn)
     {
         playRandomIndex();
@@ -181,6 +185,8 @@ void MusicRoom::playNext()
 
 void MusicRoom::playPrev()
 {
+    if (tracksInListView.size() == 0)
+        return;
     if (shuffleOn)
     {
         playRandomIndex();
@@ -201,6 +207,8 @@ void MusicRoom::playPrev()
 
 void MusicRoom::playThisIndex(int index)
 {
+    if (tracksInListView.size() == 0)
+        return;
     musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
     musicPlayer->play();
     changeActiveTrackInListView(currentlyPlayingIndex);
@@ -208,6 +216,8 @@ void MusicRoom::playThisIndex(int index)
 
 void MusicRoom::playRandomIndex()
 {
+    if (tracksInListView.size() == 0)
+        return;
     if (tracksInListView.size() == 1)
     {
         if (repeatType != RepeatType::No_Repeat)
