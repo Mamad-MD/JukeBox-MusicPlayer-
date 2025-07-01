@@ -29,17 +29,42 @@ void MusicRoom::on_positionChanged(qint64 position)
     ui->Label_Timer->setText(currentTimeStr + " / " + totalTimeStr);
     if (position == currentlyPlayingDuration)
     {
-        if (currentlyPlayingIndex == tracksFromFolder.size() - 1)
+        ui->PushButton_PlayPause->setText("Play");
+        if (shuffleOn)
         {
-            // musicPlayer->setAudioTrack();
-            // musicPlayer->play(musicPathsFromFolder[0]);
-            changeActiveTrackInListView(0);
+            switch (repeatType)
+            {
+            case RepeatType::No_Repeat:
+                playRandomIndex();
+                break;
+
+            case RepeatType::Repeat_Track:
+                // Here shuffle has no effect.
+                playThisIndex(currentlyPlayingIndex);
+                break;
+
+            case RepeatType::Repeat_List:
+                playRandomIndex();
+                break;
+            }
         }
         else
         {
-            // musicPlayer->setAudioTrack();
-            // musicPlayer->play(musicPathsFromFolder[currentlyPlayingIndex + 1]);
-            changeActiveTrackInListView(currentlyPlayingIndex);
+            switch (repeatType)
+            {
+            case RepeatType::No_Repeat:
+                if (currentlyPlayingIndex != tracksInListView.size() - 1)
+                    playNext();
+                break;
+
+            case RepeatType::Repeat_Track:
+                playThisIndex(currentlyPlayingIndex);
+                break;
+
+            case RepeatType::Repeat_List:
+                playNext();
+                break;
+            }
         }
     }
 }
@@ -57,42 +82,27 @@ void MusicRoom::on_sliderReleased()
 
 void MusicRoom::on_PushButton_Next_clicked()
 {
-    if (currentlyPlayingIndex == tracksInListView.size() - 1)
-    {
-        currentlyPlayingIndex = 0;
-
-        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
-        musicPlayer->play();
-        changeActiveTrackInListView(0);
-    }
-    else
-    {
-        currentlyPlayingIndex++;
-
-        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
-        musicPlayer->play();
-        changeActiveTrackInListView(currentlyPlayingIndex);
-    }
+    playNext();
 }
 
 
 void MusicRoom::on_PushButton_Prev_clicked()
 {
-    if (currentlyPlayingIndex == 0)
-    {
-        currentlyPlayingIndex = tracksInListView.size() - 1;
+    playPrev();
+}
 
-        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
-        musicPlayer->play();
-        changeActiveTrackInListView(currentlyPlayingIndex);
+void MusicRoom::on_PushButton_Shuffle_clicked()
+{
+    if (shuffleOn)
+    {
+        shuffleOn = false;
+        ui->PushButton_Shuffle->setText("Shuffle: Off");
     }
     else
     {
-        currentlyPlayingIndex--;
+        shuffleOn = true;
+        ui->PushButton_Shuffle->setText("Shuffle: On");
 
-        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
-        musicPlayer->play();
-        changeActiveTrackInListView(currentlyPlayingIndex);
     }
 }
 
@@ -177,5 +187,36 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
         clearTracksListView();
         showQueueTracks();
         return;
+    }
+}
+
+
+void MusicRoom::on_PushButton_Repeat_clicked()
+{
+    int currentType = static_cast<int>(repeatType);
+    if (currentType == 2)
+        currentType = 0;
+    else
+        currentType++;
+    repeatType = static_cast<RepeatType>(currentType);
+    switch (repeatType)
+    {
+    case RepeatType::No_Repeat:
+    {
+        ui->PushButton_Repeat->setText("Repeat Mode: No-Repeat");
+        break;
+    }
+
+    case RepeatType::Repeat_Track:
+    {
+        ui->PushButton_Repeat->setText("Repeat Mode: Repeat-Track");
+        break;
+    }
+
+    case RepeatType::Repeat_List:
+    {
+        ui->PushButton_Repeat->setText("Repeat Mode: Repeat-List");
+        break;
+    }
     }
 }

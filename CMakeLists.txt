@@ -55,6 +55,7 @@ qt_add_executable(JukeBox
         MusicRoom/AudioTrack/audiotrack.h MusicRoom/AudioTrack/audiotrack.cpp
         MusicRoom/MusicPlayer/musicplayer.h MusicRoom/MusicPlayer/musicplayer.cpp
         MusicRoom/PlayList/playlist.cpp MusicRoom/PlayList/playlist.h
+        Random/RandomGenerator.h Random/RandomGenerator.cpp
     )
 else()
     if(ANDROID)

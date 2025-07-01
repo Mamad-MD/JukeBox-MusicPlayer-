@@ -33,6 +33,8 @@ private slots:
     void on_PushButton_PlayPause_clicked();
     void on_PushButton_Next_clicked();
     void on_PushButton_Prev_clicked();
+    void on_PushButton_Shuffle_clicked();
+    void on_PushButton_Repeat_clicked();
 
     void loadFolderSelection();
     void on_musicPlayed();
@@ -56,10 +58,10 @@ private:
     QList<AudioTrack*> tracksInListView; // it doesn't care what library
                                          // you're listening to. it just stores
                                          // a pointer of ListView tracks
-    
-    // QString currentlyPlayingPath;
     int currentlyPlayingIndex;
     qint64 currentlyPlayingDuration;
+    bool shuffleOn;
+    RepeatType repeatType;
 	
     int findIndexFromPath(const QString& path);
 
@@ -78,6 +80,11 @@ private:
     QString formatTime(qint64 ms);
     void connectPlayerSignalsToUISlots();
     void clearTracksListView();
+
+    void playNext();
+    void playPrev();
+    void playThisIndex(int index);
+    void playRandomIndex();
 };
 
 #endif // MUSICROOM_H

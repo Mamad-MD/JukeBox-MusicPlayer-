@@ -8,6 +8,12 @@
 
 class MusicRoom;
 
+enum class RepeatType {
+    No_Repeat = 0,
+    Repeat_Track,
+    Repeat_List
+};
+
 class MusicPlayer : public QObject {
 private:
     Q_OBJECT

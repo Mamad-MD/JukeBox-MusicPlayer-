@@ -1,6 +1,7 @@
 #include "musicroom.h"
 #include "ui_musicroom.h"
 #include "../MessageDisplayer/message_displayer.h"
+#include "../Random/RandomGenerator.h"
 
 // class MusicRoom;
 
@@ -8,7 +9,8 @@ MusicPlayer* MusicPlayer::instance = nullptr;
 
 MusicRoom::MusicRoom(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr)
+    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), shuffleOn(false),
+    repeatType(RepeatType::No_Repeat)
 {
     ui->setupUi(this);
     ui->Label_AlbumCover->setScaledContents(true);
@@ -46,35 +48,6 @@ void MusicRoom::loadFolderSelection()
 {
     
 }
-
-// void MusicRoom::play(const QString& filePath)
-// {
-//     if (filePath == "")
-//     {
-//         player->play(); //resume
-//         isPlaying = true;
-//         on_musicPlayed();
-//         return;
-//     }
-
-//     //  extract music cover                                                       =============
-
-//     // player->stop();
-//     player->setSource(QUrl::fromLocalFile(filePath));
-//     audioOutput->setVolume(0.5);
-//     player->play();
-//     isPlaying = true;
-//     currentlyPlayingPath = filePath;
-//     currentlyPlayingIndex = findIndexFromPath(filePath);
-//     on_musicPlayed();
-// }
-
-// void MusicRoom::pause()
-// {
-//     player->pause();
-//     isPlaying = false;
-//     on_musicPaused();
-// }
 
 QString MusicRoom::formatTime(qint64 ms)
 {
@@ -184,4 +157,67 @@ void MusicRoom::clearTracksListView()
     tracksInListView.clear();
     model->setStringList(QStringList());  // Clears the list
     ui->ListView_AudioTracks->setModel(model);
+}
+
+void MusicRoom::playNext()
+{
+    if (shuffleOn)
+    {
+        playRandomIndex();
+        return;
+    }
+    
+    if (currentlyPlayingIndex == tracksInListView.size() - 1)
+    {
+        currentlyPlayingIndex = 0;
+        playThisIndex(currentlyPlayingIndex);
+    }
+    else
+    {
+        currentlyPlayingIndex++;
+        playThisIndex(currentlyPlayingIndex);
+    }
+}
+
+void MusicRoom::playPrev()
+{
+    if (shuffleOn)
+    {
+        playRandomIndex();
+        return;
+    }
+
+    if (currentlyPlayingIndex == 0)
+    {
+        currentlyPlayingIndex = tracksInListView.size() - 1;
+        playThisIndex(currentlyPlayingIndex);
+    }
+    else
+    {
+        currentlyPlayingIndex--;
+        playThisIndex(currentlyPlayingIndex);
+    }
+}
+
+void MusicRoom::playThisIndex(int index)
+{
+    musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
+    musicPlayer->play();
+    changeActiveTrackInListView(currentlyPlayingIndex);
+}
+
+void MusicRoom::playRandomIndex()
+{
+    if (tracksInListView.size() == 1)
+    {
+        if (repeatType != RepeatType::No_Repeat)
+            playThisIndex(currentlyPlayingIndex);
+        return;
+    }
+
+    int randomIndex = generateRandom(0, tracksInListView.size() - 1);
+    while (randomIndex == currentlyPlayingIndex)
+        randomIndex = generateRandom(0, tracksInListView.size() - 1);
+    currentlyPlayingIndex = randomIndex;
+    playThisIndex(currentlyPlayingIndex);
 }
