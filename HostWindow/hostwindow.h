@@ -2,8 +2,8 @@
 #define HOSTWINDOW_H
 
 #include <QMainWindow>
-#include "server.h"
-#include "user.h"
+#include "../Network/ServerLogic/server.h"
+#include "../user.h"
 #include <QDateTime>
 #include <memory>
 

@@ -1,6 +1,6 @@
 #include "forgotpasswordwindow.h"
 #include "ui_forgotpasswordwindow.h"
-#include "message_displayer.h"
+#include "../MessageDisplayer/message_displayer.h"
 #include <QPushButton>
 
 ForgotPasswordWindow::ForgotPasswordWindow(Authmanager* authManager, QWidget *parent) :

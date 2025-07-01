@@ -6,8 +6,8 @@
 #include <QTcpSocket>
 #include <QList>
 #include <QMap>
-#include "user.h"
-#include "command.h"
+#include "../../user.h"
+#include "../Command/command.h"
 
 class Server : public QObject {
     Q_OBJECT

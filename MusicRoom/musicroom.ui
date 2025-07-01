@@ -154,6 +154,9 @@
      <string>Folder Selection</string>
     </property>
     <widget class="QPushButton" name="PushButton_Browse">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>410</x>
@@ -313,7 +316,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

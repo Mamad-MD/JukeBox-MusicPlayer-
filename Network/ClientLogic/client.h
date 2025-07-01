@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QString>
-#include "command.h"
+#include "../../Network/Command/command.h"
 
 class JoinWindow;
 

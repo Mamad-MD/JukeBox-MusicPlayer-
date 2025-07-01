@@ -1,6 +1,5 @@
 #include "client.h"
-#include "message_displayer.h"
-
+#include "../../MessageDisplayer/message_displayer.h"
 
 Client* Client::getInstance(const QString& username)
 {

@@ -5,6 +5,7 @@ project(JukeBox VERSION 0.1 LANGUAGES CXX)  # اسم پروژه رو من روی
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_SOURCE_DIR}/MusicRoom")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -48,6 +49,7 @@ qt_add_executable(JukeBox
         Login/loginwindow.h Login/loginwindow.cpp Login/loginwindow.ui
         Login/signupwindow.h Login/signupwindow.cpp Login/signupwindow.ui
         Login/forgotpasswordwindow.h Login/forgotpasswordwindow.cpp Login/forgotpasswordwindow.ui
+        MusicRoom/Slots/slots.h MusicRoom/Slots/slots.cpp
     )
 else()
     if(ANDROID)

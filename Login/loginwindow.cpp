@@ -1,7 +1,7 @@
 #include "loginwindow.h"
 #include "ui_loginwindow.h"
 #include "authmanager.h"
-#include "message_displayer.h"
+#include "../MessageDisplayer/message_displayer.h"
 
 LoginWindow::LoginWindow(Authmanager *authManager, QWidget *parent)
     : QMainWindow(parent),

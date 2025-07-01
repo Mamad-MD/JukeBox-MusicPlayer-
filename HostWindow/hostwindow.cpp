@@ -1,9 +1,9 @@
 #include "hostwindow.h"
-#include "mainwindow.h"
+#include "../mainwindow.h"
 #include "ui_hostwindow.h"
-#include "message_displayer.h"
-#include "server.h"
-#include "musicroom.h"
+#include "../MessageDisplayer/message_displayer.h"
+#include "../Network/ServerLogic/server.h"
+#include "../MusicRoom/musicroom.h"
 
 Server* Server::instance = nullptr; 
 

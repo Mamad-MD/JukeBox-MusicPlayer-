@@ -1,8 +1,8 @@
 #include <QApplication>
-#include "authmanager.h"
-#include "loginwindow.h"
-#include "signupwindow.h"
-#include "forgotpasswordwindow.h"
+#include "Login/authmanager.h"
+#include "Login/loginwindow.h"
+#include "Login/signupwindow.h"
+#include "Login/forgotpasswordwindow.h"
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])

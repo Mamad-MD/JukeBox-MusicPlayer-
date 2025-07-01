@@ -1,8 +1,8 @@
 #include "server.h"
 #include <QMessageBox>
 #include <QApplication>
-#include "message_displayer.h"
-#include "command.h"
+#include "../../MessageDisplayer/message_displayer.h"
+#include "../Command/command.h"
 
 bool Server::deletingInProcess = false;
 

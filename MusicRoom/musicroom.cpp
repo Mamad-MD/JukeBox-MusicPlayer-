@@ -1,10 +1,12 @@
 #include "musicroom.h"
 #include "ui_musicroom.h"
-#include "message_displayer.h"
+#include "../MessageDisplayer/message_displayer.h"
+
+// class MusicRoom;
 
 MusicRoom::MusicRoom(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), isPlaying(false), currentlyPlayingDuration(0)
+    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr)
 {
     ui->setupUi(this);
     ui->Label_AlbumCover->setScaledContents(true);
@@ -15,23 +17,10 @@ MusicRoom::MusicRoom(QWidget *parent)
         // iterateItemsInTree(topItem);
     }
     
-    player = new QMediaPlayer(this);
-    audioOutput = new QAudioOutput(this);
-    player->setAudioOutput(audioOutput);
-
-
-    connect(player, &QMediaPlayer::mediaStatusChanged, this, [](QMediaPlayer::MediaStatus status) {
-        qDebug() << "Media status:" << status;
-    });
-
-    connect(player, &QMediaPlayer::errorOccurred, this, [](QMediaPlayer::Error error, const QString &errorString) {
-        qDebug() << "Error:" << error << errorString;
-    });
+    musicPlayer = MusicPlayer::getInstance();
     
-    connect(player, &QMediaPlayer::positionChanged, this, &MusicRoom::on_positionChanged);
-    connect(player, &QMediaPlayer::durationChanged, this, &MusicRoom::on_durationChanged);
     connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
-    connect(player, &QMediaPlayer::metaDataChanged, this, &MusicRoom::on_metaDataChanged);
+    connectPlayerSignalsToUISlots();
 }
 
 void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)
@@ -51,114 +40,41 @@ MusicRoom::~MusicRoom()
     delete ui;
 }
 
-void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int column)
-{
-    if (item == categoryItems[0])
-    {
-        if (!hasSetFolder)
-        {
-            MessageDisplayer::display(MessageType::Info, "Notice", "You haven't selected a folder. First select one.");
-            loadFolderSelection();
-            return;
-        }
-        return;
-    }
-
-    if (item->parent() == categoryItems[1])
-    {
-        MessageDisplayer::display(MessageType::Info, "Notice", "it's a playlist");
-        return;
-    }
-
-    if (item == categoryItems[2])
-    {
-        MessageDisplayer::display(MessageType::Info, "Notice", "Queue");
-        return;
-    }
-}
-
 void MusicRoom::loadFolderSelection()
 {
     
 }
 
-void MusicRoom::on_PushButton_Browse_clicked()
-{
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Select Folder"),
-                                                    QDir::homePath(),
-                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    if (!dir.isEmpty())
-        ui->LineEdit_Path->setText(dir);
-    showFolderTracks();
-}
+// void MusicRoom::play(const QString& filePath)
+// {
+//     if (filePath == "")
+//     {
+//         player->play(); //resume
+//         isPlaying = true;
+//         on_musicPlayed();
+//         return;
+//     }
 
-void MusicRoom::showFolderTracks()
-{
-    QString dirPath = ui->LineEdit_Path->text();
+//     //  extract music cover                                                       =============
 
-    QDir dir(dirPath);
-    QStringList filters;
-    filters << "*.mp3" << "*.wav";
+//     // player->stop();
+//     player->setSource(QUrl::fromLocalFile(filePath));
+//     audioOutput->setVolume(0.5);
+//     player->play();
+//     isPlaying = true;
+//     currentlyPlayingPath = filePath;
+//     currentlyPlayingIndex = findIndexFromPath(filePath);
+//     on_musicPlayed();
+// }
 
-    QFileInfoList fileList = dir.entryInfoList(filters, QDir::Files | QDir::NoSymLinks);
-    QStringList fileNames;
+// void MusicRoom::pause()
+// {
+//     player->pause();
+//     isPlaying = false;
+//     on_musicPaused();
+// }
 
-    musicPathsFromFolder.clear();
-
-    for (const QFileInfo &fileInfo : fileList) 
-    {
-        fileNames << fileInfo.fileName();
-        musicPathsFromFolder << fileInfo.absoluteFilePath();
-    }
-
-    if (model)
-        delete model;
-
-    model = new QStringListModel(this);
-
-    model->setStringList(fileNames);
-    ui->ListView_AudioTracks->setModel(model);
-}
-
-void MusicRoom::on_ListView_AudioTracks_doubleClicked(const QModelIndex &index)
-{
-    if (!index.isValid() || index.row() >= musicPathsFromFolder.size())
-        return;
-
-    QString filePath = musicPathsFromFolder.at(index.row());
-    play(filePath);
-}
-
-void MusicRoom::play(const QString& filePath)
-{
-    if (filePath == "")
-    {
-        player->play(); //resume
-        isPlaying = true;
-        on_musicPlayed();
-        return;
-    }
-
-    //  extract music cover                                                       =============
-
-    // player->stop();
-    player->setSource(QUrl::fromLocalFile(filePath));
-    audioOutput->setVolume(0.5);
-    player->play();
-    isPlaying = true;
-    currentlyPlayingPath = filePath;
-    currentlyPlayingIndex = findIndexFromPath(filePath);
-    on_musicPlayed();
-}
-
-void MusicRoom::pause()
-{
-    player->pause();
-    isPlaying = false;
-    on_musicPaused();
-}
-
-QString MusicRoom::formatTime(qint64 pos)
+QString MusicRoom::formatTime(qint64 ms)
 {
     int seconds = pos / 1000;
     int minutes = seconds / 60;
@@ -187,115 +103,54 @@ void MusicRoom::changeActiveTrackInListView(int index)
     ui->ListView_AudioTracks->selectionModel()->select(modelIndex, QItemSelectionModel::Select);
 }
 
-void MusicRoom::on_PushButton_PlayPause_clicked()
+void MusicRoom::showFolderTracks()
 {
-    if (isPlaying)
-        pause();
-    else
-        play();
-}
+    QString dirPath = ui->LineEdit_Path->text();
 
-void MusicRoom::on_musicPlayed()
-{
-    ui->PushButton_PlayPause->setText("Pause");
-}
+    QDir dir(dirPath);
+    QStringList filters;
+    filters << "*.mp3" << "*.wav";
 
-void MusicRoom::on_musicPaused()
-{
-    ui->PushButton_PlayPause->setText("Play");
-}
+    QFileInfoList fileList = dir.entryInfoList(filters, QDir::Files | QDir::NoSymLinks);
+    QStringList fileNames;
 
-void MusicRoom::on_positionChanged(qint64 position)
-{
-    ui->Slider_MusicSlider->setValue(static_cast<int>(position));
-    QString currentTimeStr = formatTime(position);
-    QString totalTimeStr = formatTime(currentlyPlayingDuration);
-    ui->Label_Timer->setText(currentTimeStr + " / " + totalTimeStr);
-    if (position == currentlyPlayingDuration)
+    musicPathsFromFolder.clear();
+
+    for (const QFileInfo &fileInfo : fileList) 
     {
-        if (currentlyPlayingIndex == musicPathsFromFolder.size() - 1)
-        {
-            play(musicPathsFromFolder[0]);
-            changeActiveTrackInListView(0);
-        }
-        else
-        {
-            play(musicPathsFromFolder[currentlyPlayingIndex + 1]);
-            changeActiveTrackInListView(currentlyPlayingIndex);
-        }
+        fileNames << fileInfo.fileName();
+        musicPathsFromFolder << fileInfo.absoluteFilePath();
     }
-}
 
-void MusicRoom::on_durationChanged(qint64 duration)
-{
-    currentlyPlayingDuration = duration;
-    ui->Slider_MusicSlider->setMaximum(static_cast<int>(duration));
-}
-
-void MusicRoom::on_sliderReleased()
-{
-    player->setPosition(ui->Slider_MusicSlider->value());
-}
-
-void MusicRoom::on_PushButton_Next_clicked()
-{
-    if (currentlyPlayingIndex == musicPathsFromFolder.size() - 1)
+    if (model)
     {
-        play(musicPathsFromFolder[0]);
-        changeActiveTrackInListView(0);
+        delete model;
+        model = nullptr;
     }
-    else
-    {
-        play(musicPathsFromFolder[currentlyPlayingIndex + 1]);
-        changeActiveTrackInListView(currentlyPlayingIndex);
-    }
+
+    model = new QStringListModel(this);
+
+    model->setStringList(fileNames);
+    ui->ListView_AudioTracks->setModel(model);
 }
 
-
-void MusicRoom::on_PushButton_Prev_clicked()
+void MusicRoom::showQueueTracks()
 {
-    if (currentlyPlayingIndex == 0)
-    {
-        play(musicPathsFromFolder[musicPathsFromFolder.size() - 1]);
-        changeActiveTrackInListView(musicPathsFromFolder.size() - 1);
-    }
-    else
-    {
-        play(musicPathsFromFolder[currentlyPlayingIndex - 1]);
-        changeActiveTrackInListView(currentlyPlayingIndex);
-    }
+    MessageDisplayer::display(MessageType::Info, "Notice", "Show Queue Tracks");
 }
 
-void MusicRoom::on_metaDataChanged()
+void MusicRoom::showPlayListTracks(const QStirng& playlistName);
 {
-    qDebug() << "metaDataChanged() called!";
-    const QMediaMetaData meta = player->metaData();
-    const QList<QMediaMetaData::Key> metaKeys = meta.keys();
-    qDebug() << "All meta keys:" << metaKeys;
-
-    QVariant cover;
-
-    // اول سعی می‌کنیم از CoverArtImage بگیریم، اگر نبود ThumbnailImage
-    if (metaKeys.contains(QMediaMetaData::CoverArtImage)) {
-        cover = meta.value(QMediaMetaData::CoverArtImage);
-        qDebug() << "CoverArtImage found!";
-    } else if (metaKeys.contains(QMediaMetaData::ThumbnailImage)) {
-        cover = meta.value(QMediaMetaData::ThumbnailImage);
-        qDebug() << "ThumbnailImage used as cover!";
-    } else {
-        qDebug() << "No image metadata found.";
-    }
-
-    if (cover.isValid()) {
-        QImage image = qvariant_cast<QImage>(cover);
-        if (!image.isNull()) {
-            ui->Label_AlbumCover->setPixmap(QPixmap::fromImage(image));
-            qDebug() << "Cover image set!";
-        } else {
-            qDebug() << "Image variant is null.";
-        }
-    } else {
-        ui->Label_AlbumCover->clear();
-    }
+    MessageDisplayer::display(MessageType::Info, "Notice", "Show Playlist " + playlistName);
 }
 
+void MusicRoom::connectPlayerSignalsToUISlots()
+{
+    connect(musicPlayer->player, &QMediaPlayer::errorOccurred, this, [](QMediaPlayer::Error error, const QString &errorString) {
+    qDebug() << "Error:" << error << errorString;
+    });
+    
+    connect(musicPlayer->player, &QMediaPlayer::positionChanged, this, &MusicRoom::on_positionChanged);
+    connect(musicPlayer->player, &QMediaPlayer::durationChanged, this, &MusicRoom::on_durationChanged);
+    connect(musicPlayer->player, &QMediaPlayer::metaDataChanged, this, &MusicRoom::on_metaDataChanged);
+}

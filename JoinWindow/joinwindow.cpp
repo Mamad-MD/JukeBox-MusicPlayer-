@@ -1,9 +1,9 @@
 #include "joinwindow.h"
-#include "mainwindow.h"
+#include "../mainwindow.h"
 #include "ui_joinwindow.h"
-#include "client.h"
+#include "../Network/ClientLogic/client.h"
 #include <QTimer>
-#include "message_displayer.h"
+#include "../MessageDisplayer/message_displayer.h"
 #include <QString>
 
 Client* Client::instance = nullptr;

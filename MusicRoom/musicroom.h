@@ -10,6 +10,7 @@
 #include <QMediaPlayer>
 #include <QMediaMetaData>
 #include <QAudioOutput>
+#include "MusicPlayer/musicplayer.h"
 
 namespace Ui {
 class MusicRoom;
@@ -39,6 +40,8 @@ private slots:
     void on_sliderReleased();
     void on_metaDataChanged();
 
+    void on_TreeWidget_Category_itemClicked(QTreeWidgetItem *item, int column);
+
 private:
     Ui::MusicRoom *ui;
     
@@ -48,24 +51,28 @@ private:
 
     QStringListModel* model;
     
-    QMediaPlayer* player;
-    QAudioOutput* audioOutput;
+    MusicPlayer musicPlayer;
     
-    QString currentlyPlayingPath;
-    int currentlyPlayingIndex;
-    qint64 currentlyPlayingDuration;
+    // QString currentlyPlayingPath;
+    // int currentlyPlayingIndex;
+    // qint64 currentlyPlayingDuration;
 	
     int findIndexFromPath(const QString& path);
-    bool isPlaying;
 
     QStringList musicPathsFromFolder;
 
-    void iterateItemsInTree(QTreeWidgetItem* topItem);
     void showFolderTracks();
-    void play(const QString& filePath = "");
-    void pause();
+    void showQueueTracks();
+    void showPlayListTracks(const QStirng& playlistName);
+    // void clearAudioTracks
+
+    
+    void iterateItemsInTree(QTreeWidgetItem* topItem);
+    // void play(const QString& filePath = "");
+    // void pause();
     void changeActiveTrackInListView(int index);
-    QString formatTime(qint64 pos);
+    QString formatTime(qint64 ms);
+    void connectPlayerSignalsToUISlots();
 };
 
 #endif // MUSICROOM_H
