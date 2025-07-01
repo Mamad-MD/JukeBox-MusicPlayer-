@@ -1,5 +1,7 @@
 #include "musicplayer.h"
 
+
+
 MusicPlayer* MusicPlayer::getInstance(QWidget* parent)
 {
     if (!instance)
@@ -22,21 +24,9 @@ MusicPlayer::~MusicPlayer()
 }
 
 void MusicPlayer::play()
-{
-    if (currentTrack->filePath == "")
-    {
-        player->play(); //resume
-        isPlaying = true;
-        emit played();
-        return;
-    }
-
-    // player->stop();
-    player->setSource(QUrl::fromLocalFile(currentTrack->filePath));
-    audioOutput->setVolume(0.5);
+{   
     player->play();
     isPlaying = true;
-
     emit played();
 }
 
@@ -47,7 +37,25 @@ void MusicPlayer::pause()
     emit paused();
 }
 
-void MusicPlayer::setAudioTrack(const AudioTrack* audiotrack)
+void MusicPlayer::setAudioTrack(AudioTrack* audiotrack)
 {
     currentTrack = audiotrack;
+    player->setSource(QUrl::fromLocalFile(audiotrack->filePath));
+}
+
+void MusicPlayer::setVolume(const double& vol)
+{
+    if (vol > 1 || vol < 0)
+        audioOutput->setVolume(1);
+    else
+        audioOutput->setVolume(vol);
+    emit volumeChanged(audioOutput->volume());
+}
+
+void MusicPlayer::clearAudioTrack()
+{
+    pause();
+    currentTrack = nullptr;
+    player->setSource(QUrl());
+    emit audioCleared();
 }

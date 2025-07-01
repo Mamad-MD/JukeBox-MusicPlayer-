@@ -4,6 +4,8 @@
 
 // class MusicRoom;
 
+MusicPlayer* MusicPlayer::instance = nullptr;
+
 MusicRoom::MusicRoom(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr)
@@ -17,7 +19,7 @@ MusicRoom::MusicRoom(QWidget *parent)
         // iterateItemsInTree(topItem);
     }
     
-    musicPlayer = MusicPlayer::getInstance();
+    musicPlayer = MusicPlayer::getInstance(this);
     
     connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
     connectPlayerSignalsToUISlots();
@@ -76,7 +78,7 @@ void MusicRoom::loadFolderSelection()
 
 QString MusicRoom::formatTime(qint64 ms)
 {
-    int seconds = pos / 1000;
+    int seconds = ms / 1000;
     int minutes = seconds / 60;
     seconds %= 60;
     return QString("%1:%2")
@@ -86,9 +88,9 @@ QString MusicRoom::formatTime(qint64 ms)
 
 int MusicRoom::findIndexFromPath(const QString& path)
 {
-    for (int i = 0; i < musicPathsFromFolder.size(); i++)
+    for (int i = 0; i < tracksFromFolder.size(); i++)
     {
-        if (path == musicPathsFromFolder[i])
+        if (path == tracksFromFolder[i].filePath)
             return i;
     }
 
@@ -114,13 +116,26 @@ void MusicRoom::showFolderTracks()
     QFileInfoList fileList = dir.entryInfoList(filters, QDir::Files | QDir::NoSymLinks);
     QStringList fileNames;
 
-    musicPathsFromFolder.clear();
-
+    // musicPathsFromFolder.clear();
+    tracksFromFolder.clear();
+    tracksInListView.clear();
+    
     for (const QFileInfo &fileInfo : fileList) 
     {
+        AudioTrack track(fileInfo.fileName(), fileInfo.absoluteFilePath());
+        tracksFromFolder.append(track);
+
         fileNames << fileInfo.fileName();
-        musicPathsFromFolder << fileInfo.absoluteFilePath();
     }
+
+    for (auto& track : tracksFromFolder)
+        tracksInListView.append(&track);
+
+    // =================================================
+    // I Want you save these tracks somewhere in a file
+
+
+    
 
     if (model)
     {
@@ -139,7 +154,7 @@ void MusicRoom::showQueueTracks()
     MessageDisplayer::display(MessageType::Info, "Notice", "Show Queue Tracks");
 }
 
-void MusicRoom::showPlayListTracks(const QStirng& playlistName);
+void MusicRoom::showPlayListTracks(const QString& playlistName)
 {
     MessageDisplayer::display(MessageType::Info, "Notice", "Show Playlist " + playlistName);
 }
@@ -149,8 +164,24 @@ void MusicRoom::connectPlayerSignalsToUISlots()
     connect(musicPlayer->player, &QMediaPlayer::errorOccurred, this, [](QMediaPlayer::Error error, const QString &errorString) {
     qDebug() << "Error:" << error << errorString;
     });
+
+
+    connect(musicPlayer, &MusicPlayer::played, this, &MusicRoom::on_musicPlayed);
+    connect(musicPlayer, &MusicPlayer::paused, this, &MusicRoom::on_musicPaused);
     
     connect(musicPlayer->player, &QMediaPlayer::positionChanged, this, &MusicRoom::on_positionChanged);
     connect(musicPlayer->player, &QMediaPlayer::durationChanged, this, &MusicRoom::on_durationChanged);
     connect(musicPlayer->player, &QMediaPlayer::metaDataChanged, this, &MusicRoom::on_metaDataChanged);
+}
+
+void MusicRoom::clearTracksListView()
+{
+    if (!model)
+        return;
+    musicPlayer->pause();
+    musicPlayer->clearAudioTrack();
+    ui->Label_Timer->setText("");
+    tracksInListView.clear();
+    model->setStringList(QStringList());  // Clears the list
+    ui->ListView_AudioTracks->setModel(model);
 }

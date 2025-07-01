@@ -8,7 +8,7 @@
 
 class MusicRoom;
 
-class MusicPlayer {
+class MusicPlayer : public QObject {
 private:
     Q_OBJECT
 
@@ -20,21 +20,24 @@ private:
     friend class MusicRoom;
 
     // Singleton
-    static MusicPlayer* instance;
     MusicPlayer(QWidget* parent);
     MusicPlayer(const MusicPlayer&) = delete;
     MusicPlayer(const MusicPlayer&&) = delete;
     ~MusicPlayer();
 public:
-    static MusicPlayer* getInstance();
+    static MusicPlayer* instance;
+    static MusicPlayer* getInstance(QWidget* parent);
     void play();
     void pause();
-    void setAudioTrack(const AudioTrack* audiotrack);
+    void setAudioTrack(AudioTrack* audiotrack);
+    void setVolume(const double& vol);
+    void clearAudioTrack();
 
-private signals:
+signals:
     void played();
     void paused();
-    
+    void audioCleared();
+    void volumeChanged(float vol);
 };
 
 

@@ -11,6 +11,8 @@
 #include <QMediaMetaData>
 #include <QAudioOutput>
 #include "MusicPlayer/musicplayer.h"
+#include <QList>
+#include <QEventLoop>
 
 namespace Ui {
 class MusicRoom;
@@ -40,8 +42,6 @@ private slots:
     void on_sliderReleased();
     void on_metaDataChanged();
 
-    void on_TreeWidget_Category_itemClicked(QTreeWidgetItem *item, int column);
-
 private:
     Ui::MusicRoom *ui;
     
@@ -51,19 +51,23 @@ private:
 
     QStringListModel* model;
     
-    MusicPlayer musicPlayer;
+    MusicPlayer* musicPlayer;
+    QList<AudioTrack> tracksFromFolder;
+    QList<AudioTrack*> tracksInListView; // it doesn't care what library
+                                         // you're listening to. it just stores
+                                         // a pointer of ListView tracks
     
     // QString currentlyPlayingPath;
-    // int currentlyPlayingIndex;
-    // qint64 currentlyPlayingDuration;
+    int currentlyPlayingIndex;
+    qint64 currentlyPlayingDuration;
 	
     int findIndexFromPath(const QString& path);
 
-    QStringList musicPathsFromFolder;
+    // QStringList musicPathsFromFolder;
 
     void showFolderTracks();
     void showQueueTracks();
-    void showPlayListTracks(const QStirng& playlistName);
+    void showPlayListTracks(const QString& playlistName);
     // void clearAudioTracks
 
     
@@ -73,6 +77,7 @@ private:
     void changeActiveTrackInListView(int index);
     QString formatTime(qint64 ms);
     void connectPlayerSignalsToUISlots();
+    void clearTracksListView();
 };
 
 #endif // MUSICROOM_H

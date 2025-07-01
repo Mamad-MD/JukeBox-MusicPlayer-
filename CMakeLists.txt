@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
         Network/ServerLogic/server.h Network/ServerLogic/server.cpp
         Network/ClientLogic/client.h Network/ClientLogic/client.cpp
         MessageDisplayer/message_displayer.h MessageDisplayer/message_displayer.cpp
+        MusicRoom/AudioTrack/audiotrack.h MusicRoom/AudioTrack/audiotrack.cpp
+        MusicRoom/MusicPlayer/musicplayer.h MusicRoom/MusicPlayer/musicplayer.cpp
         resources.qrc
 )
 
@@ -50,6 +52,9 @@ qt_add_executable(JukeBox
         Login/signupwindow.h Login/signupwindow.cpp Login/signupwindow.ui
         Login/forgotpasswordwindow.h Login/forgotpasswordwindow.cpp Login/forgotpasswordwindow.ui
         MusicRoom/Slots/slots.h MusicRoom/Slots/slots.cpp
+        MusicRoom/AudioTrack/audiotrack.h MusicRoom/AudioTrack/audiotrack.cpp
+        MusicRoom/MusicPlayer/musicplayer.h MusicRoom/MusicPlayer/musicplayer.cpp
+        MusicRoom/PlayList/playlist.cpp MusicRoom/PlayList/playlist.h
     )
 else()
     if(ANDROID)

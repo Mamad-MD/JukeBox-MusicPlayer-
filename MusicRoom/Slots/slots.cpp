@@ -5,10 +5,10 @@
 
 void MusicRoom::on_PushButton_PlayPause_clicked()
 {
-    if (isPlaying)
-        pause();
+    if (musicPlayer->isPlaying)
+        musicPlayer->pause();
     else
-        play();
+        musicPlayer->play();
 }
 
 void MusicRoom::on_musicPlayed()
@@ -29,14 +29,16 @@ void MusicRoom::on_positionChanged(qint64 position)
     ui->Label_Timer->setText(currentTimeStr + " / " + totalTimeStr);
     if (position == currentlyPlayingDuration)
     {
-        if (currentlyPlayingIndex == musicPathsFromFolder.size() - 1)
+        if (currentlyPlayingIndex == tracksFromFolder.size() - 1)
         {
-            play(musicPathsFromFolder[0]);
+            // musicPlayer->setAudioTrack();
+            // musicPlayer->play(musicPathsFromFolder[0]);
             changeActiveTrackInListView(0);
         }
         else
         {
-            play(musicPathsFromFolder[currentlyPlayingIndex + 1]);
+            // musicPlayer->setAudioTrack();
+            // musicPlayer->play(musicPathsFromFolder[currentlyPlayingIndex + 1]);
             changeActiveTrackInListView(currentlyPlayingIndex);
         }
     }
@@ -50,19 +52,25 @@ void MusicRoom::on_durationChanged(qint64 duration)
 
 void MusicRoom::on_sliderReleased()
 {
-    player->setPosition(ui->Slider_MusicSlider->value());
+    musicPlayer->player->setPosition(ui->Slider_MusicSlider->value());
 }
 
-void     MusicRoom::on_PushButton_Next_clicked()
+void MusicRoom::on_PushButton_Next_clicked()
 {
-    if (currentlyPlayingIndex == musicPathsFromFolder.size() - 1)
+    if (currentlyPlayingIndex == tracksInListView.size() - 1)
     {
-        play(musicPathsFromFolder[0]);
+        currentlyPlayingIndex = 0;
+
+        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
+        musicPlayer->play();
         changeActiveTrackInListView(0);
     }
     else
     {
-        play(musicPathsFromFolder[currentlyPlayingIndex + 1]);
+        currentlyPlayingIndex++;
+
+        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
+        musicPlayer->play();
         changeActiveTrackInListView(currentlyPlayingIndex);
     }
 }
@@ -72,12 +80,18 @@ void MusicRoom::on_PushButton_Prev_clicked()
 {
     if (currentlyPlayingIndex == 0)
     {
-        play(musicPathsFromFolder[musicPathsFromFolder.size() - 1]);
-        changeActiveTrackInListView(musicPathsFromFolder.size() - 1);
+        currentlyPlayingIndex = tracksInListView.size() - 1;
+
+        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
+        musicPlayer->play();
+        changeActiveTrackInListView(currentlyPlayingIndex);
     }
     else
     {
-        play(musicPathsFromFolder[currentlyPlayingIndex - 1]);
+        currentlyPlayingIndex--;
+
+        musicPlayer->setAudioTrack(tracksInListView[currentlyPlayingIndex]);
+        musicPlayer->play();
         changeActiveTrackInListView(currentlyPlayingIndex);
     }
 }
@@ -85,7 +99,7 @@ void MusicRoom::on_PushButton_Prev_clicked()
 void MusicRoom::on_metaDataChanged()
 {
     qDebug() << "metaDataChanged() called!";
-    const QMediaMetaData meta = player->metaData();
+    const QMediaMetaData meta = musicPlayer->player->metaData();
     const QList<QMediaMetaData::Key> metaKeys = meta.keys();
     qDebug() << "All meta keys:" << metaKeys;
 
@@ -117,11 +131,12 @@ void MusicRoom::on_metaDataChanged()
 
 void MusicRoom::on_ListView_AudioTracks_doubleClicked(const QModelIndex &index)
 {
-    if (!index.isValid() || index.row() >= musicPathsFromFolder.size())
+    if (!index.isValid() || index.row() >= tracksFromFolder.size())
         return;
 
-    QString filePath = musicPathsFromFolder.at(index.row());
-    play(filePath);
+    musicPlayer->setAudioTrack(&tracksFromFolder[index.row()]);
+    currentlyPlayingIndex = index.row();
+    musicPlayer->play();
 }
 
 void MusicRoom::on_PushButton_Browse_clicked()
@@ -132,6 +147,7 @@ void MusicRoom::on_PushButton_Browse_clicked()
     if (!dir.isEmpty())
         ui->LineEdit_Path->setText(dir);
     showFolderTracks();
+    hasSetFolder = true;
 }
 
 void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int column)
@@ -139,11 +155,9 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
     if (item == categoryItems[0])
     {
         if (!hasSetFolder)
-        {
             MessageDisplayer::display(MessageType::Info, "Notice", "You haven't selected a folder. First select one.");
-            return;
-        }
         ui->PushButton_Browse->setEnabled(true);
+        showFolderTracks();
         return;
     }
     else
@@ -152,6 +166,7 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
     if (item->parent() == categoryItems[1])
     {
         MessageDisplayer::display(MessageType::Info, "Notice", "it's a playlist");
+        clearTracksListView();
         showPlayListTracks(item->text(0));
         return;
     }
@@ -159,6 +174,8 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
     if (item == categoryItems[2])
     {
         MessageDisplayer::display(MessageType::Info, "Notice", "Queue");
+        clearTracksListView();
+        showQueueTracks();
         return;
     }
 }

@@ -3,13 +3,20 @@
 
 #include <QString>
 
+class MusicRoom;
+class MusicPlayer;
+class PlayList;
+
 class AudioTrack {
+public:
+    AudioTrack(const QString& name, const QString& path);
 private:
     QString name;
-    QString path;
-    qint64 duration;
+    QString filePath;
 
-
+    friend class MusicPlayer;
+    friend class MusicRoom;
+    friend class PlayList;
 };
 
 #endif
