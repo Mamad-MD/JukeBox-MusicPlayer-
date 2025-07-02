@@ -59,7 +59,7 @@ qt_add_executable(JukeBox
         MusicRoom/MusicPlayer/musicplayer.h MusicRoom/MusicPlayer/musicplayer.cpp
         MusicRoom/PlayList/playlist.cpp MusicRoom/PlayList/playlist.h
         Random/RandomGenerator.h Random/RandomGenerator.cpp
-        visualizerwidget.h visualizerwidget.cpp
+        MusicRoom/Visualizer/visualizerwidget.h MusicRoom/Visualizer/visualizerwidget.cpp
     )
 else()
     if(ANDROID)

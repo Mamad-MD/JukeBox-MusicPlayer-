@@ -11,15 +11,11 @@
 #include <QMediaPlayer>
 #include <QMediaMetaData>
 #include <QAudioOutput>
-<<<<<<< HEAD:MusicRoom/musicroom.h
-#include "MusicPlayer/musicplayer.h"
 #include <QList>
 #include <QEventLoop>
-=======
 #include <QVBoxLayout>
-#include "visualizerwidget.h"
-
->>>>>>> origin/echolaizer:musicroom.h
+#include "MusicPlayer/musicplayer.h"
+#include "Visualizer/visualizerwidget.h"
 
 namespace Ui {
 class MusicRoom;
@@ -97,8 +93,6 @@ private:
     void playPrev();
     void playThisIndex(int index);
     void playRandomIndex();
-
-    QString formatTime(qint64 pos);
 
     VisualizerWidget* visualizer;
 

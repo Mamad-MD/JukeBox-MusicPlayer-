@@ -14,6 +14,7 @@ MusicRoom::MusicRoom(QWidget *parent)
 {
     ui->setupUi(this);
     ui->Label_AlbumCover->setScaledContents(true);
+    ui->Label_AlbumCover->setVisible(true);
     for (int i = 0; i < ui->TreeWidget_Category->topLevelItemCount(); i++)
     {
         QTreeWidgetItem* topItem = ui->TreeWidget_Category->topLevelItem(i);
@@ -23,7 +24,26 @@ MusicRoom::MusicRoom(QWidget *parent)
     
     musicPlayer = MusicPlayer::getInstance(this);
     musicPlayer->setVolume((float)ui->Slider_Volume->value() / 100);
-    
+
+    visualizer = new VisualizerWidget(this);
+    QWidget* visualizerPage = ui->Widget_MusicDisplay->widget(1);
+    QVBoxLayout* visualizerLayout = qobject_cast<QVBoxLayout*>(visualizerPage->layout());
+    if (!visualizerLayout) {
+        visualizerLayout = new QVBoxLayout(visualizerPage);
+        visualizerPage->setLayout(visualizerLayout);
+    }
+
+    visualizerLayout->addWidget(visualizer);
+    visualizerLayout->setContentsMargins(0, 0, 0, 0);
+
+    isShowingCover = true;
+    ui->Widget_MusicDisplay->setCurrentIndex(0); // نمایش اولیه کاور
+    ui->Label_AlbumCover->show();                // حتما کاور نمایش داده بشه
+    visualizer->hide();
+    ui->PushButton_SwitchView->setText("Visualizer");
+
+
+    //  connect(ui->PushButton_SwitchView, &QPushButton::clicked,this, &MusicRoom::on_PushButton_SwitchView_clicked);
     // connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
     connectPlayerSignalsToUISlots();
 }

@@ -13,6 +13,11 @@ void MusicRoom::on_PushButton_PlayPause_clicked()
 
 void MusicRoom::on_musicPlayed()
 {
+    ui->Widget_MusicDisplay->setCurrentIndex(0); // اکولایزر
+    //ui->Label_AlbumCover->hide();        // کاور مخفی
+    //visualizer->show();
+    ui->PushButton_SwitchView->setText("Visualizer");
+    isShowingCover = true;
     ui->PushButton_PlayPause->setText("Pause");
 }
 
@@ -115,7 +120,6 @@ void MusicRoom::on_metaDataChanged()
 
     QVariant cover;
 
-    // اول سعی می‌کنیم از CoverArtImage بگیریم، اگر نبود ThumbnailImage
     if (metaKeys.contains(QMediaMetaData::CoverArtImage)) {
         cover = meta.value(QMediaMetaData::CoverArtImage);
         qDebug() << "CoverArtImage found!";
@@ -125,18 +129,61 @@ void MusicRoom::on_metaDataChanged()
     } else {
         qDebug() << "No image metadata found.";
     }
-
     if (cover.isValid()) {
         QImage image = qvariant_cast<QImage>(cover);
         if (!image.isNull()) {
-            ui->Label_AlbumCover->setPixmap(QPixmap::fromImage(image));
+            ui->Label_AlbumCover->setPixmap(QPixmap::fromImage(image).scaled(
+                ui->Label_AlbumCover->size(),
+                Qt::KeepAspectRatio,
+                Qt::SmoothTransformation));
+            ui->Label_AlbumCover->show();  // اطمینان از نمایش کاور
             qDebug() << "Cover image set!";
         } else {
+            ui->Label_AlbumCover->clear();
             qDebug() << "Image variant is null.";
         }
     } else {
         ui->Label_AlbumCover->clear();
     }
+
+//     if (cover.isValid()) {
+//         QImage image = qvariant_cast<QImage>(cover);
+//         if (!image.isNull()) {
+//             ui->Label_AlbumCover->setPixmap(QPixmap::fromImage(image));
+//             qDebug() << "Cover image set!";
+//         } else {
+//             qDebug() << "Image variant is null.";
+//             ui->Label_AlbumCover->clear();
+//         }
+//     } else {
+//         ui->Label_AlbumCover->clear();
+//      }
+}
+
+void MusicRoom::on_PushButton_SwitchView_clicked()
+{
+    qDebug() << "SwitchView clicked. isShowingCover:" << isShowingCover;
+
+    if (isShowingCover) {
+        ui->Widget_MusicDisplay->setCurrentIndex(1); // اکولایزر
+                                 ui->Label_AlbumCover->hide();
+                                 visualizer->show();
+        ui->PushButton_SwitchView->setText("Album Cover");
+        //isShowingCover = false;
+        qDebug() << "Switched to Visualizer";
+
+    } else {
+        ui->Widget_MusicDisplay->setCurrentIndex(0); // کاور
+                                        visualizer->hide();
+                                       ui->Label_AlbumCover->show();
+        ui->PushButton_SwitchView->setText("Visualizer");
+       // isShowingCover = true;
+        qDebug() << "Switched to Album Cover";
+
+    }
+    isShowingCover = !isShowingCover;
+    qDebug() << "New isShowingCover:" << isShowingCover;
+
 }
 
 void MusicRoom::on_ListView_AudioTracks_doubleClicked(const QModelIndex &index)
