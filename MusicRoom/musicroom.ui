@@ -309,23 +309,7 @@ QSlider::add-page:horizontal {
      <string>==&gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="Label_AlbumCover">
-    <property name="geometry">
-     <rect>
-      <x>930</x>
-      <y>50</y>
-      <width>311</width>
-      <height>331</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: 1px solid black;</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="PushButton_PlayPause_2">
+   <widget class="QPushButton" name="PushButton_SwitchView">
     <property name="geometry">
      <rect>
       <x>1030</x>
@@ -334,9 +318,65 @@ QSlider::add-page:horizontal {
       <height>61</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Cover</string>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: #1DB954;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+    QPushButton:hover {
+    background-color: #1ed760;
+    }</string>
     </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QStackedWidget" name="Widget_MusicDisplay">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>50</y>
+      <width>321</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="page">
+     <widget class="QLabel" name="Label_AlbumCover">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>311</width>
+        <height>331</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border: 1px solid black;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_2">
+     <widget class="VisualizerWidget" name="VisualizerDisplay" native="true">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>321</width>
+        <height>331</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QSlider" name="Slider_Volume">
     <property name="geometry">
@@ -402,6 +442,14 @@ QSlider::add-page:vertical {
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>VisualizerWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">visualizerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

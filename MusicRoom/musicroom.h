@@ -6,13 +6,20 @@
 #include <QStringListModel>
 #include <QFileInfoList>
 #include <QDir>
+#include <QDebug>
 #include <QFileDialog>
 #include <QMediaPlayer>
 #include <QMediaMetaData>
 #include <QAudioOutput>
+<<<<<<< HEAD:MusicRoom/musicroom.h
 #include "MusicPlayer/musicplayer.h"
 #include <QList>
 #include <QEventLoop>
+=======
+#include <QVBoxLayout>
+#include "visualizerwidget.h"
+
+>>>>>>> origin/echolaizer:musicroom.h
 
 namespace Ui {
 class MusicRoom;
@@ -42,6 +49,7 @@ private slots:
     void on_positionChanged(qint64 position);
     void on_durationChanged(qint64 duration);
     void on_metaDataChanged();
+    void on_PushButton_SwitchView_clicked();
 
     void on_Slider_Volume_sliderReleased();
     void on_Slider_Volume_valueChanged(int value);
@@ -80,6 +88,7 @@ private:
     // void play(const QString& filePath = "");
     // void pause();
     void changeActiveTrackInListView(int index);
+
     QString formatTime(qint64 ms);
     void connectPlayerSignalsToUISlots();
     void clearTracksListView();
@@ -88,6 +97,12 @@ private:
     void playPrev();
     void playThisIndex(int index);
     void playRandomIndex();
+
+    QString formatTime(qint64 pos);
+
+    VisualizerWidget* visualizer;
+
+    bool isShowingCover = true;
 };
 
 #endif // MUSICROOM_H

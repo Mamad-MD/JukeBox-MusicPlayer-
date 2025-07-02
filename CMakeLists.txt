@@ -10,6 +10,8 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_SOURCE_DIR}/MusicRoom")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Multimedia)
 
@@ -30,6 +32,7 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+
 
 
 qt_add_executable(JukeBox
@@ -56,6 +59,7 @@ qt_add_executable(JukeBox
         MusicRoom/MusicPlayer/musicplayer.h MusicRoom/MusicPlayer/musicplayer.cpp
         MusicRoom/PlayList/playlist.cpp MusicRoom/PlayList/playlist.h
         Random/RandomGenerator.h Random/RandomGenerator.cpp
+        visualizerwidget.h visualizerwidget.cpp
     )
 else()
     if(ANDROID)
