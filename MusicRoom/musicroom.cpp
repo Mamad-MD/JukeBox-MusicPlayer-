@@ -7,12 +7,14 @@
 
 MusicPlayer* MusicPlayer::instance = nullptr;
 
-MusicRoom::MusicRoom(QWidget *parent)
+MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), modelForTracksListView(nullptr), modelForPlaylistsListView(nullptr), shuffleOn(false), currentlyPlayingIndex(0)
-    ,repeatType(RepeatType::No_Repeat), viewMode(ViewMode::None)
+    ,repeatType(RepeatType::No_Repeat), viewMode(ViewMode::None), networkMode(networkMode), server(server), client(client),
+    modelForClientListView(nullptr)
 {
     ui->setupUi(this);
+    
     ui->Label_AlbumCover->setScaledContents(true);
     ui->Label_AlbumCover->setVisible(true);
     for (int i = 0; i < ui->TreeWidget_Category->topLevelItemCount(); i++)
@@ -60,6 +62,39 @@ MusicRoom::MusicRoom(QWidget *parent)
     //  connect(ui->PushButton_SwitchView, &QPushButton::clicked,this, &MusicRoom::on_PushButton_SwitchView_clicked);
     // connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
     connectPlayerSignalsToUISlots();
+    connectClientSignalsToUI();
+    connectServerSignalsToUI();
+    
+    // This makes the window so nice and clean when online stuff is not needed.
+    if (networkMode == NetworkMode::Offline)
+    {
+        ui->GroupBox_OnlineBox->setEnabled(false);
+        this->resize(875, this->height());
+        ui->GroupBox_OnlineBox->deleteLater();
+        ui->GroupBox_OnlineBox = nullptr;
+        
+        return;
+    }
+
+    if (client)
+    {
+        Command command(CommandType::JoinedMusicRoom, "", "");
+        client->sendCommand(command);
+    }
+    else if (server)
+    {
+
+    }
+}
+
+void MusicRoom::connectClientSignalsToUI()
+{
+    connect(client, Client::clientNamesReceived, this, on_clientNamesReceived);
+}
+
+void MusicRoom::connectServerSignalsToUI()
+{
+    connect(server, Server::clientsAllJoined, this, on_clientsAllJoined);
 }
 
 void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)

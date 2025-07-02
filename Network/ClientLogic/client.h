@@ -7,6 +7,7 @@
 #include "../../Network/Command/command.h"
 
 class JoinWindow;
+class MusicRoom;
 
 class Client : public QObject {
     Q_OBJECT
@@ -16,7 +17,7 @@ public:
     static void deleteInstance();
     void connectToHost(const int& port);
     void disconnect();
-    void sendMessage(const QString& message);
+    void sendCommand(Command& command);
 
 signals:
     void connectedToServer(); // Called when connected to the main server
@@ -25,7 +26,8 @@ signals:
     void dataReceived(const QByteArray& data);
     void clientObjectDeleted();
     void clientError(const QString& message);
-    void goToMusicRoom(const QString& username, QTcpSocket* socket);
+    void goToMusicRoom();
+    void clientNamesReceived(const QString& names);
 
 private slots:
     void connected();  // Called when connection is established
@@ -48,6 +50,7 @@ private:
     Client(const Client&&) = delete; 
 
     friend class JoinWindow;
+    friend class MusicRoom;
 };
 
 #endif // CLIENT_H

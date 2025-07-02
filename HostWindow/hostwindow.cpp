@@ -162,9 +162,16 @@ void HostWindow::on_PushButton_GoToMusicRoom_clicked()
     {
         Command command(CommandType::GoToMusicRoom, "", "");
         server->broadcastMessage(command);
+        
+        MusicRoom* musicroom = new MusicRoom(NetworkMode::Server, server, nullptr);
+        musicroom->show();
+        this->close();
     }
-    MusicRoom* musicroom = new MusicRoom();
-    musicroom->show();
-    this->close();
+    else
+    {
+        MusicRoom* musicroom = new MusicRoom(NetworkMode::Offline, nullptr, nullptr);
+        musicroom->show();
+        this->close();
+    }
 }
 

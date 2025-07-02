@@ -146,7 +146,31 @@ void Server::readData()
             }
 
             break;
-        }    
+        }
+        
+        case CommandType::JoinedMusicRoom:
+            clientsInMusicRoom.append(findClientBySocket(senderSocket));
+            if (clientsInMusicRoom.size() == clients.size())
+            {
+                QString names;
+                for (auto client : clients)
+                    names.append(client.getUsername() + " ");
+
+                Command command(CommandType::ClientNames_Sending, "", names);
+                emit clientsAllJoined();
+                broadcastMessage(command);
+            }
+            break;
+            
+        case CommandType::Request_For_ClientNames:
+        {
+            QString names;
+            for (auto client : clients)
+                names.append(client.getUsername() + " ");
+
+            Command command(CommandType::Response_For_ClientNames, "", names);
+            senderSocket->write(commandToByteArray(&command));
+        }
     }
 }
 
@@ -156,7 +180,7 @@ void Server::clientDisconnected()
     if (!disconnectedSocket)
         return;
 
-    QString clientName = findClientBySocket(disconnectedSocket);
+    QString clientName = findClientBySocket(disconnectedSocket)->username;
 
     removeClientByUsername(clientName);
     
@@ -216,12 +240,12 @@ void Server::addClient(User client)
     clients.append(client);
 }
 
-QString Server::findClientBySocket(const QTcpSocket* socket)
+User* Server::findClientBySocket(const QTcpSocket* socket)
 {
     for (auto& client : clients)
         if (client.socket == socket)
-            return client.username;
-    return "-1";
+            return &client;
+    return nullptr;
 }
 
 // Getters
