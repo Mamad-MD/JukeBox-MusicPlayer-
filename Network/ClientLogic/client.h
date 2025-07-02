@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QString>
-#include "command.h"
+#include "../../Network/Command/command.h"
 
 class JoinWindow;
 
@@ -25,6 +25,7 @@ signals:
     void dataReceived(const QByteArray& data);
     void clientObjectDeleted();
     void clientError(const QString& message);
+    void goToMusicRoom(const QString& username, QTcpSocket* socket);
 
 private slots:
     void connected();  // Called when connection is established

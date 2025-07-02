@@ -1,8 +1,9 @@
 #include "hostwindow.h"
-#include "mainwindow.h"
+#include "../mainwindow.h"
 #include "ui_hostwindow.h"
-#include "message_displayer.h"
-#include "server.h"
+#include "../MessageDisplayer/message_displayer.h"
+#include "../Network/ServerLogic/server.h"
+#include "../MusicRoom/musicroom.h"
 
 Server* Server::instance = nullptr; 
 
@@ -157,6 +158,13 @@ void HostWindow::connectServerSignalsToUISlots(const Server* server)
 
 void HostWindow::on_PushButton_GoToMusicRoom_clicked()
 {
-    
+    if (server)
+    {
+        Command command(CommandType::GoToMusicRoom, "", "");
+        server->broadcastMessage(command);
+    }
+    MusicRoom* musicroom = new MusicRoom();
+    musicroom->show();
+    this->close();
 }
 

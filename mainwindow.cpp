@@ -1,6 +1,6 @@
 #include "mainwindow.h"
-#include "hostwindow.h"
-#include "joinwindow.h"
+#include "HostWindow/hostwindow.h"
+#include "JoinWindow/joinwindow.h"
 #include "ui_mainwindow.h"
 
 

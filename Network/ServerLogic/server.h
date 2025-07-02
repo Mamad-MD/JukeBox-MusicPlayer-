@@ -6,8 +6,8 @@
 #include <QTcpSocket>
 #include <QList>
 #include <QMap>
-#include "user.h"
-#include "command.h"
+#include "../../user.h"
+#include "../Command/command.h"
 
 class Server : public QObject {
     Q_OBJECT
@@ -35,8 +35,8 @@ signals:
     void messageReceived(const QString& username, const QString& content);
 
 private slots:
-    void newConnection();  // Called when a client connects
-    void readData();       // Called when data is available to read
+    void newConnection();
+    void readData();
     void clientDisconnected();
     
 
@@ -51,7 +51,6 @@ private:
     QString findClientBySocket(const QTcpSocket* socket);
     static bool deletingInProcess;
     
-    // Singleton Design Pattern
     static Server* instance;
     Server(const QString& roomName, QObject* parent = nullptr);
     ~Server();
