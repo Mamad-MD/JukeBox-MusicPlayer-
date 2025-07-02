@@ -9,8 +9,8 @@ MusicPlayer* MusicPlayer::instance = nullptr;
 
 MusicRoom::MusicRoom(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), model(nullptr), shuffleOn(false), currentlyPlayingIndex(0)
-    ,repeatType(RepeatType::No_Repeat)
+    , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), modelForTracksListView(nullptr), modelForPlaylistsListView(nullptr), shuffleOn(false), currentlyPlayingIndex(0)
+    ,repeatType(RepeatType::No_Repeat), viewMode(ViewMode::None)
 {
     ui->setupUi(this);
     ui->Label_AlbumCover->setScaledContents(true);
@@ -25,6 +25,7 @@ MusicRoom::MusicRoom(QWidget *parent)
     musicPlayer = MusicPlayer::getInstance(this);
     musicPlayer->setVolume((float)ui->Slider_Volume->value() / 100);
 
+    // Visualizer
     visualizer = new VisualizerWidget(this);
     QWidget* visualizerPage = ui->Widget_MusicDisplay->widget(1);
     QVBoxLayout* visualizerLayout = qobject_cast<QVBoxLayout*>(visualizerPage->layout());
@@ -41,6 +42,19 @@ MusicRoom::MusicRoom(QWidget *parent)
     ui->Label_AlbumCover->show();                // حتما کاور نمایش داده بشه
     visualizer->hide();
     ui->PushButton_SwitchView->setText("Visualizer");
+
+
+    // =======================================
+    // I wanna read user's playlists and folder here and update the listviews.
+    //========================================
+
+
+    // Load Playlists names
+    reloadPlaylistsInTree();
+
+
+
+    
 
 
     //  connect(ui->PushButton_SwitchView, &QPushButton::clicked,this, &MusicRoom::on_PushButton_SwitchView_clicked);
@@ -101,6 +115,9 @@ void MusicRoom::changeActiveTrackInListView(int index)
 
 void MusicRoom::showFolderTracks()
 {
+    if (viewMode != ViewMode::Folder)
+        return;
+    
     QString dirPath = ui->LineEdit_Path->text();
 
     QDir dir(dirPath);
@@ -108,49 +125,44 @@ void MusicRoom::showFolderTracks()
     filters << "*.mp3" << "*.wav";
 
     QFileInfoList fileList = dir.entryInfoList(filters, QDir::Files | QDir::NoSymLinks);
-    QStringList fileNames;
 
     // musicPathsFromFolder.clear();
     tracksFromFolder.clear();
-    tracksInListView.clear();
     
     for (const QFileInfo &fileInfo : fileList) 
     {
         AudioTrack track(fileInfo.fileName(), fileInfo.absoluteFilePath());
         tracksFromFolder.append(track);
-
-        fileNames << fileInfo.fileName();
     }
 
-    for (auto& track : tracksFromFolder)
-        tracksInListView.append(&track);
+
+    addTracksToListView(tracksFromFolder);
+
 
     // =================================================
     // I Want you save these tracks somewhere in a file
 
-
-    
-
-    if (model)
-    {
-        delete model;
-        model = nullptr;
-    }
-
-    model = new QStringListModel(this);
-
-    model->setStringList(fileNames);
-    ui->ListView_AudioTracks->setModel(model);
 }
 
 void MusicRoom::showQueueTracks()
 {
-    MessageDisplayer::display(MessageType::Info, "Notice", "Show Queue Tracks");
+    if (viewMode != ViewMode::Queue)
+        return;
+    // MessageDisplayer::display(MessageType::Info, "Notice", "Show Queue Tracks");
+    addTracksToListView(tracksFromQueue);
+    
 }
 
 void MusicRoom::showPlayListTracks(const QString& playlistName)
 {
-    MessageDisplayer::display(MessageType::Info, "Notice", "Show Playlist " + playlistName);
+    if (viewMode != ViewMode::PlayList)
+        return;
+    // MessageDisplayer::display(MessageType::Info, "Notice", "Show Playlist " + playlistName);
+    for (auto& playlist : playlists)
+    {
+        if (playlist.name == playlistName)
+            addTracksToListView(playlist.tracks);
+    }
 }
 
 void MusicRoom::connectPlayerSignalsToUISlots()
@@ -170,14 +182,14 @@ void MusicRoom::connectPlayerSignalsToUISlots()
 
 void MusicRoom::clearTracksListView()
 {
-    if (!model)
+    if (!modelForTracksListView)
         return;
     musicPlayer->pause();
     musicPlayer->clearAudioTrack();
     ui->Label_Timer->setText("");
     tracksInListView.clear();
-    model->setStringList(QStringList());  // Clears the list
-    ui->ListView_AudioTracks->setModel(model);
+    modelForTracksListView->setStringList(QStringList());  // Clears the list
+    ui->ListView_AudioTracks->setModel(modelForTracksListView);
 }
 
 void MusicRoom::playNext()
@@ -250,4 +262,83 @@ void MusicRoom::playRandomIndex()
         randomIndex = generateRandom(0, tracksInListView.size() - 1);
     currentlyPlayingIndex = randomIndex;
     playThisIndex(currentlyPlayingIndex);
+}
+
+void MusicRoom::addTracksToListView(QList<AudioTrack>& tracks)
+{
+    void clearTracksListView();
+    QStringList trackNames;
+    tracksInListView.clear();
+    for (auto& track : tracks)
+    {
+        trackNames << track.name;
+        tracksInListView.append(&track);
+    }
+
+    if (!modelForTracksListView)
+        modelForTracksListView = new QStringListModel(this);
+    
+    modelForTracksListView->setStringList(trackNames);
+    ui->ListView_AudioTracks->setModel(modelForTracksListView);
+}
+
+void MusicRoom::reloadPlaylistsInListView()
+{
+    clearPlaylistsListView();
+    QStringList playlistNames;
+    for (auto& playlist : playlists)
+        playlistNames << playlist.name;
+        
+    if (!modelForPlaylistsListView)
+        modelForPlaylistsListView = new QStringListModel(this);
+        
+    modelForPlaylistsListView->setStringList(playlistNames);
+    ui->ListView_PlayLists->setModel(modelForPlaylistsListView);
+
+}
+
+void MusicRoom::reloadPlaylistsInTree()
+{
+    QTreeWidget* tree = ui->TreeWidget_Category;
+    QTreeWidgetItem* playlistsBranch = tree->topLevelItem(1);
+
+    // First clear it
+    for (int i = 0; i < playlistsBranch->childCount(); i++)
+        playlistsBranch->takeChild(i);
+
+    for (auto& playlist : playlists)
+    {
+        auto playlistBranch = new QTreeWidgetItem();
+        playlistBranch->setText(0, playlist.name);
+        playlistsBranch->addChild(playlistBranch);
+    }
+}
+
+PlayList* MusicRoom::findPlaylistByName(const QString& name)
+{
+    for (auto& playlist : playlists)
+    {
+        if (playlist.name == name)
+            return &playlist;
+    }
+
+    return nullptr;
+}
+
+void MusicRoom::clearPlaylistsListView()
+{
+    if (!modelForPlaylistsListView)
+        return;
+    modelForPlaylistsListView->setStringList(QStringList());
+    ui->ListView_PlayLists->setModel(modelForPlaylistsListView);
+}
+
+bool MusicRoom::addTrackToQueue(AudioTrack& trackToBeAdded)
+{
+    for (auto& track : tracksFromQueue)
+        if (track.name == trackToBeAdded.name)
+            return false;
+
+    tracksFromQueue.append(trackToBeAdded);
+    return true;
 }

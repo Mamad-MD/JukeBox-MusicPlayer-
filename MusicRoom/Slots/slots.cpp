@@ -191,7 +191,7 @@ void MusicRoom::on_ListView_AudioTracks_doubleClicked(const QModelIndex &index)
     if (!index.isValid() || index.row() >= tracksFromFolder.size())
         return;
 
-    musicPlayer->setAudioTrack(&tracksFromFolder[index.row()]);
+    musicPlayer->setAudioTrack(tracksInListView[index.row()]);
     currentlyPlayingIndex = index.row();
     musicPlayer->play();
 }
@@ -202,9 +202,11 @@ void MusicRoom::on_PushButton_Browse_clicked()
                                                     QDir::homePath(),
                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty())
+    {
         ui->LineEdit_Path->setText(dir);
+        hasSetFolder = true;
+    }
     showFolderTracks();
-    hasSetFolder = true;
 }
 
 void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int column)
@@ -213,7 +215,11 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
     {
         if (!hasSetFolder)
             MessageDisplayer::display(MessageType::Info, "Notice", "You haven't selected a folder. First select one.");
+        
+        viewMode = ViewMode::Folder;
+        activePlaylist = "";
         ui->PushButton_Browse->setEnabled(true);
+        musicPlayer->clearAudioTrack();
         showFolderTracks();
         return;
     }
@@ -222,15 +228,21 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
 
     if (item->parent() == categoryItems[1])
     {
-        MessageDisplayer::display(MessageType::Info, "Notice", "it's a playlist");
+        viewMode = ViewMode::PlayList;
+        activePlaylist = item->text(0);
         clearTracksListView();
-        showPlayListTracks(item->text(0));
+        musicPlayer->clearAudioTrack();
+        showPlayListTracks(activePlaylist);
         return;
     }
 
     if (item == categoryItems[2])
     {
-        MessageDisplayer::display(MessageType::Info, "Notice", "Queue");
+        currentlyPlayingIndex = -1;
+        currentlyPlayingDuration = 0;
+        viewMode = ViewMode::Queue;
+        activePlaylist = "";
+        musicPlayer->clearAudioTrack();
         clearTracksListView();
         showQueueTracks();
         return;
@@ -272,4 +284,76 @@ void MusicRoom::on_PushButton_Repeat_clicked()
 void MusicRoom::on_Slider_Volume_valueChanged(int value)
 {
     musicPlayer->setVolume((float)value / 100);
+}
+
+void MusicRoom::on_PushButton_CreatePlayList_clicked()
+{
+    if (ui->LineEdit_PlayListName->text().isEmpty())
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "PlayList name cannot be empty!");
+        return;
+    }
+    
+    QString playlistName = ui->LineEdit_PlayListName->text();
+    ui->LineEdit_PlayListName->setText("");
+    playlists.append(PlayList(playlistName));
+    reloadPlaylistsInListView();
+    reloadPlaylistsInTree();
+}
+
+
+void MusicRoom::on_PushButton_AddTrackToPlayList_clicked()
+{
+    if (tracksInListView.empty() || playlists.empty())
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "Either track list or playlists list is empty!");
+        return;
+    }
+
+    QModelIndex selectedTrackIndex = ui->ListView_AudioTracks->currentIndex();
+    QModelIndex selectedPlaylistIndex = ui->ListView_PlayLists->currentIndex();
+
+    if (!selectedTrackIndex.isValid() || !selectedPlaylistIndex.isValid())
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "Invalid selection!");
+        return;
+    }
+
+    QString trackName = selectedTrackIndex.data(Qt::DisplayRole).toString();
+    QString playlistName = selectedPlaylistIndex.data(Qt::DisplayRole).toString();
+
+    PlayList& playlist = *findPlaylistByName(playlistName);
+    AudioTrack& track = *PlayList::findTrackInListByName(tracksInListView, trackName);
+
+    if (!playlist.addTrack(track))
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "Selected track is already in the playlist!");
+        return;
+    }
+
+    if (activePlaylist == playlistName && viewMode == ViewMode::PlayList)
+        showPlayListTracks(activePlaylist);
+}
+
+
+void MusicRoom::on_PushButton_AddTrackToQueue_clicked()
+{
+    if (tracksInListView.empty())
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "Track list is empty!");
+        return;
+    }
+
+    QModelIndex selectedTrackIndex = ui->ListView_AudioTracks->currentIndex();
+    QString trackName = selectedTrackIndex.data(Qt::DisplayRole).toString();
+    AudioTrack& track = *PlayList::findTrackInListByName(tracksInListView, trackName);
+
+    if (!addTrackToQueue(track))
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "Selected track is already in the queue!");
+        return;
+    }
+
+    if (viewMode == ViewMode::Queue)
+        showQueueTracks();
 }

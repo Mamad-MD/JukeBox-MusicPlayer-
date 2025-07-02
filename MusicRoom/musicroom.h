@@ -16,10 +16,18 @@
 #include <QVBoxLayout>
 #include "MusicPlayer/musicplayer.h"
 #include "Visualizer/visualizerwidget.h"
+#include "PlayList/playlist.h"
 
 namespace Ui {
 class MusicRoom;
 }
+
+enum class ViewMode{
+    None = 0,
+    Folder,
+    PlayList,
+    Queue
+};
 
 class MusicRoom : public QMainWindow
 {
@@ -47,9 +55,11 @@ private slots:
     void on_metaDataChanged();
     void on_PushButton_SwitchView_clicked();
 
-    void on_Slider_Volume_sliderReleased();
     void on_Slider_Volume_valueChanged(int value);
     void on_Slider_MusicSlider_sliderReleased();
+    void on_PushButton_CreatePlayList_clicked();
+    void on_PushButton_AddTrackToPlayList_clicked();
+    void on_PushButton_AddTrackToQueue_clicked();
 
 private:
     Ui::MusicRoom *ui;
@@ -58,36 +68,43 @@ private:
     bool hasSetFolder;
     bool hasAQueue;
 
-    QStringListModel* model;
+    QStringListModel* modelForTracksListView;
+    QStringListModel* modelForPlaylistsListView;
     
     MusicPlayer* musicPlayer;
     QList<AudioTrack> tracksFromFolder;
+    QList<AudioTrack> tracksFromQueue;
+    QList<PlayList> playlists;
     QList<AudioTrack*> tracksInListView; // it doesn't care what library
                                          // you're listening to. it just stores
                                          // a pointer of ListView tracks
     int currentlyPlayingIndex;
     qint64 currentlyPlayingDuration;
+    QString activePlaylist;
     bool shuffleOn;
     RepeatType repeatType;
+    ViewMode viewMode;
 	
     int findIndexFromPath(const QString& path);
 
-    // QStringList musicPathsFromFolder;
 
     void showFolderTracks();
     void showQueueTracks();
     void showPlayListTracks(const QString& playlistName);
-    // void clearAudioTracks
 
     
     void iterateItemsInTree(QTreeWidgetItem* topItem);
-    // void play(const QString& filePath = "");
-    // void pause();
     void changeActiveTrackInListView(int index);
 
     QString formatTime(qint64 ms);
     void connectPlayerSignalsToUISlots();
     void clearTracksListView();
+    void clearPlaylistsListView();
+    void addTracksToListView(QList<AudioTrack>& tracks);
+    bool addTrackToQueue(AudioTrack& track);
+    void reloadPlaylistsInListView();
+    void reloadPlaylistsInTree();
+    PlayList* findPlaylistByName(const QString& name);
 
     void playNext();
     void playPrev();
