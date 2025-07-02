@@ -128,6 +128,12 @@ _deps/
 Thumbs.db
 desktop.ini
 
+# پوشه‌های ساخت
+build/
+CMakeFiles/
+
+# فایل‌های موقت CMake
+
 build/
 CMakeFiles/
 
@@ -138,6 +144,7 @@ install_manifest.txt
 Makefile
 cmake_install.cmake
 
+# فایل‌های موقت Qt
 moc_*
 ui_*
 qrc_*
@@ -145,6 +152,7 @@ qrc_*
 *.qmake.stash
 *.pro.user
 
+# فایل‌های اجرایی و کامپایل شده
 *.exe
 *.app
 *.dll
@@ -154,10 +162,12 @@ qrc_*
 *.ilk
 *.pdb
 
+# فایل‌های IDE و ویرایشگرها
 .vscode/
 .idea/
 *.userprefs
 *.sublime-workspace
 
+# فایل‌های سیستم
 .DS_Store
 Thumbs.db

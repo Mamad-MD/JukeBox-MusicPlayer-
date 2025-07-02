@@ -1,6 +1,5 @@
 #include "client.h"
-#include "message_displayer.h"
-
+#include "../../MessageDisplayer/message_displayer.h"
 
 Client* Client::getInstance(const QString& username)
 {
@@ -15,7 +14,7 @@ void Client::deleteInstance()
     instance = nullptr;
 }
 
-Client::Client(const QString& username, QObject *parent): QObject(parent), lastReceivedMessage(""), hasReceivedRoomName(false), username(username){}
+Client::Client(const QString& username, QObject *parent): QObject(parent), lastReceivedMessage(""), hasReceivedRoomName(false), username(username), socket(nullptr){}
 
 Client::~Client()
 {
@@ -25,20 +24,31 @@ Client::~Client()
 
 void Client::connectToHost(const int& port)
 {
+    qDebug() << "before checking socket";
     if (socket)
     {
+        qDebug() << "socket is not null";
+        
         if (socket->state() == QAbstractSocket::ConnectedState)
             emit clientError("Already connected!");
         else
             emit clientError("Already trying to connect!");
         return;
     }
-    
+
+    qDebug() << "before making socket";
     socket = new QTcpSocket(this);
-    connect(socket, &QTcpSocket::connected, this, &connected);
-    connect(socket, &QTcpSocket::readyRead, this, &readData);
-    connect(socket, &QTcpSocket::disconnected, this, &disconnected);
-    connect(socket, &QTcpSocket::errorOccurred, this, &on_errorOccurred);
+    qDebug() << "after making socket";
+    
+    // connect(socket, &QTcpSocket::connected, this, &connected);
+    // connect(socket, &QTcpSocket::readyRead, this, &readData);
+    // connect(socket, &QTcpSocket::disconnected, this, &disconnected);
+    // connect(socket, &QTcpSocket::errorOccurred, this, &on_errorOccurred);
+    qDebug() << connect(socket, &QTcpSocket::connected, this, &Client::connected);
+    qDebug() << connect(socket, &QTcpSocket::readyRead, this, &Client::readData);
+    qDebug() << connect(socket, &QTcpSocket::disconnected, this, &Client::disconnected);
+    qDebug() << connect(socket, &QTcpSocket::errorOccurred, this, &Client::on_errorOccurred);
+
 
     socket->connectToHost(QHostAddress::LocalHost, port);
 }
@@ -80,6 +90,11 @@ void Client::readData()
         }
         case CommandType::Message:
         {
+            break;
+        }
+        case CommandType::GoToMusicRoom:
+        {
+            emit goToMusicRoom(username, socket);
             break;
         }
     }

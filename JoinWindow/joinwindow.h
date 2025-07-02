@@ -2,7 +2,7 @@
 #define JOINWINDOW_H
 
 #include <QMainWindow>
-#include "client.h"
+#include "../Network/ClientLogic/client.h"
 
 namespace Ui {
 class JoinWindow;

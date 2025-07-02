@@ -5,9 +5,14 @@ project(JukeBox VERSION 0.1 LANGUAGES CXX)  # اسم پروژه رو من روی
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_SOURCE_DIR}/MusicRoom")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/MusicRoom/Visualizer)
+
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Multimedia)
@@ -17,12 +22,14 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        hostwindow.cpp
-        hostwindow.h
-        hostwindow.ui
-        server.h server.cpp
-        client.h client.cpp
-        message_displayer.h message_displayer.cpp
+        HostWindow/hostwindow.cpp
+        HostWindow/hostwindow.h
+        HostWindow/hostwindow.ui
+        Network/ServerLogic/server.h Network/ServerLogic/server.cpp
+        Network/ClientLogic/client.h Network/ClientLogic/client.cpp
+        MessageDisplayer/message_displayer.h MessageDisplayer/message_displayer.cpp
+        MusicRoom/AudioTrack/audiotrack.h MusicRoom/AudioTrack/audiotrack.cpp
+        MusicRoom/MusicPlayer/musicplayer.h MusicRoom/MusicPlayer/musicplayer.cpp
         resources.qrc
 )
 
@@ -32,20 +39,28 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 qt_add_executable(JukeBox
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        joinwindow.h joinwindow.cpp joinwindow.ui
-        server.h server.cpp
-        client.h client.cpp
-        message_displayer.h message_displayer.cpp
+        main.cpp
+        JoinWindow/joinwindow.h JoinWindow/joinwindow.cpp JoinWindow/joinwindow.ui
+        Network/ServerLogic/server.h Network/ServerLogic/server.cpp
+        Network/ClientLogic/client.h Network/ClientLogic/client.cpp
+        MessageDisplayer/message_displayer.h MessageDisplayer/message_displayer.cpp
         user.h
         user.cpp
-        commandtype.h
-        command.h command.cpp
-        authmanager.h
-        authmanager.cpp
+        Network/Command/commandtype.h
+        Network/Command/command.h Network/Command/command.cpp
+        MusicRoom/musicroom.h MusicRoom/musicroom.cpp MusicRoom/musicroom.ui
+        Login/authmanager.h
+        Login/authmanager.cpp
         resources.qrc
-        loginwindow.h loginwindow.cpp loginwindow.ui
-        signupwindow.h signupwindow.cpp signupwindow.ui
-        forgotpasswordwindow.h forgotpasswordwindow.cpp forgotpasswordwindow.ui
+        Login/loginwindow.h Login/loginwindow.cpp Login/loginwindow.ui
+        Login/signupwindow.h Login/signupwindow.cpp Login/signupwindow.ui
+        Login/forgotpasswordwindow.h Login/forgotpasswordwindow.cpp Login/forgotpasswordwindow.ui
+        MusicRoom/Slots/slots.h MusicRoom/Slots/slots.cpp
+        MusicRoom/AudioTrack/audiotrack.h MusicRoom/AudioTrack/audiotrack.cpp
+        MusicRoom/MusicPlayer/musicplayer.h MusicRoom/MusicPlayer/musicplayer.cpp
+        MusicRoom/PlayList/playlist.cpp MusicRoom/PlayList/playlist.h
+        Random/RandomGenerator.h Random/RandomGenerator.cpp
+        MusicRoom/Visualizer/visualizerwidget.h MusicRoom/Visualizer/visualizerwidget.cpp
     )
 else()
     if(ANDROID)

@@ -1,50 +1,58 @@
 #include <QApplication>
-#include "authmanager.h"
-#include "loginwindow.h"
-#include "signupwindow.h"
-#include "forgotpasswordwindow.h"
+#include "Login/authmanager.h"
+#include "Login/loginwindow.h"
+#include "Login/signupwindow.h"
+#include "Login/forgotpasswordwindow.h"
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    Authmanager auth;
+    MainWindow main;
+    main.show();
+    // Authmanager auth;
 
-    LoginWindow loginWin(&auth);
-    SignUpWindow signupWin(&auth);
-    ForgotPasswordWindow forgotPassWin(&auth);
-    MainWindow mainWin;
+    // LoginWindow loginWin(&auth);
+    // SignUpWindow signupWin(&auth);
+    // ForgotPasswordWindow forgotPassWin(&auth);
+    // MainWindow mainWin;
 
-    QObject::connect(&loginWin, &LoginWindow::loginSucceeded, [&](const QString &) {
-        mainWin.show();
-        loginWin.hide();
-    });
+    // // لاگین موفق => نمایش پنجره اصلی، مخفی کردن لاگین
+    // QObject::connect(&loginWin, &LoginWindow::loginSucceeded, [&](const QString &) {
+    //     mainWin.show();
+    //     loginWin.hide();
+    // });
 
-    QObject::connect(&mainWin, &MainWindow::destroyed, [&]() {
-        loginWin.show();
-    });
+    // // بازگشت به لاگین پس از بستن پنجره اصلی (دلخواه)
+    // QObject::connect(&mainWin, &MainWindow::destroyed, [&]() {
+    //     loginWin.show();
+    // });
 
-    QObject::connect(&loginWin, &LoginWindow::goToSignup, [&]() {
-        signupWin.show();
-        loginWin.hide();
-    });
+    // // باز کردن صفحه ثبت نام
+    // QObject::connect(&loginWin, &LoginWindow::goToSignup, [&]() {
+    //     signupWin.show();
+    //     loginWin.hide();
+    // });
 
-    QObject::connect(&signupWin, &SignUpWindow::registrationSucceeded, [&]() {
-        signupWin.hide();
-        loginWin.show();
-    });
+    // // بازگشت از ثبت نام به لاگین بعد از موفقیت ثبت نام
+    // QObject::connect(&signupWin, &SignUpWindow::registrationSucceeded, [&]() {
+    //     signupWin.hide();
+    //     loginWin.show();
+    // });
 
-    QObject::connect(&loginWin, &LoginWindow::goToForgotPassword, [&]() {
-        forgotPassWin.show();
-        loginWin.hide();
-    });
+    // // باز کردن صفحه فراموشی رمز
+    // QObject::connect(&loginWin, &LoginWindow::goToForgotPassword, [&]() {
+    //     forgotPassWin.show();
+    //     loginWin.hide();
+    // });
 
-    QObject::connect(&forgotPassWin, &ForgotPasswordWindow::destroyed, [&]() {
-        loginWin.show();
-    });
+    // // بعد از بستن فراموشی رمز، بازگشت به صفحه لاگین
+    // QObject::connect(&forgotPassWin, &ForgotPasswordWindow::destroyed, [&]() {
+    //     loginWin.show();
+    // });
 
-    loginWin.show();
+    // loginWin.show();
 
     return app.exec();
 }
