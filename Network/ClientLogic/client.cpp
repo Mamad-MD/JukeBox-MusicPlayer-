@@ -94,7 +94,17 @@ void Client::readData()
         }
         case CommandType::GoToMusicRoom:
         {
-            emit goToMusicRoom(username, socket);
+            emit goToMusicRoom();
+            break;
+        }
+        case CommandType::Response_For_ClientNames:
+        {
+            emit clientNamesReceived(command.content);
+            break;
+        }
+        case CommandType::ClientNames_Sending:
+        {
+            emit clientNamesReceived(command.content);
             break;
         }
     }
@@ -116,9 +126,9 @@ void Client::on_errorOccurred(QAbstractSocket::SocketError socketError)
     cleanupSocket();
 }
 
-void Client::sendMessage(const QString& message)
+void Client::sendCommand(Command& command)
 {
-    socket->write(message.toUtf8());
+    socket->write(commandToByteArray(&command));
 }
 
 void Client::cleanupSocket()

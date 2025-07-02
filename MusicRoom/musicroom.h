@@ -17,6 +17,8 @@
 #include "MusicPlayer/musicplayer.h"
 #include "Visualizer/visualizerwidget.h"
 #include "PlayList/playlist.h"
+#include "../Network/ServerLogic/server.h"
+#include "../Network/ClientLogic/client.h"
 
 namespace Ui {
 class MusicRoom;
@@ -30,12 +32,18 @@ enum class ViewMode{
     Faverite
 };
 
+enum class NetworkMode {
+    Offline = 0,
+    Client,
+    Server
+};
+
 class MusicRoom : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MusicRoom(QWidget *parent = nullptr);
+    explicit MusicRoom(NetworkMode networkMode, Server* server, Client* client,QWidget *parent = nullptr);
     ~MusicRoom();
 
 private slots:
@@ -61,10 +69,15 @@ private slots:
     void on_PushButton_CreatePlayList_clicked();
     void on_PushButton_AddTrackToPlayList_clicked();
     void on_PushButton_AddTrackToQueue_clicked();
-
     void on_PushButton_AddTrackToFavorite_clicked();
 
     void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+
+    // Client Slots:
+    void on_clientNamesReceived(const QString& names);
+
+    // Server Slots:
+    void on_clientsAllJoined();
 
 private:
     Ui::MusicRoom *ui;
@@ -121,6 +134,20 @@ private:
     VisualizerWidget* visualizer;
 
     bool isShowingCover = true;
+
+
+    // Online Stuff
+    Server* server;
+    Client* client;
+    NetworkMode networkMode;
+
+    void connectClientSignalsToUI();
+    void connectServerSignalsToUI();
+
+    QStringListModel* modelForClientListView;
+    
+    void addClientsToListView(const QString& names);
+    void clearClientsList();
 };
 
 #endif // MUSICROOM_H

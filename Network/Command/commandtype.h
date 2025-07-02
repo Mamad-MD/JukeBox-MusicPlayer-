@@ -7,8 +7,12 @@ enum class CommandType {
     Join_Request,
     Message,
     GoToMusicRoom,
+    JoinedMusicRoom,
+    ClientNames_Sending,
     Play_Request,
-    Pause_Request
+    Pause_Request,
+    Request_For_ClientNames,
+    Response_For_ClientNames,
 };
 
 #endif // COMMANDTYPE_H

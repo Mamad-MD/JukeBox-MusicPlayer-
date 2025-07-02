@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "../MessageDisplayer/message_displayer.h"
 #include <QString>
+#include "../MusicRoom/musicroom.h"
 
 Client* Client::instance = nullptr;
 
@@ -59,19 +60,13 @@ void JoinWindow::on_PushButton_LookForRooms_clicked()
     
     QString username = ui->LineEdit_Username->text();
 
-    qDebug() << "before getting the instance";
     client = Client::getInstance(username);
-    qDebug() << "got the instance";
     
     ui->PushButton_LookForRooms->setEnabled(false);
     ui->PushButton_Back->setEnabled(false);
     
-    qDebug() << "before connecting";
     client->connectToHost(enteredPort);
-    qDebug() << "after connecting";
-    qDebug() << "before connecting signals";
     connectClientSignalsToUISlots(client); 
-    qDebug() << "after connecting signals";
 }
 
 void JoinWindow::connectClientSignalsToUISlots(const Client* client)
@@ -85,6 +80,7 @@ void JoinWindow::connectClientSignalsToUISlots(const Client* client)
     connect(client, Client::dataReceived, this, on_dataReceived);
     connect(client, Client::clientError, this, on_clientError);
     connect(client, Client::clientObjectDeleted, this, on_clientObjectDeleted);
+    connect(client, Client::goToMusicRoom, this, on_goToMusicRoom);
     
     qDebug() << "Connected signals and slots\n";
 }
@@ -149,4 +145,11 @@ void JoinWindow::on_TableWidget_Rooms_cellClicked(int row, int column)
     Command clientCommand(CommandType::Join_Request, client->username, "");
     QByteArray commandInByteArray = commandToByteArray(&clientCommand);
     client->socket->write(commandInByteArray);
+}
+
+void JoinWindow::on_goToMusicRoom()
+{
+    MusicRoom* musicroom = new MusicRoom(NetworkMode::Client, nullptr, client);
+    musicroom->show();
+    this->close();
 }

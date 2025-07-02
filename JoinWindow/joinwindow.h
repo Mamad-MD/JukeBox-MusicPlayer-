@@ -28,6 +28,7 @@ private slots:
     void on_dataReceived(const QByteArray& data);
     void on_clientError(const QString& errorMessage);
     void on_clientObjectDeleted();
+    void on_goToMusicRoom();
 
     void on_TableWidget_Rooms_cellClicked(int row, int column);
 

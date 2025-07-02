@@ -61,6 +61,8 @@ qt_add_executable(JukeBox
         MusicRoom/PlayList/playlist.cpp MusicRoom/PlayList/playlist.h
         Random/RandomGenerator.h Random/RandomGenerator.cpp
         MusicRoom/Visualizer/visualizerwidget.h MusicRoom/Visualizer/visualizerwidget.cpp
+        MusicRoom/Slots/ClientSlots.cpp
+        MusicRoom/Slots/ServerSlots.cpp
     )
 else()
     if(ANDROID)

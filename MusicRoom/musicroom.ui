@@ -268,9 +268,9 @@ QSlider::add-page:horizontal {
    <widget class="QListView" name="ListView_PlayLists">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>400</x>
       <y>380</y>
-      <width>221</width>
+      <width>211</width>
       <height>261</height>
      </rect>
     </property>
@@ -568,13 +568,13 @@ QSlider::add-page:vertical {
       </rect>
      </property>
     </widget>
-    <widget class="QListView" name="ListView_PlayLists_2">
+    <widget class="QListView" name="ListView_Users">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>70</y>
+       <y>80</y>
        <width>411</width>
-       <height>141</height>
+       <height>131</height>
       </rect>
      </property>
      <property name="editTriggers">

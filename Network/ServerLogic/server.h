@@ -9,6 +9,8 @@
 #include "../../user.h"
 #include "../Command/command.h"
 
+class MusicRoom;
+
 class Server : public QObject {
     Q_OBJECT
 
@@ -33,7 +35,8 @@ signals:
     void dataReceived(const QString& username, const QByteArray& message);
     void clientConnectedToMainServer();
     void messageReceived(const QString& username, const QString& content);
-
+    void clientsAllJoined();
+    
 private slots:
     void newConnection();
     void readData();
@@ -44,11 +47,12 @@ private:
     QString roomName;
     QTcpServer *TCPServer;
     QList<User> clients;
+    QList<User*> clientsInMusicRoom;
 
     void addClient(User client);
     void removeClientBySocket(QTcpSocket* socket);
     void removeClientByUsername(const QString& username);
-    QString findClientBySocket(const QTcpSocket* socket);
+    User* findClientBySocket(const QTcpSocket* socket);
     static bool deletingInProcess;
     
     static Server* instance;
@@ -58,6 +62,8 @@ private:
     // Server& operator=(const Server&) = delete;
     Server(const Server&&) = delete;
     // Server& operator=(const Server&&) = delete;
+
+    friend class MusicRoom;
 };
 
 #endif // SERVER_H
