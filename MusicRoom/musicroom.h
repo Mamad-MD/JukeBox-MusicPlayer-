@@ -17,8 +17,6 @@
 #include "MusicPlayer/musicplayer.h"
 #include "Visualizer/visualizerwidget.h"
 #include "PlayList/playlist.h"
-#include "../Network/ServerLogic/server.h"
-#include "../Network/ClientLogic/client.h"
 
 namespace Ui {
 class MusicRoom;
@@ -28,13 +26,8 @@ enum class ViewMode{
     None = 0,
     Folder,
     PlayList,
-    Queue
-};
-
-enum class NetworkMode {
-    Offline = 0,
-    Client,
-    Server
+    Queue,
+    Faverite
 };
 
 class MusicRoom : public QMainWindow
@@ -42,7 +35,7 @@ class MusicRoom : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MusicRoom(NetworkMode networkMode, Server* server, Client* client,QWidget *parent = nullptr);
+    explicit MusicRoom(QWidget *parent = nullptr);
     ~MusicRoom();
 
 private slots:
@@ -69,17 +62,14 @@ private slots:
     void on_PushButton_AddTrackToPlayList_clicked();
     void on_PushButton_AddTrackToQueue_clicked();
 
+    void on_PushButton_AddTrackToFavorite_clicked();
 
-    // Client Slots:
-    void on_clientNamesReceived(const QString& names);
-
-    // Server Slots:
-    void on_clientsAllJoined();
+    void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
 private:
     Ui::MusicRoom *ui;
     
-    QTreeWidgetItem* categoryItems[3];
+    QTreeWidgetItem* categoryItems[4];
     bool hasSetFolder;
     bool hasAQueue;
 
@@ -91,6 +81,7 @@ private:
     QList<AudioTrack> tracksFromQueue;
     QList<PlayList> playlists;
     QList<AudioTrack*> tracksInListView; // it doesn't care what library
+    QList<AudioTrack> FaveriteTracks;
                                          // you're listening to. it just stores
                                          // a pointer of ListView tracks
     int currentlyPlayingIndex;
@@ -106,7 +97,7 @@ private:
     void showFolderTracks();
     void showQueueTracks();
     void showPlayListTracks(const QString& playlistName);
-
+    void showFaveriteTracks();
     
     void iterateItemsInTree(QTreeWidgetItem* topItem);
     void changeActiveTrackInListView(int index);
@@ -117,6 +108,7 @@ private:
     void clearPlaylistsListView();
     void addTracksToListView(QList<AudioTrack>& tracks);
     bool addTrackToQueue(AudioTrack& track);
+    bool addTrackToFaverite(AudioTrack& track);
     void reloadPlaylistsInListView();
     void reloadPlaylistsInTree();
     PlayList* findPlaylistByName(const QString& name);
@@ -129,20 +121,6 @@ private:
     VisualizerWidget* visualizer;
 
     bool isShowingCover = true;
-
-
-    // Online Stuff
-    Server* server;
-    Client* client;
-    NetworkMode networkMode;
-
-    void connectClientSignalsToUI();
-    void connectServerSignalsToUI();
-
-    QStringListModel* modelForClientListView;
-    
-    void addClientsToListView(const QString& names);
-    void clearClientsList();
 };
 
 #endif // MUSICROOM_H

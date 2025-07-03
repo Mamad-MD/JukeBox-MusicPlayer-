@@ -204,7 +204,7 @@ void MusicRoom::on_PushButton_Browse_clicked()
     if (!dir.isEmpty())
     {
         ui->LineEdit_Path->setText(dir);
-        hasSetFolder = true;
+        hasSetFolder = true;                   // save folder addres in suer file (dir)
     }
     showFolderTracks();
 }
@@ -245,6 +245,18 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
         musicPlayer->clearAudioTrack();
         clearTracksListView();
         showQueueTracks();
+        return;
+    }
+    if(item == categoryItems[3])
+    {
+        currentlyPlayingIndex = -1;
+        currentlyPlayingDuration = 0;
+        viewMode = ViewMode::Faverite;
+        activePlaylist = "";
+        musicPlayer->clearAudioTrack();
+        clearTracksListView();
+        showFaveriteTracks();
+        // create method in musicroom.h for show faverite
         return;
     }
 }
@@ -296,7 +308,7 @@ void MusicRoom::on_PushButton_CreatePlayList_clicked()
     
     QString playlistName = ui->LineEdit_PlayListName->text();
     ui->LineEdit_PlayListName->setText("");
-    playlists.append(PlayList(playlistName));
+    playlists.append(PlayList(playlistName));            // save play list to user file
     reloadPlaylistsInListView();
     reloadPlaylistsInTree();
 }
@@ -330,7 +342,7 @@ void MusicRoom::on_PushButton_AddTrackToPlayList_clicked()
         MessageDisplayer::display(MessageType::Critical, "Error", "Selected track is already in the playlist!");
         return;
     }
-
+                       // update play list in user file
     if (activePlaylist == playlistName && viewMode == ViewMode::PlayList)
         showPlayListTracks(activePlaylist);
 }
@@ -356,4 +368,26 @@ void MusicRoom::on_PushButton_AddTrackToQueue_clicked()
 
     if (viewMode == ViewMode::Queue)
         showQueueTracks();
+}
+
+void MusicRoom::on_PushButton_AddTrackToFavorite_clicked()
+{
+    if (tracksInListView.empty())
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "Track list is empty!");
+        return;
+    }
+
+    QModelIndex selectedTrackIndex = ui->ListView_AudioTracks->currentIndex();
+    QString trackName = selectedTrackIndex.data(Qt::DisplayRole).toString();
+    AudioTrack& track = *PlayList::findTrackInListByName(tracksInListView, trackName);
+
+    if (!addTrackToFaverite(track))
+    {
+        MessageDisplayer::display(MessageType::Critical, "Error", "Selected track is already in the Faverite!");
+        return;
+    }
+
+    if (viewMode == ViewMode::Faverite)
+        showFaveriteTracks();
 }
