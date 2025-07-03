@@ -8,6 +8,7 @@
 #include <QMap>
 #include "../../user.h"
 #include "../Command/command.h"
+#include <QFile>
 
 class MusicRoom;
 
@@ -21,6 +22,7 @@ public:
     QList<User>& getClientList();
     QString getRoomName() const;
     void broadcastMessage(Command& command, const QTcpSocket* excludedClientSocket = nullptr);
+    void sendTrackToClient(QTcpSocket* socket, const QString& filePath);
     void sendMessageToClient(QTcpSocket* client, const QString message);
     void start(const int& port);
     void stop();
@@ -37,6 +39,9 @@ signals:
     void clientConnectedToMainServer();
     void messageReceived(const QString& username, const QString& content);
     void clientsAllJoined();
+    void allSetTheirFolders();
+    void notHaveTheTrack(QTcpSocket* sender);
+    void allHaveTheTrack();
     
 private slots:
     void newConnection();
@@ -49,6 +54,11 @@ private:
     QTcpServer *TCPServer;
     QList<User> clients;
     QList<User*> clientsInMusicRoom;
+    QList<User*> clientsWhoSetTheirFolder;
+    QList<User*> clientsWhoHaveTheTrack;
+
+    QString currentTrackName;
+    QString currentTrackPath;
 
     void addClient(User client);
     void removeClientBySocket(QTcpSocket* socket);

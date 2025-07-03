@@ -55,30 +55,55 @@ void MusicRoom::on_PushButton_Send_clicked()
     ui->TextEdit_Message->setText("");
 }
 
+void MusicRoom::sayWhetherIHaveThisTrack(QString& trackName)
+{
+    QDir dir(client->folderPath);
 
+    if (dir.exists(trackName))
+    {
+        Command cmd(CommandType::ThisTrackStatusOnMyPC, "", "1");
+        if (client->file)
+            client->file->close();
+        client->sendCommand(cmd);
+    }
+    else
+    {
+        Command cmd(CommandType::ThisTrackStatusOnMyPC, "", "0");
+        client->sendCommand(cmd);
+    }
 
+}
 
+void MusicRoom::on_playTheTrackOnline()
+{
+    QString fullPath = QDir(client->folderPath).filePath(client->currentTrackName);
+    qDebug() << "path: " + fullPath;
+    if (client->file)
+        client->file->close();
+    if (currentTrack)
+    {
+        if (currentTrack->name == client->currentTrackName)
+        {
+            musicPlayer->play();
+            return;
+        }
+        else
+        {
+            delete currentTrack;
+            currentTrack = new AudioTrack(client->currentTrackName, fullPath);
+        }
+    }
+    else
+        currentTrack = new AudioTrack(client->currentTrackName, fullPath);
 
+    currentTrack = new AudioTrack(client->currentTrackName, fullPath);
 
+    
+    musicPlayer->setAudioTrack(currentTrack);
+    musicPlayer->play();
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void MusicRoom::on_pauseTheTrackOnline()
+{
+    musicPlayer->pause();
+}

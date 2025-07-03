@@ -12,6 +12,7 @@ private:
     QString username;
     QTcpSocket* socket;
     QDateTime joinTime;
+    QString folderPath;
     friend class Server;
 
 public:

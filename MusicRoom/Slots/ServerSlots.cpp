@@ -19,10 +19,9 @@ void MusicRoom::on_clientDisconnected(const QString& username, int clientsCount)
     server->broadcastMessage(command);
     
     addClientsToListView(names);
-
     
-    Command msg(CommandType::Message, "Server", username + " disconnected.");
-    server->broadcastMessage(msg);
+    // Command msg(CommandType::Message, "Server", username + " disconnected.");
+    // server->broadcastMessage(msg);
 
     addMessageToChatbox("Server", username + " disconnected.");
 }
@@ -31,3 +30,61 @@ void MusicRoom::on_messageReceived(const QString& username, const QString& msg)
 {
     addMessageToChatbox(username, msg);
 }
+
+void MusicRoom::on_allSetTheirFolders()
+{
+    MessageDisplayer::display(MessageType::Info, "Error", "All set their folders");
+}
+
+void MusicRoom::on_notHaveTheTrack(QTcpSocket* receiver)
+{
+    QFile *file = new QFile(server->currentTrackPath);
+    if (file->open(QIODevice::ReadOnly)) {
+        QByteArray buffer;
+        while (!file->atEnd()) {
+            buffer = file->read(4096); // 4 KB chunks
+            receiver->write(buffer);
+            receiver->waitForBytesWritten();
+        }
+    }
+
+    server->clientsWhoHaveTheTrack.append(server->findClientBySocket(receiver));
+    if (server->clientsWhoHaveTheTrack.size() == server->clients.size())
+        emit server->allHaveTheTrack();
+}
+
+void MusicRoom::on_allHaveTheTrack()
+{
+    MessageDisplayer::display(MessageType::Info, "Notice", "Everybody has the track");
+    Command cmd(CommandType::Play_Request, "", "");
+    server->broadcastMessage(cmd);
+    // we're gonna do this after we're sure the track is sent
+    int index = 0;
+    for (int i = 0; i < tracksInListView.size(); i++)
+        if (tracksInListView[i]->getName() == server->currentTrackName)
+        {
+            index = i;
+            break;
+        }
+        
+    musicPlayer->setAudioTrack(PlayList::findTrackInListByName(tracksInListView, server->currentTrackName));
+    currentlyPlayingIndex = index;
+    musicPlayer->play();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

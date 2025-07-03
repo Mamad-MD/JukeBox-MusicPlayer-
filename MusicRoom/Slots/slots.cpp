@@ -5,6 +5,25 @@
 
 void MusicRoom::on_PushButton_PlayPause_clicked()
 {
+    if (server)
+    {
+        if (server->clientsWhoHaveTheTrack.size() != server->clients.size())
+            return;
+        if (musicPlayer->isPlaying)
+        {
+            Command cmd(CommandType::Pause_Request, "", "");
+            server->broadcastMessage(cmd);
+            musicPlayer->pause();
+        }
+        else
+        {
+            Command cmd(CommandType::Play_Request, "", "");
+            server->broadcastMessage(cmd);
+            musicPlayer->play();
+        }
+        return;
+    }
+
     if (musicPlayer->isPlaying)
         musicPlayer->pause();
     else
@@ -35,6 +54,8 @@ void MusicRoom::on_positionChanged(qint64 position)
     if (position == currentlyPlayingDuration)
     {
         ui->PushButton_PlayPause->setText("Play");
+        if (server || client)
+            return;
         if (shuffleOn)
         {
             switch (repeatType)
@@ -191,6 +212,12 @@ void MusicRoom::on_ListView_AudioTracks_doubleClicked(const QModelIndex &index)
     if (!index.isValid() || index.row() >= tracksFromFolder.size())
         return;
 
+    if (server)
+    {
+        playMusicOnline(index.row());
+        return;
+    }
+
     musicPlayer->setAudioTrack(tracksInListView[index.row()]);
     currentlyPlayingIndex = index.row();
     musicPlayer->play();
@@ -205,8 +232,16 @@ void MusicRoom::on_PushButton_Browse_clicked()
     {
         ui->LineEdit_Path->setText(dir);
         hasSetFolder = true;                   // save folder addres in suer file (dir)
+        if (client)
+        {
+            client->folderPath = dir;
+            Command command(CommandType::SetMyFolder, "", dir);
+            client->sendCommand(command);
+        }
     }
-    showFolderTracks();
+
+    if (!client)
+        showFolderTracks();
 }
 
 void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int column)

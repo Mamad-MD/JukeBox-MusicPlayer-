@@ -11,7 +11,7 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     : QMainWindow(parent)
     , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), modelForTracksListView(nullptr), modelForPlaylistsListView(nullptr), shuffleOn(false), currentlyPlayingIndex(0)
     ,repeatType(RepeatType::No_Repeat), viewMode(ViewMode::None), networkMode(networkMode), server(server), client(client),
-    modelForClientListView(nullptr)
+    modelForClientListView(nullptr), currentTrack(nullptr)
 {
     ui->setupUi(this);
     
@@ -80,13 +80,8 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     {
         disableClientUI();
 
-
         Command command(CommandType::JoinedMusicRoom, "", "");
         client->sendCommand(command);
-    }
-    else if (server)
-    {
-
     }
 }
 
@@ -94,6 +89,9 @@ void MusicRoom::connectClientSignalsToUI()
 {
     connect(client, Client::clientNamesReceived, this, on_clientNamesReceived);
     connect(client, Client::newMessageReceived, this, on_newMessageReceived);
+    connect(client, Client::signal_sayWhetherIHaveThisTrack, this, sayWhetherIHaveThisTrack);
+    connect(client, Client::playTheTrack, this, on_playTheTrackOnline);
+    connect(client, Client::pauseTheTrack, this, on_pauseTheTrackOnline);
 }
 
 void MusicRoom::connectServerSignalsToUI()
@@ -101,6 +99,9 @@ void MusicRoom::connectServerSignalsToUI()
     connect(server, Server::clientsAllJoined, this, on_clientsAllJoined);
     connect(server, Server::clientDisconnection, this, on_clientDisconnected);
     connect(server, Server::messageReceived, this, on_messageReceived);
+    connect(server, Server::allSetTheirFolders, this, on_allSetTheirFolders);
+    connect(server, Server::notHaveTheTrack, this, on_notHaveTheTrack);
+    connect(server, Server::allHaveTheTrack, this, on_allHaveTheTrack);
 }
 
 void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)
@@ -422,7 +423,35 @@ void MusicRoom::disableClientUI()
     ui->ListView_AudioTracks->setEnabled(false);
     ui->PushButton_AddTrackToPlayList->setEnabled(false);
     ui->PushButton_AddTrackToQueue->setEnabled(false);
+    ui->PushButton_AddTrackToFavorite->setEnabled(false);
     ui->GroupBox_CreatePlaylist->setEnabled(false);
     ui->Groupbox_Controls->setEnabled(false);
+    ui->PushButton_Browse->setEnabled(true);
+}
+
+void MusicRoom::playMusicOnline(int index)
+{
+    if (server->clientsWhoSetTheirFolder.size() != server->clients.size())
+    {
+        Command msg(CommandType::Message, "Server", "Set your folders please.");
+        server->broadcastMessage(msg);
+        addMessageToChatbox("Server", "Set your folders please.");
+        
+        MessageDisplayer::display(MessageType::Critical, "Error", "Not everybody has set folders");
+        return;
+    }
+
+    server->currentTrackName = tracksInListView[index]->getName();
+    server->currentTrackPath = tracksInListView[index]->getPath();
+    
+    Command cmd(CommandType::WannaPlayThisTrack, "", server->currentTrackName);
+    qDebug() << "asked for wannaplaythissong";
+    server->broadcastMessage(cmd);
+}
+
+bool fileExistsInFolder(QString folderPath, QString fileName) 
+{
+    QDir dir(folderPath);
+    return dir.exists(fileName);
 }
 

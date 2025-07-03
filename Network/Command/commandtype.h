@@ -11,8 +11,13 @@ enum class CommandType {
     ClientNames_Sending,
     Play_Request,
     Pause_Request,
+    Play_New,
     Request_For_ClientNames,
     Response_For_ClientNames,
+    SetMyFolder,
+    WannaPlayThisTrack,
+    ThisTrackStatusOnMyPC,
+    SendingDone
 };
 
 #endif // COMMANDTYPE_H

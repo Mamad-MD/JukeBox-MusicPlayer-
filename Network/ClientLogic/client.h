@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QString>
 #include "../../Network/Command/command.h"
+#include <QFile>
+#include <QDir>
 
 class JoinWindow;
 class MusicRoom;
@@ -29,6 +31,9 @@ signals:
     void goToMusicRoom();
     void clientNamesReceived(const QString& names);
     void newMessageReceived(const QString& username, const QString& msg);
+    void signal_sayWhetherIHaveThisTrack(QString& track);
+    void playTheTrack();
+    void pauseTheTrack();
 
 private slots:
     void connected();  // Called when connection is established
@@ -41,6 +46,11 @@ private:
     QString lastReceivedMessage;
     QTcpSocket* socket;
     bool hasReceivedRoomName;
+
+    QFile* file;
+
+    QString folderPath;
+    QString currentTrackName;
 
     void cleanupSocket();
     // Singleton Implementation

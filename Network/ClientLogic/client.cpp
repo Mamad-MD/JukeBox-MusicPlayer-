@@ -14,7 +14,7 @@ void Client::deleteInstance()
     instance = nullptr;
 }
 
-Client::Client(const QString& username, QObject *parent): QObject(parent), lastReceivedMessage(""), hasReceivedRoomName(false), username(username), socket(nullptr){}
+Client::Client(const QString& username, QObject *parent): QObject(parent), lastReceivedMessage(""), hasReceivedRoomName(false), username(username), socket(nullptr), file(nullptr){}
 
 Client::~Client()
 {
@@ -76,6 +76,14 @@ void Client::readData()
     QByteArray data = socket->readAll();
     Command command = byteArrayToCommand(&data);
 
+    if (folderPath != "" && currentTrackName != "" && !file)
+    {
+        file = new QFile(QDir(folderPath).filePath(currentTrackName));
+        file->open(QIODevice::WriteOnly);
+    }
+
+    bool hasSendingDoneEverCalled = false;
+    
     switch (command.commandType)
     {
         case CommandType::RoomName_Sending:
@@ -91,7 +99,6 @@ void Client::readData()
         case CommandType::Message:
         {
             emit newMessageReceived(command.username, command.content);
-            MessageDisplayer::display(MessageType::Info, "Info", command.username + command.content);
             break;
         }
         case CommandType::GoToMusicRoom:
@@ -109,7 +116,43 @@ void Client::readData()
             emit clientNamesReceived(command.content);
             break;
         }
+        case CommandType::WannaPlayThisTrack:
+        {
+            if (file)
+            {
+                delete file;
+                file = nullptr;
+            }
+            currentTrackName = command.content;
+            emit signal_sayWhetherIHaveThisTrack(currentTrackName);
+            break;
+        }
+        case CommandType::SendingDone:
+        {
+            file->close();
+            hasSendingDoneEverCalled = true;
+            break;
+        }
+        case CommandType::Play_Request:
+            emit playTheTrack();
+            break;
+        case CommandType::Pause_Request:
+            emit pauseTheTrack();
+            break;
+        default:
+        {
+            // it means it's music sending.
+            file->write(data);
+        }
     }
+
+    if (hasSendingDoneEverCalled)
+        if (file)
+        {
+            file->close();
+            delete file;
+            file = nullptr;
+        }
     // =====================
     // We'll deal with how to interpret messages later we did this on the server side.
 }

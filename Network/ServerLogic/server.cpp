@@ -156,6 +156,31 @@ void Server::readData()
             Command command(CommandType::Response_For_ClientNames, "", names);
             senderSocket->write(commandToByteArray(&command));
         }
+        case CommandType::SetMyFolder:
+        {
+            auto user = findClientBySocket(senderSocket);
+            user->folderPath = command.content;
+            
+            clientsWhoSetTheirFolder.append(user);
+            if (clientsWhoSetTheirFolder.size() == clients.size())
+                emit allSetTheirFolders();
+            break;
+        }
+
+        case CommandType::ThisTrackStatusOnMyPC:
+        {
+            int hasIt = command.content.toInt();
+            if (hasIt)
+            {
+                clientsWhoHaveTheTrack.append(findClientBySocket(senderSocket));
+                if (clientsWhoHaveTheTrack.size() == clients.size())
+                    emit allHaveTheTrack();
+            }
+            else
+                emit notHaveTheTrack(senderSocket);
+
+            break;
+        }
     }
 }
 
@@ -256,4 +281,24 @@ QString Server::getUsernamesAsQString()
     for (auto client : clients)
         names.append(client.getUsername() + " ");
     return names;
+}
+
+void Server::sendTrackToClient(QTcpSocket* socket, const QString& filePath)
+{
+    QFile *file = new QFile(filePath);
+    if (file->open(QIODevice::ReadOnly)) 
+    {
+        QByteArray buffer;
+        while (!file->atEnd()) 
+        {
+            buffer = file->read(4096); // 4 KB chunks
+            socket->write(buffer);
+            socket->waitForBytesWritten();
+        }
+        file->close();
+    }
+
+    Command cmd(CommandType::SendingDone, "", "");
+    socket->write(commandToByteArray(&cmd));
+    // MessageDisplayer::display(MessageType::Info, "Notice", "A Client received the track");
 }

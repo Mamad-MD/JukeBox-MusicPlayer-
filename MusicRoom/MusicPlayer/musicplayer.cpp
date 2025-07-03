@@ -26,6 +26,11 @@ MusicPlayer::~MusicPlayer()
 void MusicPlayer::play()
 {   
     player->play();
+    if (player->playbackState() == QMediaPlayer::PlayingState) {
+    qDebug() << "Media is currently playing.";
+    } else {
+        qDebug() << "Media is not playing.";
+    }
     isPlaying = true;
     emit played();
 }

@@ -72,17 +72,20 @@ private slots:
     
     void on_PushButton_AddTrackToFavorite_clicked();
     void on_PushButton_Send_clicked();
-
-    void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-
     // Client Slots:
     void on_clientNamesReceived(const QString& names);
     void on_newMessageReceived(const QString& username, const QString& msg);
-
+    void sayWhetherIHaveThisTrack(QString& trackName);
+    
     // Server Slots:
     void on_clientsAllJoined();
     void on_clientDisconnected(const QString& username, int clientsCount);
     void on_messageReceived(const QString& username, const QString& msg);
+    void on_allSetTheirFolders();
+    void on_notHaveTheTrack(QTcpSocket* sender);
+    void on_allHaveTheTrack();
+    void on_playTheTrackOnline();
+    void on_pauseTheTrackOnline();
 
 private:
     Ui::MusicRoom *ui;
@@ -157,6 +160,13 @@ private:
     void clearClientsList();
 
     void addMessageToChatbox(const QString& username, const QString& msg);
+    void playMusicOnline(int index);
+
+    bool fileExistsInFolder(QString folderPath, QString fileName);
+
+
+    // Client-side in online mode
+    AudioTrack* currentTrack;
 };
 
 #endif // MUSICROOM_H

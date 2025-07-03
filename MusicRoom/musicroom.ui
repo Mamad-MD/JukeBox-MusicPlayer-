@@ -57,6 +57,11 @@
       <string>Queue</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>Favorites</string>
+     </property>
+    </item>
    </widget>
    <widget class="QListView" name="ListView_AudioTracks">
     <property name="geometry">
@@ -368,7 +373,7 @@ QSlider::add-page:vertical {
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>490</y>
+      <y>500</y>
       <width>121</width>
       <height>41</height>
      </rect>
@@ -644,6 +649,24 @@ QSlider::add-page:vertical {
       <string>Prev</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="PushButton_AddTrackToFavorite">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>550</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Add to Fav</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
