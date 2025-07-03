@@ -24,6 +24,7 @@ public:
     void sendMessageToClient(QTcpSocket* client, const QString message);
     void start(const int& port);
     void stop();
+    QString getUsernamesAsQString();
 
 signals:
     void serverStarted(int port);
