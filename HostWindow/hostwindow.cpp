@@ -4,6 +4,9 @@
 #include "../MessageDisplayer/message_displayer.h"
 #include "../Network/ServerLogic/server.h"
 #include "../MusicRoom/musicroom.h"
+#include "../Login/authmanager.h"
+#include <QTimer>
+
 
 Server* Server::instance = nullptr; 
 
@@ -12,6 +15,11 @@ HostWindow::HostWindow(QWidget *parent)
     , ui(new Ui::HostWindow), server(nullptr), hasSetupUIConnections(false)
 {
     ui->setupUi(this);
+    ui->LineEdit_RoomName->setReadOnly(true);
+
+    QString username = Authmanager::getLoggedInUsername();
+    if (!username.isEmpty())
+        ui->LineEdit_RoomName->setText(username + "'s Room");
 }
 
 HostWindow::~HostWindow()
@@ -26,10 +34,17 @@ HostWindow::~HostWindow()
 
 void HostWindow::on_PushButton_Back_clicked()
 {
+      qDebug() << "Back button clicked in JoinWindowH";
+    ui->PushButton_Back->setEnabled(false);
+          qDebug() << "Deleting Client instance...H";
     Server::deleteInstance();
-    auto mainWindow = new MainWindow;
-    mainWindow->show();
-    this->close();
+        qDebug() << "Client instance deleted.H";
+    QTimer::singleShot(0, this, [this]() {
+              qDebug() << "Showing MainWindow and closing JoinWindowH";
+        auto mainWindow = new MainWindow;
+        mainWindow->show();
+        this->close();
+    });
 }
 
 void HostWindow::on_PushButton_CreateRoom_clicked()
@@ -143,15 +158,15 @@ void HostWindow::connectServerSignalsToUISlots(const Server* server)
     if (hasSetupUIConnections)
         return;
     hasSetupUIConnections = true;
-    connect(server, Server::serverStarted, this, &on_serverStarted);
-    connect(server, Server::serverError, this, &on_serverError);
-    connect(server, Server::clientConnected, this, &on_clientConnected);
-    connect(server, Server::clientDisconnection, this, &on_clientDisconnection);
-    connect(server, Server::dataReceived, this, &on_dataReceived);
-    connect(server, Server::serverStopped, this, &on_serverStopped);
-    connect(server, Server::serverDeleted, this, &on_serverDeleted);
-    connect(server, Server::clientConnectedToMainServer, this, &on_clientConnectedToMainServer);
-    connect(server, Server::messageReceived, this, &on_messageReceived);
+    connect(server, Server::serverStarted, this, &HostWindow::on_serverStarted);
+    connect(server, Server::serverError, this, &HostWindow::on_serverError);
+    connect(server, Server::clientConnected, this, &HostWindow::on_clientConnected);
+    connect(server, Server::clientDisconnection, this, &HostWindow::on_clientDisconnection);
+    connect(server, Server::dataReceived, this, &HostWindow::on_dataReceived);
+    connect(server, Server::serverStopped, this, &HostWindow::on_serverStopped);
+    connect(server, Server::serverDeleted, this, &HostWindow::on_serverDeleted);
+    connect(server, Server::clientConnectedToMainServer, this, &HostWindow::on_clientConnectedToMainServer);
+    connect(server, Server::messageReceived, this, &HostWindow::on_messageReceived);
     qDebug() << "Connected signals and slots\n";
 }
 
@@ -173,5 +188,11 @@ void HostWindow::on_PushButton_GoToMusicRoom_clicked()
         musicroom->show();
         this->close();
     }
+}
+
+
+void HostWindow::on_LineEdit_RoomName_editingFinished()
+{
+
 }
 

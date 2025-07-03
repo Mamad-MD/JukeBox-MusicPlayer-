@@ -10,8 +10,15 @@ Client* Client::getInstance(const QString& username)
 
 void Client::deleteInstance()
 {
-    instance->deleteLater();
-    instance = nullptr;
+    //   qDebug() << "Back button clicked in JoinWindow2";
+    // instance->deleteLater();
+    // instance = nullptr;
+    if (instance)
+    {
+        instance->disconnect();
+        instance->deleteLater();
+        instance = nullptr;
+    }
 }
 
 Client::Client(const QString& username, QObject *parent): QObject(parent), lastReceivedMessage(""), hasReceivedRoomName(false), username(username), socket(nullptr), file(nullptr){}

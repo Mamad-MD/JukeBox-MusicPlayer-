@@ -34,6 +34,8 @@ private slots:
     void on_clientConnectedToMainServer();
     void on_messageReceived(const QString& username, const QString& content);
 
+    void on_LineEdit_RoomName_editingFinished();
+
 private:
     Ui::HostWindow *ui;
     Server* server;

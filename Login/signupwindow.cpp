@@ -47,6 +47,6 @@ void SignUpWindow::on_registerButton_clicked()
         this->hide();
 
     } else {
-        MessageDisplayer::display(MessageType::Critical, "Registration", "Username is already taken.");
+      //  MessageDisplayer::display(MessageType::Critical, "Registration", "Username is already taken.");
     }
 }

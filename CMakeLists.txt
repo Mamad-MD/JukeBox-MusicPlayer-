@@ -63,6 +63,7 @@ qt_add_executable(JukeBox
         MusicRoom/Visualizer/visualizerwidget.h MusicRoom/Visualizer/visualizerwidget.cpp
         MusicRoom/Slots/ClientSlots.cpp
         MusicRoom/Slots/ServerSlots.cpp
+        Login/userdatafilemanager.h Login/userdatafilemanager.cpp
     )
 else()
     if(ANDROID)

@@ -23,10 +23,21 @@ Server* Server::getInstance(const QString& roomName)
 
 void Server::deleteInstance()
 {
-    instance->deleteLater();
-    deletingInProcess = true;
-    if (!deletingInProcess)
-        instance = nullptr;
+      qDebug() << "Back button clicked in JoinWindow3ERVER";
+    // // instance->deleteLater();
+    // // deletingInProcess = true;
+    // // if (!deletingInProcess)
+    // //     instance = nullptr;
+    //   deletingInProcess = true;
+    //   instance->deleteLater();
+    //   instance = nullptr;
+      if (instance)
+      {
+          instance->stop();  // مطمئن شو سرور متوقف شده
+          instance->deleteLater();
+          instance = nullptr;
+          deletingInProcess = false;
+      }
 }
 
 void Server::start(const int& port)
@@ -42,7 +53,7 @@ void Server::start(const int& port)
     if (TCPServer->listen(QHostAddress::Any, port))
     {
         emit serverStarted(port);
-        connect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
+        connect(TCPServer, &QTcpServer::newConnection, this, &Server::newConnection);
     }
     else
     {
@@ -54,25 +65,29 @@ void Server::start(const int& port)
 
 void Server::stop()
 {
-    disconnect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
+    //disconnect(TCPServer, &QTcpServer::newConnection, this, &newConnection);
+    disconnect(TCPServer, &QTcpServer::newConnection, this, &Server::newConnection);
+
     for (auto& client : clients)
     {
         if (!client.socket)
             continue;
         client.socket->disconnect();
         if (client.socket->state() != QAbstractSocket::UnconnectedState)
-                client.socket->disconnectFromHost();
-        
+            client.socket->disconnectFromHost();
+
         client.socket->deleteLater();
         client.socket = nullptr;
     }
     clients.clear();
-    
+
     if (TCPServer)
     {
         TCPServer->close();
         TCPServer->deleteLater();
         TCPServer = nullptr;
+        disconnect(TCPServer, &QTcpServer::newConnection, this, &Server::newConnection);
+
     }
     emit serverStopped();
     deletingInProcess = false;
@@ -88,8 +103,8 @@ void Server::newConnection()
     QByteArray commandInBytes = commandToByteArray(&command);
     newClient->write(commandInBytes);
 
-    connect(newClient, &QTcpSocket::disconnected, this, &clientDisconnected);
-    connect(newClient, &QTcpSocket::readyRead, this, &readData);
+    connect(newClient, &QTcpSocket::disconnected, this, &Server::clientDisconnected);
+    connect(newClient, &QTcpSocket::readyRead, this, &Server::readData);
 
     // We're gonna emit clientConnected later after we received the username.
 }

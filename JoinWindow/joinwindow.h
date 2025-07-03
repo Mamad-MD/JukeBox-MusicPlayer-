@@ -32,6 +32,8 @@ private slots:
 
     void on_TableWidget_Rooms_cellClicked(int row, int column);
 
+    void on_LineEdit_Username_cursorPositionChanged(int arg1, int arg2);
+
 private:
     Ui::JoinWindow *ui;
     
