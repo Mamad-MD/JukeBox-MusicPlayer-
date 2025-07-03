@@ -269,6 +269,15 @@ QLineEdit:focus {
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>firstNameLineEdit</tabstop>
+  <tabstop>lastNameLineEdit</tabstop>
+  <tabstop>usernameLineEdit</tabstop>
+  <tabstop>emailLineEdit</tabstop>
+  <tabstop>passwordLineEdit</tabstop>
+  <tabstop>confirmPasswordLineEdit</tabstop>
+  <tabstop>registerButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

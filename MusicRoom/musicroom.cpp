@@ -153,8 +153,7 @@ void MusicRoom::showQueueTracks()
     
 }
 
-void MusicRoom::showPlayListTracks(const QString& playlistName)
-{
+void MusicRoom::showPlayListTracks(const QString& playlistName) {
     if (viewMode != ViewMode::PlayList)
         return;
     // MessageDisplayer::display(MessageType::Info, "Notice", "Show Playlist " + playlistName);
@@ -164,6 +163,12 @@ void MusicRoom::showPlayListTracks(const QString& playlistName)
             addTracksToListView(playlist.tracks);
     }
 }
+
+void MusicRoom::showFaveriteTracks() {
+    if (viewMode != ViewMode::Faverite)
+       return;
+       addTracksToListView(FaveriteTracks);
+  }
 
 void MusicRoom::connectPlayerSignalsToUISlots()
 {
@@ -340,5 +345,18 @@ bool MusicRoom::addTrackToQueue(AudioTrack& trackToBeAdded)
             return false;
 
     tracksFromQueue.append(trackToBeAdded);
+                       /// update in file
     return true;
 }
+
+bool MusicRoom::addTrackToFaverite(AudioTrack& trackToBeAdded)
+{
+    for (auto& track : FaveriteTracks)
+        if (track.name == trackToBeAdded.name)
+            return false;
+
+    FaveriteTracks.append(trackToBeAdded);
+        /// update in file
+    return true;
+}
+

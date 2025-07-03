@@ -26,7 +26,8 @@ enum class ViewMode{
     None = 0,
     Folder,
     PlayList,
-    Queue
+    Queue,
+    Faverite
 };
 
 class MusicRoom : public QMainWindow
@@ -61,10 +62,14 @@ private slots:
     void on_PushButton_AddTrackToPlayList_clicked();
     void on_PushButton_AddTrackToQueue_clicked();
 
+    void on_PushButton_AddTrackToFavorite_clicked();
+
+    void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+
 private:
     Ui::MusicRoom *ui;
     
-    QTreeWidgetItem* categoryItems[3];
+    QTreeWidgetItem* categoryItems[4];
     bool hasSetFolder;
     bool hasAQueue;
 
@@ -76,6 +81,7 @@ private:
     QList<AudioTrack> tracksFromQueue;
     QList<PlayList> playlists;
     QList<AudioTrack*> tracksInListView; // it doesn't care what library
+    QList<AudioTrack> FaveriteTracks;
                                          // you're listening to. it just stores
                                          // a pointer of ListView tracks
     int currentlyPlayingIndex;
@@ -91,7 +97,7 @@ private:
     void showFolderTracks();
     void showQueueTracks();
     void showPlayListTracks(const QString& playlistName);
-
+    void showFaveriteTracks();
     
     void iterateItemsInTree(QTreeWidgetItem* topItem);
     void changeActiveTrackInListView(int index);
@@ -102,6 +108,7 @@ private:
     void clearPlaylistsListView();
     void addTracksToListView(QList<AudioTrack>& tracks);
     bool addTrackToQueue(AudioTrack& track);
+    bool addTrackToFaverite(AudioTrack& track);
     void reloadPlaylistsInListView();
     void reloadPlaylistsInTree();
     PlayList* findPlaylistByName(const QString& name);

@@ -1,7 +1,6 @@
 CMakeLists.txt.user
 /build
 
-# فایل‌های کامپایل شده و اجرایی
 *.exe
 *.o
 *.a
@@ -10,7 +9,6 @@ CMakeLists.txt.user
 *.out
 *.app
 
-# فایل‌های مخصوص Qt
 build-*/
 *.pro.user
 *.qmake.stash
@@ -21,19 +19,15 @@ qrc_*
 *.moc
 *.qm
 
-# فایل‌های IDE (مثل Qt Creator)
 .cache/
 .vscode/
 .idea/
 
-# فایل‌های لاگ و دیباگ
 *.log
 *.debug
 
-# فایل‌های سیستمی
 .DS_Store
 Thumbs.db
-### فایل‌های عمومی کامپایل و اجرایی ###
 *.exe
 *.o
 *.a
@@ -47,7 +41,6 @@ Thumbs.db
 *.ilk
 *.exp
 
-### فایل‌های مخصوص Qt ###
 build-*/           # پوشه‌های ساخت Qt Creator
 *.pro.user         # تنظیمات کاربر Qt Creator
 *.qmake.stash
@@ -59,7 +52,6 @@ qrc_*              # فایل‌های منابع Qt
 *.qm
 *.qrc.depends
 
-### فایل‌های مخصوص CMake ###
 CMakeCache.txt
 CMakeFiles/
 CMakeScripts/
@@ -68,10 +60,9 @@ install_manifest.txt
 Makefile
 CTestTestfile.cmake
 cmake_install.cmake
-build/             # پوشه‌ی ساخت CMake
-_deps/             # وابستگی‌های دانلود شده توسط CMake
+build/
+_deps/
 
-### فایل‌های IDE و توسعه ###
 .vscode/
 .idea/
 .clangd/
@@ -81,7 +72,6 @@ _deps/             # وابستگی‌های دانلود شده توسط CMake
 *.vc.db
 *.opendb
 
-### لاگ‌ها و فایل‌های موقت ###
 *.log
 *.debug
 *.autosave
@@ -89,22 +79,20 @@ _deps/             # وابستگی‌های دانلود شده توسط CMake
 *.tmp
 ~$*
 
-### فایل‌های سیستم عامل ###
-.DS_Store          # مخصوص macOS
-Thumbs.db          # مخصوص Windows
+.DS_Store
+Thumbs.db
 desktop.ini
-### فایل‌های مخصوص Qt ###
-build*/           # پوشه‌های ساخت Qt (مثل build, build-debug)
-*.pro.user        # تنظیمات Qt Creator
+
+build*/
+*.pro.user
 *.qmake.stash
-Makefile*         # فایل‌های Makefile تولید شده
-moc_*             # فایل‌های متا-ابجکت Qt
-ui_*              # فایل‌های UI تولید شده
-qrc_*             # فایل‌های منابع Qt
+Makefile*
+moc_*
+ui_*
+qrc_*
 *.moc
 *.qm
 
-### فایل‌های مخصوص CMake ###
 CMakeCache.txt
 CMakeFiles/
 CMakeScripts/
@@ -113,9 +101,9 @@ install_manifest.txt
 Makefile
 CTestTestfile.cmake
 cmake_install.cmake
-_deps/            # وابستگی‌های دانلود شده توسط CMake
+_deps/
 
-### فایل‌های اجرایی و کامپایل شده ###
+
 *.exe
 *.o
 *.a
@@ -126,24 +114,29 @@ _deps/            # وابستگی‌های دانلود شده توسط CMake
 *.pdb
 *.ilk
 
-### فایل‌های IDE ###
+
 .vscode/
 .idea/
 *.userprefs
 *.sln
 *.vcxproj*
 
-### فایل‌های موقت و سیستمی ###
+
 *.log
 *.debug
 .DS_Store
 Thumbs.db
 desktop.ini
+
 # پوشه‌های ساخت
 build/
 CMakeFiles/
 
 # فایل‌های موقت CMake
+
+build/
+CMakeFiles/
+
 CMakeCache.txt
 CMakeLists.txt.user
 *.cmake
