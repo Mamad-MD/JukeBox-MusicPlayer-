@@ -6,6 +6,8 @@
 #include "../MessageDisplayer/message_displayer.h"
 #include <QString>
 #include "../MusicRoom/musicroom.h"
+#include "../Login/authmanager.h"
+
 
 Client* Client::instance = nullptr;
 
@@ -15,7 +17,11 @@ JoinWindow::JoinWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+    ui->LineEdit_Username->setReadOnly(true);
 
+    QString username = Authmanager::getLoggedInUsername();
+    if (!username.isEmpty())
+        ui->LineEdit_Username->setText(username);
     // updateRoomsList();
 
     // QTimer* timer = new QTimer(this);
@@ -31,12 +37,20 @@ JoinWindow::~JoinWindow()
 
 void JoinWindow::on_PushButton_Back_clicked()
 {
+      qDebug() << "Back button clicked in JoinWindow";
+    ui->PushButton_Back->setEnabled(false);
+
+      qDebug() << "Deleting Client instance...";
     Client::deleteInstance();
     client = nullptr;
-    
-    auto mainWindow = new MainWindow;
-    mainWindow->show();
-    this->close();
+        qDebug() << "Client instance deleted.";
+
+    QTimer::singleShot(0, this, [this]() {
+                  qDebug() << "Showing MainWindow and closing JoinWindow";
+        auto mainWindow = new MainWindow;
+        mainWindow->show();
+        this->close();
+    });
 }
 
 
@@ -153,3 +167,9 @@ void JoinWindow::on_goToMusicRoom()
     musicroom->show();
     this->close();
 }
+
+void JoinWindow::on_LineEdit_Username_cursorPositionChanged(int arg1, int arg2)
+{
+
+}
+

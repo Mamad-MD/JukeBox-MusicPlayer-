@@ -6,6 +6,9 @@
 #include <QCryptographicHash>
 #include <QFile>
 #include <QDataStream>
+#include "../MusicRoom/AudioTrack/audiotrack.h"
+#include "../MusicRoom/PlayList/playlist.h"
+
 
 class Authmanager : public QObject {
     Q_OBJECT
@@ -18,13 +21,26 @@ public:
         QString username;
         QString passwordHash;
         QString email;
+        QList<PlayList> playlists;
+        QList<AudioTrack> favorites;
+        QList<AudioTrack> queue;
+
+
     };
+
+    static QString getLoggedInUsername() ;
 
     friend QDataStream &operator<<(QDataStream &out, const UserData &user);
     friend QDataStream &operator>>(QDataStream &in, UserData &user);
+    //    friend QDataStream& operator<<(QDataStream& out, const AudioTrack& track);
+    //  friend QDataStream& operator>>(QDataStream& in, AudioTrack& track);
+    //  friend QDataStream& operator<<(QDataStream& out, const PlayList& playlist);
+    // friend QDataStream& operator>>(QDataStream& in, PlayList& playlist);
 
     bool registerUser(const QString &firstname, const QString &lastname, const QString &username, const QString &password, const QString &email);
     bool validateLogin(const QString &username, const QString &password);
+    bool isValidEmail(const QString& email);
+    UserData getUserData(const QString& username);
 
     QString recoverPassword(const QString &email);
 
@@ -40,6 +56,7 @@ private:
     QMap<QString, UserData> users;
     QString generateSalt() const;
     QString hashPassword(const QString &password, const QString &salt) const;
+    QString loggedInUser;
 };
 
 #endif // AUTHMANAGER_H

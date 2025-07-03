@@ -12,13 +12,15 @@ class PlayList
 public:
     static AudioTrack* findTrackInListByName(QList<AudioTrack*>&, const QString& name);
     static AudioTrack* findTrackInListByName(QList<AudioTrack>&, const QString& name);
+        PlayList() = default;
     PlayList(const QString& name);
     bool addTrack(AudioTrack& track);
     bool removeTrackByName(const QString& trackName);
     bool removeTrack(AudioTrack& track);
-private:
     QString name;
     QList<AudioTrack> tracks;
+private:
+
     friend class MusicRoom;
 };
 

@@ -32,8 +32,18 @@ void LoginWindow::handleLogin()
     QString password = ui->passwordEdit->text();
 
     if (auth->validateLogin(username, password)) {
-        MessageDisplayer::display(MessageType::Info, "Login", "Login successful!");
+                Authmanager::UserData userData = auth->getUserData(username);
+        MessageDisplayer::display(MessageType::Info, "Login successful!",   QString("hi %1 %2!\nWelcome to JukeBox :)")
+                                                                              .arg(userData.firstname)
+                                                                              .arg(userData.lastname));
         emit loginSucceeded(username);
+        QFile file("loggedin_user.txt");
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream stream(&file);
+            stream << username.trimmed();
+            file.close();
+        }
+
     } else {
         MessageDisplayer::display(MessageType::Warning, "Login", "Invalid username or password.");
     }

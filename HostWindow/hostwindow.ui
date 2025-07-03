@@ -101,8 +101,8 @@ font-weight: normal</string>
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>121</width>
-      <height>41</height>
+      <width>31</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -111,7 +111,10 @@ font-weight: normal</string>
      </font>
     </property>
     <property name="text">
-     <string>Back</string>
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset theme="QIcon::ThemeIcon::ApplicationExit"/>
     </property>
    </widget>
    <widget class="QLineEdit" name="LineEdit_RoomName">
@@ -212,7 +215,7 @@ font-weight: normal</string>
      <x>0</x>
      <y>0</y>
      <width>822</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

@@ -3,6 +3,9 @@
 #include <QFile>
 #include <QDataStream>
 #include <QDebug>
+#include <MessageDisplayer/message_displayer.h>
+#include <QRegularExpression>
+
 
 Authmanager::Authmanager(QObject *parent) : QObject(parent) { loadUsers();}
 
@@ -21,11 +24,87 @@ QDataStream &operator>>(QDataStream &in, Authmanager::UserData &user) {
         >> user.username
         >> user.passwordHash
         >> user.email;
+
+    return in;
+}
+/*
+QDataStream& operator<<(QDataStream& out, const AudioTrack& track) {
+    out << track.name << track.filePath;
+    return out;
+}
+
+QDataStream& operator>>(QDataStream& in, AudioTrack& track) {
+    in >> track.name >> track.filePath;
     return in;
 }
 
-bool Authmanager::registerUser(const QString &firstname, const QString &lastname, const QString &username, const QString &password, const QString &email){
-    if(users.contains(username)) return false;
+QDataStream& operator<<(QDataStream& out, const PlayList& playlist) {
+    out << playlist.name << playlist.tracks;
+    return out;
+}
+
+QDataStream& operator>>(QDataStream& in, PlayList& playlist) {
+    in >> playlist.name >> playlist.tracks;
+    return in;
+}
+
+*/
+
+bool Authmanager::registerUser(const QString &firstname, const QString &lastname,
+                               const QString &username, const QString &password,
+                               const QString &email)
+{
+    if(firstname.isEmpty() || lastname.isEmpty() || username.isEmpty() ||
+        password.isEmpty() || email.isEmpty()) {
+        qWarning() << "Registration failed: Empty fields detected";
+        MessageDisplayer::display(MessageType::Critical,
+                                  "Registration Error",
+                                  "All fields are required. Please fill in all information.");
+        return false;
+    }
+
+    if(username.length() < 4) {
+        qWarning() << "Registration failed: Username too short - " << username;
+        MessageDisplayer::display(MessageType::Warning,
+                                  "Invalid Username",
+                                  "Username must contain at least 4 characters.");
+        return false;
+    }
+
+    if(password.length() < 6) {
+        qWarning() << "Registration failed: Password too weak - " << username;
+        MessageDisplayer::display(MessageType::Warning,
+                                  "Weak Password",
+                                  "Password must be at least 8 characters long.");
+        return false;
+    }
+
+    if (!isValidEmail(email)) {
+        qWarning() << "Registration failed: Invalid email format - " << email;
+        MessageDisplayer::display(MessageType::Warning,
+                                  "Invalid Email",
+                                  "Please enter a valid email address.\nExample: user@example.com");
+        return false;
+    }
+
+
+    if(users.contains(username)) {
+        qWarning() << "Registration failed: Username already exists - " << username;
+        MessageDisplayer::display(MessageType::Critical,
+                                  "Registration Error",
+                                  "Username already taken. Please choose a different username.");
+        return false;
+    }
+
+    for(const auto &user : users) {
+        if(user.email.toLower() == email.toLower()) {
+            qWarning() << "Registration failed: Email already registered - " << email;
+            MessageDisplayer::display(MessageType::Critical,
+                                      "Registration Error",
+                                      "Email address already registered. Please use a different email.");
+            return false;
+        }
+    }
 
     QString salt = generateSalt();
     QString hashedPassword = hashPassword(password, salt);
@@ -59,6 +138,16 @@ bool Authmanager::validateLogin(const QString &username, const QString &password
     QString inputHash = hashPassword(password, salt);
 
     if (inputHash == storedHash) {
+        loggedInUser = username;
+        QFile file("loggedin_user.txt");
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream stream(&file);
+            stream << username;
+            file.close();
+        } else {
+            qWarning() << "Could not save logged in user to file.";
+        }
+
         emit loginSuccess(username);
         return true;
     }
@@ -164,4 +253,28 @@ QString Authmanager::hashPassword(const QString &password, const QString &salt) 
         QCryptographicHash::Sha256
         );
     return hash.toHex();
+
+}
+
+QString Authmanager::getLoggedInUsername() {
+    QFile file("loggedin_user.txt");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream stream(&file);
+        QString username = stream.readLine().trimmed();
+        file.close();
+        return username;
+    }
+    return "";
+}
+
+bool Authmanager::isValidEmail(const QString& email) {
+    QRegularExpression regex(R"(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)");
+    return regex.match(email).hasMatch();
+}
+
+Authmanager::UserData Authmanager::getUserData(const QString& username) {
+    if(users.contains(username)) {
+        return users.value(username);
+    }
+    return UserData(); // یا throw exception
 }

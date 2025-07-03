@@ -2,13 +2,14 @@
 #include "ui_musicroom.h"
 #include "../MessageDisplayer/message_displayer.h"
 #include "../Random/RandomGenerator.h"
-
+#include "../Login/userdatafilemanager.h"
+#include "../Login/authmanager.h"
 // class MusicRoom;
 
 MusicPlayer* MusicPlayer::instance = nullptr;
 
-MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QWidget *parent)
-    : QMainWindow(parent)
+MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QWidget *parent/*,const QString& username*/)
+    : QMainWindow(parent) /*,currentUsername(username)*/
     , ui(new Ui::MusicRoom), hasSetFolder(false), hasAQueue(false), modelForTracksListView(nullptr), modelForPlaylistsListView(nullptr), shuffleOn(false), currentlyPlayingIndex(0)
     ,repeatType(RepeatType::No_Repeat), viewMode(ViewMode::None), networkMode(networkMode), server(server), client(client),
     modelForClientListView(nullptr)
@@ -46,6 +47,9 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     ui->PushButton_SwitchView->setText("Visualizer");
 
 
+    //connect(ui->PushButton_AddTrackToFavorite, &QPushButton::clicked,this, &MusicRoom::on_PushButton_AddTrackToFavorite_clicked);
+
+
     // =======================================
     // I wanna read user's playlists and folder here and update the listviews.
     //========================================
@@ -55,8 +59,10 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     reloadPlaylistsInTree();
 
 
+    QString username = Authmanager::getLoggedInUsername();
+    UserDataFileManager::loadUserData(username, playlists, FaveriteTracks, tracksFromQueue);
 
-    
+    reloadPlaylistsInTree();
 
 
     //  connect(ui->PushButton_SwitchView, &QPushButton::clicked,this, &MusicRoom::on_PushButton_SwitchView_clicked);
@@ -88,6 +94,17 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     {
 
     }
+
+
+
+    QIcon playIcon = style()->standardIcon(QStyle::SP_MediaPlay);
+    QIcon pauseIcon = style()->standardIcon(QStyle::SP_MediaPause);
+
+    bool isPlaying = false;
+
+
+
+
 }
 
 void MusicRoom::connectClientSignalsToUI()
@@ -117,6 +134,8 @@ void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)
 
 MusicRoom::~MusicRoom()
 {
+    QString username = Authmanager::getLoggedInUsername();
+    UserDataFileManager::saveUserData(username, playlists, FaveriteTracks, tracksFromQueue);
     delete ui;
 }
 
@@ -206,6 +225,8 @@ void MusicRoom::showPlayListTracks(const QString& playlistName) {
 }
 
 void MusicRoom::showFaveriteTracks() {
+    qDebug() << "----Showing favorite tracks, count:----" << FaveriteTracks.size();
+
     if (viewMode != ViewMode::Faverite)
        return;
        addTracksToListView(FaveriteTracks);
@@ -387,18 +408,25 @@ bool MusicRoom::addTrackToQueue(AudioTrack& trackToBeAdded)
     
     tracksFromQueue.append(trackToBeAdded);
                        /// update in file
+    QString username = Authmanager::getLoggedInUsername();
+    UserDataFileManager::saveUserData(username, playlists, FaveriteTracks, tracksFromQueue);
+
     return true;
 }
 
 
 bool MusicRoom::addTrackToFaverite(AudioTrack& trackToBeAdded)
 {
+    qDebug() << "----Loaded FaveriteTracks count:----" << FaveriteTracks.size();
+
     for (auto& track : FaveriteTracks)
         if (track.name == trackToBeAdded.name)
             return false;
 
     FaveriteTracks.append(trackToBeAdded);
         /// update in file
+    QString username = Authmanager::getLoggedInUsername();
+    UserDataFileManager::saveUserData(username, playlists, FaveriteTracks, tracksFromQueue);
     return true;
 }
 
@@ -425,4 +453,13 @@ void MusicRoom::disableClientUI()
     ui->GroupBox_CreatePlaylist->setEnabled(false);
     ui->Groupbox_Controls->setEnabled(false);
 }
+
+
+void MusicRoom::on_Label_Timer_linkActivated(const QString &link)
+{
+    ui->Label_Timer->raise();
+
+}
+
+//void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)}{}
 

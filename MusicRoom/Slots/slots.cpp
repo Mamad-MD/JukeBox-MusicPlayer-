@@ -1,6 +1,11 @@
 #include "../musicroom.h"
 #include "ui_musicroom.h"
 #include "../../MessageDisplayer/message_displayer.h"
+#include "ui_musicroom.h"
+#include "Login/authmanager.h"
+#include "Login/userdatafilemanager.h".h"
+
+
 // Slots
 
 void MusicRoom::on_PushButton_PlayPause_clicked()
@@ -18,12 +23,22 @@ void MusicRoom::on_musicPlayed()
     //visualizer->show();
     ui->PushButton_SwitchView->setText("Visualizer");
     isShowingCover = true;
-    ui->PushButton_PlayPause->setText("Pause");
+  //  ui->PushButton_PlayPause->setText("Pause");
+  //  QIcon pauseIcon = style()->standardIcon(QStyle::SP_MediaPause);
+    //ui->PushButton_PlayPause->setIcon(pauseIcon);
+    isPlaying = true;
+    ui->PushButton_PlayPause->setIconSize(QSize(40, 40));
+    ui->PushButton_PlayPause->setIcon(pauseIcon);
 }
 
 void MusicRoom::on_musicPaused()
 {
-    ui->PushButton_PlayPause->setText("Play");
+   // QIcon playIcon = style()->standardIcon(QStyle::SP_MediaPlay);
+  //  ui->PushButton_PlayPause->setIcon(playIcon);
+  //  ui->PushButton_PlayPause->setText("Play");
+   isPlaying = false;
+   ui->PushButton_PlayPause->setIconSize(QSize(40, 40));
+   ui->PushButton_PlayPause->setIcon(playIcon);
 }
 
 void MusicRoom::on_positionChanged(qint64 position)
@@ -87,12 +102,14 @@ void MusicRoom::on_Slider_MusicSlider_sliderReleased()
 
 void MusicRoom::on_PushButton_Next_clicked()
 {
+
     playNext();
 }
 
 
 void MusicRoom::on_PushButton_Prev_clicked()
 {
+
     playPrev();
 }
 
@@ -101,12 +118,12 @@ void MusicRoom::on_PushButton_Shuffle_clicked()
     if (shuffleOn)
     {
         shuffleOn = false;
-        ui->PushButton_Shuffle->setText("Shuffle: Off");
+        ui->PushButton_Shuffle->setText(" Off");
     }
     else
     {
         shuffleOn = true;
-        ui->PushButton_Shuffle->setText("Shuffle: On");
+        ui->PushButton_Shuffle->setText(" On");
 
     }
 }
@@ -342,7 +359,9 @@ void MusicRoom::on_PushButton_AddTrackToPlayList_clicked()
         MessageDisplayer::display(MessageType::Critical, "Error", "Selected track is already in the playlist!");
         return;
     }
-                       // update play list in user file
+
+    QString username = Authmanager::getLoggedInUsername();
+    UserDataFileManager::saveUserData(username, playlists, FaveriteTracks, tracksFromQueue);
     if (activePlaylist == playlistName && viewMode == ViewMode::PlayList)
         showPlayListTracks(activePlaylist);
 }
@@ -372,6 +391,7 @@ void MusicRoom::on_PushButton_AddTrackToQueue_clicked()
 
 void MusicRoom::on_PushButton_AddTrackToFavorite_clicked()
 {
+       qDebug() << "Add to Favorite clicked!";
     if (tracksInListView.empty())
     {
         MessageDisplayer::display(MessageType::Critical, "Error", "Track list is empty!");
@@ -382,11 +402,18 @@ void MusicRoom::on_PushButton_AddTrackToFavorite_clicked()
     QString trackName = selectedTrackIndex.data(Qt::DisplayRole).toString();
     AudioTrack& track = *PlayList::findTrackInListByName(tracksInListView, trackName);
 
+
+    qDebug() << "-----Trying to add track to favorite:--------" << track.name;
+
+
     if (!addTrackToFaverite(track))
     {
         MessageDisplayer::display(MessageType::Critical, "Error", "Selected track is already in the Faverite!");
         return;
     }
+
+    qDebug() << "----Track added to favorite successfully.-------";
+
 
     if (viewMode == ViewMode::Faverite)
         showFaveriteTracks();

@@ -45,6 +45,12 @@ class MusicRoom : public QMainWindow
 public:
     explicit MusicRoom(NetworkMode networkMode, Server* server, Client* client,QWidget *parent = nullptr);
     ~MusicRoom();
+    QIcon playIcon = style()->standardIcon(QStyle::SP_MediaPlay);
+    QIcon pauseIcon = style()->standardIcon(QStyle::SP_MediaPause);
+
+
+
+    bool isPlaying = false;
 
 private slots:
     void on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int column);
@@ -70,6 +76,7 @@ private slots:
     void on_PushButton_AddTrackToPlayList_clicked();
     void on_PushButton_AddTrackToQueue_clicked();
     
+   // void on_PushButton_AddTrackToFavorite_clicked();
     void on_PushButton_AddTrackToFavorite_clicked();
     void on_PushButton_Send_clicked();
 
@@ -84,9 +91,18 @@ private slots:
     void on_clientDisconnected(const QString& username, int clientsCount);
     void on_messageReceived(const QString& username, const QString& msg);
 
+ //void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+   void on_Label_Timer_linkActivated(const QString &link);
+
 private:
     Ui::MusicRoom *ui;
     
+
+
+    QString currentUsername;
+
+
+
     QTreeWidgetItem* categoryItems[4];
     bool hasSetFolder;
     bool hasAQueue;
@@ -157,6 +173,7 @@ private:
     void clearClientsList();
 
     void addMessageToChatbox(const QString& username, const QString& msg);
+
 };
 
 #endif // MUSICROOM_H
