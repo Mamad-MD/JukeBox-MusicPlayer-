@@ -78,6 +78,9 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
 
     if (client)
     {
+        disableClientUI();
+
+
         Command command(CommandType::JoinedMusicRoom, "", "");
         client->sendCommand(command);
     }
@@ -90,11 +93,14 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
 void MusicRoom::connectClientSignalsToUI()
 {
     connect(client, Client::clientNamesReceived, this, on_clientNamesReceived);
+    connect(client, Client::newMessageReceived, this, on_newMessageReceived);
 }
 
 void MusicRoom::connectServerSignalsToUI()
 {
     connect(server, Server::clientsAllJoined, this, on_clientsAllJoined);
+    connect(server, Server::clientDisconnection, this, on_clientDisconnected);
+    connect(server, Server::messageReceived, this, on_messageReceived);
 }
 
 void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)
@@ -373,7 +379,32 @@ bool MusicRoom::addTrackToQueue(AudioTrack& trackToBeAdded)
     for (auto& track : tracksFromQueue)
         if (track.name == trackToBeAdded.name)
             return false;
-
+    
     tracksFromQueue.append(trackToBeAdded);
     return true;
 }
+
+void MusicRoom::addMessageToChatbox(const QString& username, const QString& msg)
+{
+    QString safeMessage = msg.toHtmlEscaped();
+    QString formatted;
+
+    if (username == "Server")
+        formatted = QString("<b> <span>%1</span>: <i>%2</i></b>").arg(username, safeMessage);
+    else
+        formatted = QString("<b>%1</b>: <span>%2</span>").arg(username, safeMessage);
+
+    ui->TextBrowser_Messages->append(formatted);
+    ui->TextBrowser_Messages->moveCursor(QTextCursor::End);
+}
+
+void MusicRoom::disableClientUI()
+{
+    ui->TreeWidget_Category->setEnabled(false);
+    ui->ListView_AudioTracks->setEnabled(false);
+    ui->PushButton_AddTrackToPlayList->setEnabled(false);
+    ui->PushButton_AddTrackToQueue->setEnabled(false);
+    ui->GroupBox_CreatePlaylist->setEnabled(false);
+    ui->Groupbox_Controls->setEnabled(false);
+}
+

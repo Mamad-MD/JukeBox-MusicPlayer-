@@ -90,6 +90,8 @@ void Client::readData()
         }
         case CommandType::Message:
         {
+            emit newMessageReceived(command.username, command.content);
+            MessageDisplayer::display(MessageType::Info, "Info", command.username + command.content);
             break;
         }
         case CommandType::GoToMusicRoom:

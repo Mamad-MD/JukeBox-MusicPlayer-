@@ -129,21 +129,8 @@ void Server::readData()
         }
         case CommandType::Message:
         {
-            QString username = command.username;
-            bool isFound = false;
-            for (auto& client : clients)
-            {
-                if (client.username == username)
-                {
-                    isFound = true;
-                    break;
-                }
-            }
-            if (isFound)
-            {
-                broadcastMessage(command);
-                emit messageReceived(command.username, command.content);
-            }
+            emit messageReceived(command.username, command.content);
+            broadcastMessage(command);
 
             break;
         }
@@ -152,9 +139,8 @@ void Server::readData()
             clientsInMusicRoom.append(findClientBySocket(senderSocket));
             if (clientsInMusicRoom.size() == clients.size())
             {
-                QString names;
-                for (auto client : clients)
-                    names.append(client.getUsername() + " ");
+                QString names = getUsernamesAsQString();
+                names.append("Server");
 
                 Command command(CommandType::ClientNames_Sending, "", names);
                 emit clientsAllJoined();
@@ -164,9 +150,8 @@ void Server::readData()
             
         case CommandType::Request_For_ClientNames:
         {
-            QString names;
-            for (auto client : clients)
-                names.append(client.getUsername() + " ");
+            QString names = getUsernamesAsQString();
+            names.append("Server");
 
             Command command(CommandType::Response_For_ClientNames, "", names);
             senderSocket->write(commandToByteArray(&command));
@@ -263,4 +248,12 @@ QList<User>& Server::getClientList()
 QString Server::getRoomName() const
 {
     return roomName;
+}
+
+QString Server::getUsernamesAsQString()
+{
+    QString names;
+    for (auto client : clients)
+        names.append(client.getUsername() + " ");
+    return names;
 }

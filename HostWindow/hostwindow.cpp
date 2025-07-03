@@ -135,7 +135,7 @@ void HostWindow::on_clientConnectedToMainServer()
 
 void HostWindow::on_messageReceived(const QString& username, const QString& content)
 {
-    MessageDisplayer::display(MessageType::Info, "You got a message", username + ": " + content);
+    // MessageDisplayer::display(MessageType::Info, "You got a message", username + ": " + content);
 }
 
 void HostWindow::connectServerSignalsToUISlots(const Server* server)
