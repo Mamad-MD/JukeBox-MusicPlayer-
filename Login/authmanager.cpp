@@ -75,7 +75,7 @@ bool Authmanager::registerUser(const QString &firstname, const QString &lastname
         qWarning() << "Registration failed: Password too weak - " << username;
         MessageDisplayer::display(MessageType::Warning,
                                   "Weak Password",
-                                  "Password must be at least 8 characters long.");
+                                  "Password must be at least 6 characters long.");
         return false;
     }
 
