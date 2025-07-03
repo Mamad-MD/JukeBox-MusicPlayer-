@@ -69,15 +69,20 @@ private slots:
     void on_PushButton_CreatePlayList_clicked();
     void on_PushButton_AddTrackToPlayList_clicked();
     void on_PushButton_AddTrackToQueue_clicked();
+    
     void on_PushButton_AddTrackToFavorite_clicked();
+    void on_PushButton_Send_clicked();
 
     void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 
     // Client Slots:
     void on_clientNamesReceived(const QString& names);
+    void on_newMessageReceived(const QString& username, const QString& msg);
 
     // Server Slots:
     void on_clientsAllJoined();
+    void on_clientDisconnected(const QString& username, int clientsCount);
+    void on_messageReceived(const QString& username, const QString& msg);
 
 private:
     Ui::MusicRoom *ui;
@@ -141,6 +146,8 @@ private:
     Client* client;
     NetworkMode networkMode;
 
+    void disableClientUI();
+
     void connectClientSignalsToUI();
     void connectServerSignalsToUI();
 
@@ -148,6 +155,8 @@ private:
     
     void addClientsToListView(const QString& names);
     void clearClientsList();
+
+    void addMessageToChatbox(const QString& username, const QString& msg);
 };
 
 #endif // MUSICROOM_H

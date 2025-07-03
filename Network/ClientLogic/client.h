@@ -28,6 +28,7 @@ signals:
     void clientError(const QString& message);
     void goToMusicRoom();
     void clientNamesReceived(const QString& names);
+    void newMessageReceived(const QString& username, const QString& msg);
 
 private slots:
     void connected();  // Called when connection is established

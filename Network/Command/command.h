@@ -7,6 +7,7 @@
 
 class Server;
 class Client;
+class MusicRoom;
 
 class Command
 {
@@ -20,6 +21,7 @@ public:
     friend QByteArray commandToByteArray(Command* command);
     friend class Server;
     friend class Client;
+    friend class MusicRoom;
 private:
     CommandType commandType;
     QString username;

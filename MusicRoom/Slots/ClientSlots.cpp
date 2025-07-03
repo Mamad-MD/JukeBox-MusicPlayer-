@@ -26,3 +26,59 @@ void MusicRoom::on_clientNamesReceived(const QString& names)
 {
     addClientsToListView(names);
 }
+
+void MusicRoom::on_newMessageReceived(const QString& username, const QString& msg)
+{
+    addMessageToChatbox(username, msg);
+}
+
+
+void MusicRoom::on_PushButton_Send_clicked()
+{
+    if (ui->TextEdit_Message->toPlainText().isEmpty())
+        return;
+
+
+    QString message = ui->TextEdit_Message->toPlainText();
+    if (server)
+    {
+        Command msg(CommandType::Message, "Server", message);
+        server->broadcastMessage(msg);
+        addMessageToChatbox("Server", message);
+    }
+    else
+    {
+        Command msg(CommandType::Message, client->username, message);
+        client->sendCommand(msg);
+    }
+
+    ui->TextEdit_Message->setText("");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
