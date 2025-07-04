@@ -76,15 +76,13 @@ private slots:
     void on_PushButton_AddTrackToPlayList_clicked();
     void on_PushButton_AddTrackToQueue_clicked();
     
-   // void on_PushButton_AddTrackToFavorite_clicked();
     void on_PushButton_AddTrackToFavorite_clicked();
     void on_PushButton_Send_clicked();
-    // Client Slots:
+
     void on_clientNamesReceived(const QString& names);
     void on_newMessageReceived(const QString& username, const QString& msg);
     void sayWhetherIHaveThisTrack(QString& trackName);
     
-    // Server Slots:
     void on_clientsAllJoined();
     void on_clientDisconnected(const QString& username, int clientsCount);
     void on_messageReceived(const QString& username, const QString& msg);
@@ -94,7 +92,6 @@ private slots:
     void on_playTheTrackOnline();
     void on_pauseTheTrackOnline();
 
- //void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
    void on_Label_Timer_linkActivated(const QString &link);
 
 private:
@@ -117,10 +114,9 @@ private:
     QList<AudioTrack> tracksFromFolder;
     QList<AudioTrack> tracksFromQueue;
     QList<PlayList> playlists;
-    QList<AudioTrack*> tracksInListView; // it doesn't care what library
+    QList<AudioTrack*> tracksInListView;
     QList<AudioTrack> FaveriteTracks;
-                                         // you're listening to. it just stores
-                                         // a pointer of ListView tracks
+
     int currentlyPlayingIndex;
     qint64 currentlyPlayingDuration;
     QString activePlaylist;
@@ -160,7 +156,6 @@ private:
     bool isShowingCover = true;
 
 
-    // Online Stuff
     Server* server;
     Client* client;
     NetworkMode networkMode;
@@ -181,8 +176,6 @@ private:
 
     bool fileExistsInFolder(QString folderPath, QString fileName);
 
-
-    // Client-side in online mode
     AudioTrack* currentTrack;
 };
 

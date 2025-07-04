@@ -16,13 +16,18 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
 {
     ui->setupUi(this);
     
+
+    QIcon playIcon = style()->standardIcon(QStyle::SP_MediaPlay);
+    QIcon pauseIcon = style()->standardIcon(QStyle::SP_MediaPause);
+
+    bool isPlaying = false;
+
     ui->Label_AlbumCover->setScaledContents(true);
     ui->Label_AlbumCover->setVisible(true);
     for (int i = 0; i < ui->TreeWidget_Category->topLevelItemCount(); i++)
     {
         QTreeWidgetItem* topItem = ui->TreeWidget_Category->topLevelItem(i);
         categoryItems[i] = topItem;
-        // iterateItemsInTree(topItem);
     }
     
     musicPlayer = MusicPlayer::getInstance(this);
@@ -41,21 +46,13 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     visualizerLayout->setContentsMargins(0, 0, 0, 0);
 
     isShowingCover = true;
-    ui->Widget_MusicDisplay->setCurrentIndex(0); // نمایش اولیه کاور
-    ui->Label_AlbumCover->show();                // حتما کاور نمایش داده بشه
+    ui->Widget_MusicDisplay->setCurrentIndex(0);
+    ui->Label_AlbumCover->show();
     visualizer->hide();
     ui->PushButton_SwitchView->setText("Visualizer");
 
 
-    //connect(ui->PushButton_AddTrackToFavorite, &QPushButton::clicked,this, &MusicRoom::on_PushButton_AddTrackToFavorite_clicked);
 
-
-    // =======================================
-    // I wanna read user's playlists and folder here and update the listviews.
-    //========================================
-
-
-    // Load Playlists names
     reloadPlaylistsInTree();
 
 
@@ -65,13 +62,10 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     reloadPlaylistsInTree();
 
 
-    //  connect(ui->PushButton_SwitchView, &QPushButton::clicked,this, &MusicRoom::on_PushButton_SwitchView_clicked);
-    // connect(ui->Slider_MusicSlider, &QSlider::sliderReleased, this, &MusicRoom::on_sliderReleased);
     connectPlayerSignalsToUISlots();
     connectClientSignalsToUI();
     connectServerSignalsToUI();
     
-    // This makes the window so nice and clean when online stuff is not needed.
     if (networkMode == NetworkMode::Offline)
     {
         ui->GroupBox_OnlineBox->setEnabled(false);
@@ -91,10 +85,6 @@ MusicRoom::MusicRoom(NetworkMode networkMode, Server* server, Client* client, QW
     }
 
 
-    QIcon playIcon = style()->standardIcon(QStyle::SP_MediaPlay);
-    QIcon pauseIcon = style()->standardIcon(QStyle::SP_MediaPause);
-
-    bool isPlaying = false;
 }
 
 void MusicRoom::connectClientSignalsToUI()
@@ -120,10 +110,8 @@ void MusicRoom::iterateItemsInTree(QTreeWidgetItem* item)
 {
     if (!item) return;
 
-    // Do something with the item
     qDebug() << "Item text:" << item->text(0);
 
-    // Recurse into children
     for (int i = 0; i < item->childCount(); ++i)
         iterateItemsInTree(item->child(i));
 }
@@ -182,7 +170,6 @@ void MusicRoom::showFolderTracks()
 
     QFileInfoList fileList = dir.entryInfoList(filters, QDir::Files | QDir::NoSymLinks);
 
-    // musicPathsFromFolder.clear();
     tracksFromFolder.clear();
     
     for (const QFileInfo &fileInfo : fileList) 
@@ -193,10 +180,6 @@ void MusicRoom::showFolderTracks()
 
 
     addTracksToListView(tracksFromFolder);
-
-
-    // =================================================
-    // I Want you save these tracks somewhere in a file
 
 }
 
@@ -403,7 +386,6 @@ bool MusicRoom::addTrackToQueue(AudioTrack& trackToBeAdded)
             return false;
     
     tracksFromQueue.append(trackToBeAdded);
-                       /// update in file
     QString username = Authmanager::getLoggedInUsername();
     UserDataFileManager::saveUserData(username, playlists, FaveriteTracks, tracksFromQueue);
 
@@ -420,7 +402,6 @@ bool MusicRoom::addTrackToFaverite(AudioTrack& trackToBeAdded)
             return false;
 
     FaveriteTracks.append(trackToBeAdded);
-        /// update in file
     QString username = Authmanager::getLoggedInUsername();
     UserDataFileManager::saveUserData(username, playlists, FaveriteTracks, tracksFromQueue);
     return true;
@@ -485,5 +466,4 @@ void MusicRoom::on_Label_Timer_linkActivated(const QString &link)
 
 }
 
-//void on_TreeWidget_Category_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)}{}
 

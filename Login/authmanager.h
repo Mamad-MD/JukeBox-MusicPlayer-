@@ -32,10 +32,6 @@ public:
 
     friend QDataStream &operator<<(QDataStream &out, const UserData &user);
     friend QDataStream &operator>>(QDataStream &in, UserData &user);
-    //    friend QDataStream& operator<<(QDataStream& out, const AudioTrack& track);
-    //  friend QDataStream& operator>>(QDataStream& in, AudioTrack& track);
-    //  friend QDataStream& operator<<(QDataStream& out, const PlayList& playlist);
-    // friend QDataStream& operator>>(QDataStream& in, PlayList& playlist);
 
     bool registerUser(const QString &firstname, const QString &lastname, const QString &username, const QString &password, const QString &email);
     bool validateLogin(const QString &username, const QString &password);

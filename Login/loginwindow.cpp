@@ -15,6 +15,7 @@ LoginWindow::LoginWindow(Authmanager *authManager, QWidget *parent)
 
     this->setFixedSize(800, 450);
     ui->loginPanel->setStyleSheet("background-color: rgba(255, 255, 255, 180); border-radius: 10px;");
+    this->setWindowTitle("Juke Box");
 
     connect(ui->loginButton, &QPushButton::clicked, this, &LoginWindow::handleLogin);
     connect(ui->goToSignupButton, &QPushButton::clicked, this, &LoginWindow::goToSignup);

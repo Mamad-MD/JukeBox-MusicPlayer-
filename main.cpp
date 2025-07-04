@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    
+    app.setWindowIcon(QIcon(":/images/jukebox_icon.ico"));
     Authmanager auth;
 
     LoginWindow loginWin(&auth);
@@ -16,15 +16,10 @@ int main(int argc, char *argv[])
     ForgotPasswordWindow forgotPassWin(&auth);
     MainWindow mainWin;
 
-
-    // لاگین موفق => نمایش پنجره اصلی، مخفی کردن لاگین
-
     QObject::connect(&loginWin, &LoginWindow::loginSucceeded, [&](const QString &) {
         mainWin.show();
         loginWin.hide();
     });
-
-    // بازگشت به لاگین پس از بستن پنجره اصلی (دلخواه)
 
     QObject::connect(&mainWin, &MainWindow::destroyed, [&]() {
         loginWin.show();
@@ -43,6 +38,11 @@ int main(int argc, char *argv[])
         loginWin.show();
     });
 
+    QObject::connect(&signupWin, &SignUpWindow::backToLoginRequested, [&]() {
+        signupWin.hide();
+        loginWin.show();
+    });
+
 
     QObject::connect(&loginWin, &LoginWindow::goToForgotPassword, [&]() {
         forgotPassWin.show();
@@ -51,6 +51,11 @@ int main(int argc, char *argv[])
 
 
     QObject::connect(&forgotPassWin, &ForgotPasswordWindow::destroyed, [&]() {
+        loginWin.show();
+    });
+
+    QObject::connect(&forgotPassWin, &ForgotPasswordWindow::backToLoginRequested, [&]() {
+        forgotPassWin.hide();
         loginWin.show();
     });
 

@@ -7,7 +7,7 @@ VisualizerWidget::VisualizerWidget(QWidget *parent) : QWidget(parent)
 {
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&VisualizerWidget::update));
-    timer->start(100); // هر 100 میلی‌ثانیه اکولایزر آپدیت بشه
+    timer->start(100);
 }
 
 void VisualizerWidget::paintEvent(QPaintEvent *)

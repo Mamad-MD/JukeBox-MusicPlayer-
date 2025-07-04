@@ -15,6 +15,7 @@ HostWindow::HostWindow(QWidget *parent)
     , ui(new Ui::HostWindow), server(nullptr), hasSetupUIConnections(false)
 {
     ui->setupUi(this);
+    this->setFixedSize(800, 600);
     ui->LineEdit_RoomName->setReadOnly(true);
 
     QString username = Authmanager::getLoggedInUsername();
@@ -64,9 +65,6 @@ void HostWindow::on_PushButton_CreateRoom_clicked()
     }
 
     QString roomName = ui->LineEdit_RoomName->text();
-
-    // if (server)
-    //     server->stop();
     
     server = Server::getInstance(roomName);
     qDebug() << "got the instance";
@@ -79,10 +77,6 @@ void HostWindow::updateClientsList()
     qDebug() << "updateRoomsList\n";
     qDebug() << server;
     qDebug() << QString::number(server->getClientCount());
-    // if (server->getClientCount() == 0)
-    //     ui->PushButton_GoToMusicRoom->setEnabled(false);
-    // else
-    //     ui->PushButton_GoToMusicRoom->setEnabled(true);
 
     ui->TableWidget_Clients->setRowCount(server->getClientCount());
     ui->TableWidget_Clients->setColumnCount(3);
@@ -114,7 +108,6 @@ void HostWindow::on_serverError(const QString& errorMessage)
 
 void HostWindow::on_clientConnected(const QString& username, int clientsCount)
 {
-    // MessageDisplayer::display(MessageType::Info, "Connection", username + " has joined the room!");
     updateClientsList();
 }
 
@@ -150,7 +143,7 @@ void HostWindow::on_clientConnectedToMainServer()
 
 void HostWindow::on_messageReceived(const QString& username, const QString& content)
 {
-    // MessageDisplayer::display(MessageType::Info, "You got a message", username + ": " + content);
+
 }
 
 void HostWindow::connectServerSignalsToUISlots(const Server* server)

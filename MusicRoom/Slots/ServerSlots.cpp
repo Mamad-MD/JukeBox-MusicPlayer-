@@ -20,9 +20,6 @@ void MusicRoom::on_clientDisconnected(const QString& username, int clientsCount)
     
     addClientsToListView(names);
     
-    // Command msg(CommandType::Message, "Server", username + " disconnected.");
-    // server->broadcastMessage(msg);
-
     addMessageToChatbox("Server", username + " disconnected.");
 }
 
@@ -58,7 +55,6 @@ void MusicRoom::on_allHaveTheTrack()
     MessageDisplayer::display(MessageType::Info, "Notice", "Everybody has the track");
     Command cmd(CommandType::Play_Request, "", "");
     server->broadcastMessage(cmd);
-    // we're gonna do this after we're sure the track is sent
     int index = 0;
     for (int i = 0; i < tracksInListView.size(); i++)
         if (tracksInListView[i]->getName() == server->currentTrackName)

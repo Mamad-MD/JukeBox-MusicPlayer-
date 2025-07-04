@@ -21,7 +21,6 @@ private slots:
     void on_PushButton_LookForRooms_clicked();
     
     void updateRoomsList(const QString& roomName);
-    // Network Slots:
     void on_connectedToServer();
     void on_ReceivedRoomName(const QString& roomName);
     void on_disconnection();

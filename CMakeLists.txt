@@ -35,10 +35,14 @@ set(PROJECT_SOURCES
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
+if(WIN32)
+    set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/Images/app_icon.rc")
+endif()
 
 qt_add_executable(JukeBox
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+             ${APP_ICON_RESOURCE_WINDOWS}
         main.cpp
         JoinWindow/joinwindow.h JoinWindow/joinwindow.cpp JoinWindow/joinwindow.ui
         Network/ServerLogic/server.h Network/ServerLogic/server.cpp

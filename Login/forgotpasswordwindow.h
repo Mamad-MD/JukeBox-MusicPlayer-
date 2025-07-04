@@ -15,10 +15,11 @@ class ForgotPasswordWindow : public QMainWindow
 public:
     explicit ForgotPasswordWindow(Authmanager* authManager, QWidget *parent = nullptr);
     ~ForgotPasswordWindow();
-
+signals:
+    void backToLoginRequested();
 private slots:
     void handleRecover();
-
+    void on_backToLoginButton_clicked();
 private:
     Ui::ForgotPasswordWindow *ui;
     Authmanager* auth;

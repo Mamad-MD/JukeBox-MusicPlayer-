@@ -22,8 +22,8 @@ public:
     void sendCommand(Command& command);
 
 signals:
-    void connectedToServer(); // Called when connected to the main server
-    void receivedRoomName(const QString& roomName); // Called when room names are received
+    void connectedToServer();
+    void receivedRoomName(const QString& roomName);
     void disconnection();
     void dataReceived(const QByteArray& data);
     void clientObjectDeleted();
@@ -36,8 +36,8 @@ signals:
     void pauseTheTrack();
 
 private slots:
-    void connected();  // Called when connection is established
-    void readData();   // Called when data is received
+    void connected();
+    void readData();
     void disconnected();
     void on_errorOccurred(QAbstractSocket::SocketError socketError);
 
@@ -53,7 +53,6 @@ private:
     QString currentTrackName;
 
     void cleanupSocket();
-    // Singleton Implementation
     static Client* instance;
     Client(const QString& username, QObject* parent = nullptr);
     ~Client();

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "authmanager.h"
+#include "Login/loginwindow.h"
 
 namespace Ui {
 class SignUpWindow;
@@ -18,9 +19,11 @@ public:
 
 signals:
     void registrationSucceeded();
+    void backToLoginRequested();
 
 private slots:
     void on_registerButton_clicked();
+    void on_goToLoginButton_clicked();
 
 private:
     Ui::SignUpWindow *ui;

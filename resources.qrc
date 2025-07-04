@@ -3,5 +3,6 @@
     <file>images/login.jpg</file>
     <file>images/signup.jpg</file>
     <file>images/forgot.jpg</file>
+    <file>images/jukebox_icon.ico</file>
   </qresource>
 </RCC>

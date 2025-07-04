@@ -106,7 +106,6 @@ void Server::newConnection()
     connect(newClient, &QTcpSocket::disconnected, this, &Server::clientDisconnected);
     connect(newClient, &QTcpSocket::readyRead, this, &Server::readData);
 
-    // We're gonna emit clientConnected later after we received the username.
 }
 
 void Server::readData()
@@ -119,10 +118,6 @@ void Server::readData()
     QByteArray data = senderSocket->readAll();
 
 
-    // We'll here expect the client to send a message and say who they are and
-    // then we're gonna emit clientConnected signal
-    
-    // Process the message
     Command command = byteArrayToCommand(&data);
     switch (command.commandType)
     {
@@ -273,7 +268,6 @@ User* Server::findClientBySocket(const QTcpSocket* socket)
     return nullptr;
 }
 
-// Getters
 
 int Server::getClientCount() const
 {
@@ -306,7 +300,7 @@ void Server::sendTrackToClient(QTcpSocket* socket, const QString& filePath)
         QByteArray buffer;
         while (!file->atEnd()) 
         {
-            buffer = file->read(4096); // 4 KB chunks
+            buffer = file->read(4096);
             socket->write(buffer);
             socket->waitForBytesWritten();
         }

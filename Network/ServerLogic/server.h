@@ -70,9 +70,7 @@ private:
     Server(const QString& roomName, QObject* parent = nullptr);
     ~Server();
     Server(const Server&) = delete;
-    // Server& operator=(const Server&) = delete;
     Server(const Server&&) = delete;
-    // Server& operator=(const Server&&) = delete;
 
     friend class MusicRoom;
 };

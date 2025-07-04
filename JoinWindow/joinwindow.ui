@@ -7,13 +7,65 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>698</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">QWidget#centralwidget {
+    /*background-image: url(:/images/bg_main.jpg); */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #1a1a1a;
+}
+
+QLabel {
+    color: #f0f0f0;
+    font-size: 11pt;
+    font-family: &quot;Segoe UI&quot;, &quot;Arial&quot;;
+}
+
+QLineEdit {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #000;
+    font-size: 10pt;
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
+QPushButton {
+    background-color: #4e54c8;
+    background-image: linear-gradient(315deg, #4e54c8 0%, #8f94fb 74%);
+    color: white;
+    border-radius: 10px;
+    font-size: 12pt;
+    padding: 8px 16px;
+    font-weight: bold;
+    border: none;
+}
+
+QPushButton:hover {
+    background-color: #6a6ff0;
+}
+
+QPushButton:pressed {
+    background-color: #3e42a8;
+}
+
+QTableWidget {
+    background-color: rgba(255, 255, 255, 0.9);
+    alternate-background-color: #f2f2f2;
+    gridline-color: #ccc;
+    font-size: 9pt;
+    color: #000;
+    border-radius: 6px;
+}
+</string>
+   </property>
    <widget class="QPushButton" name="PushButton_Back">
     <property name="geometry">
      <rect>
@@ -25,7 +77,8 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <pointsize>12</pointsize>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
@@ -38,15 +91,16 @@
    <widget class="QLabel" name="Label_Username">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>70</y>
-      <width>161</width>
+      <x>160</x>
+      <y>20</y>
+      <width>141</width>
       <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="text">
@@ -56,15 +110,16 @@
    <widget class="QLabel" name="Label_List">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>270</y>
-      <width>171</width>
-      <height>41</height>
+      <x>300</x>
+      <y>190</y>
+      <width>181</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="text">
@@ -74,15 +129,16 @@
    <widget class="QPushButton" name="PushButton_LookForRooms">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>200</y>
-      <width>181</width>
-      <height>61</height>
+      <x>310</x>
+      <y>120</y>
+      <width>151</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>12</pointsize>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
@@ -93,14 +149,14 @@
     <property name="geometry">
      <rect>
       <x>280</x>
-      <y>80</y>
-      <width>281</width>
+      <y>20</y>
+      <width>231</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="text">
@@ -110,15 +166,16 @@
    <widget class="QLabel" name="Label_Username_2">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>120</y>
-      <width>161</width>
-      <height>51</height>
+      <x>180</x>
+      <y>70</y>
+      <width>91</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="text">
@@ -129,14 +186,14 @@
     <property name="geometry">
      <rect>
       <x>280</x>
-      <y>130</y>
-      <width>281</width>
+      <y>70</y>
+      <width>231</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="text">
@@ -149,15 +206,16 @@
    <widget class="QLabel" name="Label_List_2">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>580</y>
+      <x>210</x>
+      <y>470</y>
       <width>171</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="text">
@@ -168,14 +226,15 @@
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>580</y>
+      <y>540</y>
       <width>171</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>14</pointsize>
+      <family>Segoe UI</family>
+      <pointsize>11</pointsize>
      </font>
     </property>
     <property name="text">
@@ -185,10 +244,10 @@
    <widget class="QTableWidget" name="TableWidget_Rooms">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>330</y>
-      <width>601</width>
-      <height>231</height>
+      <x>130</x>
+      <y>240</y>
+      <width>541</width>
+      <height>211</height>
      </rect>
     </property>
    </widget>
@@ -203,7 +262,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <resources/>
  <connections/>

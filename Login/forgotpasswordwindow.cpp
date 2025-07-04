@@ -9,7 +9,8 @@ ForgotPasswordWindow::ForgotPasswordWindow(Authmanager* authManager, QWidget *pa
     auth(authManager)
 {
     ui->setupUi(this);
-
+    this->setFixedSize(800, 450);
+    this->setWindowTitle("ForgotPass - Juke Box");
     connect(ui->recoverButton, &QPushButton::clicked, this, &ForgotPasswordWindow::handleRecover);
 }
 
@@ -35,3 +36,9 @@ void ForgotPasswordWindow::handleRecover()
         MessageDisplayer::display(MessageType::Warning, "Recover Password", "Email not found.");
     }
 }
+void ForgotPasswordWindow::on_backToLoginButton_clicked()
+{
+    this->hide();
+    emit backToLoginRequested();
+}
+

@@ -27,28 +27,7 @@ QDataStream &operator>>(QDataStream &in, Authmanager::UserData &user) {
 
     return in;
 }
-/*
-QDataStream& operator<<(QDataStream& out, const AudioTrack& track) {
-    out << track.name << track.filePath;
-    return out;
-}
 
-QDataStream& operator>>(QDataStream& in, AudioTrack& track) {
-    in >> track.name >> track.filePath;
-    return in;
-}
-
-QDataStream& operator<<(QDataStream& out, const PlayList& playlist) {
-    out << playlist.name << playlist.tracks;
-    return out;
-}
-
-QDataStream& operator>>(QDataStream& in, PlayList& playlist) {
-    in >> playlist.name >> playlist.tracks;
-    return in;
-}
-
-*/
 
 bool Authmanager::registerUser(const QString &firstname, const QString &lastname,
                                const QString &username, const QString &password,
@@ -276,5 +255,5 @@ Authmanager::UserData Authmanager::getUserData(const QString& username) {
     if(users.contains(username)) {
         return users.value(username);
     }
-    return UserData(); // یا throw exception
+    return UserData();
 }

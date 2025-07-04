@@ -8,6 +8,9 @@ SignUpWindow::SignUpWindow(Authmanager* authManager, QWidget *parent)
     auth(authManager)
 {
     ui->setupUi(this);
+    this->setFixedSize(800, 450);
+    this->setWindowTitle("SignUp - Juke Box");
+
 }
 
 SignUpWindow::~SignUpWindow()
@@ -49,4 +52,11 @@ void SignUpWindow::on_registerButton_clicked()
     } else {
       //  MessageDisplayer::display(MessageType::Critical, "Registration", "Username is already taken.");
     }
+}
+
+void SignUpWindow::on_goToLoginButton_clicked()
+{
+    this->hide();
+
+    emit backToLoginRequested();
 }

@@ -148,7 +148,6 @@ void Client::readData()
             break;
         default:
         {
-            // it means it's music sending.
             file->write(data);
         }
     }
@@ -160,8 +159,6 @@ void Client::readData()
             delete file;
             file = nullptr;
         }
-    // =====================
-    // We'll deal with how to interpret messages later we did this on the server side.
 }
 
 void Client::disconnected()

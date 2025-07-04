@@ -37,14 +37,9 @@ void MusicRoom::on_PushButton_PlayPause_clicked()
 
 void MusicRoom::on_musicPlayed()
 {
-    ui->Widget_MusicDisplay->setCurrentIndex(0); // اکولایزر
-    //ui->Label_AlbumCover->hide();        // کاور مخفی
-    //visualizer->show();
+    ui->Widget_MusicDisplay->setCurrentIndex(0);
     ui->PushButton_SwitchView->setText("Visualizer");
     isShowingCover = true;
-  //  ui->PushButton_PlayPause->setText("Pause");
-  //  QIcon pauseIcon = style()->standardIcon(QStyle::SP_MediaPause);
-    //ui->PushButton_PlayPause->setIcon(pauseIcon);
     isPlaying = true;
     ui->PushButton_PlayPause->setIconSize(QSize(40, 40));
     ui->PushButton_PlayPause->setIcon(pauseIcon);
@@ -52,9 +47,6 @@ void MusicRoom::on_musicPlayed()
 
 void MusicRoom::on_musicPaused()
 {
-   // QIcon playIcon = style()->standardIcon(QStyle::SP_MediaPlay);
-  //  ui->PushButton_PlayPause->setIcon(playIcon);
-  //  ui->PushButton_PlayPause->setText("Play");
    isPlaying = false;
    ui->PushButton_PlayPause->setIconSize(QSize(40, 40));
    ui->PushButton_PlayPause->setIcon(playIcon);
@@ -80,7 +72,6 @@ void MusicRoom::on_positionChanged(qint64 position)
                 break;
 
             case RepeatType::Repeat_Track:
-                // Here shuffle has no effect.
                 playThisIndex(currentlyPlayingIndex);
                 break;
 
@@ -174,7 +165,7 @@ void MusicRoom::on_metaDataChanged()
                 ui->Label_AlbumCover->size(),
                 Qt::KeepAspectRatio,
                 Qt::SmoothTransformation));
-            ui->Label_AlbumCover->show();  // اطمینان از نمایش کاور
+            ui->Label_AlbumCover->show();
             qDebug() << "Cover image set!";
         } else {
             ui->Label_AlbumCover->clear();
@@ -184,18 +175,6 @@ void MusicRoom::on_metaDataChanged()
         ui->Label_AlbumCover->clear();
     }
 
-//     if (cover.isValid()) {
-//         QImage image = qvariant_cast<QImage>(cover);
-//         if (!image.isNull()) {
-//             ui->Label_AlbumCover->setPixmap(QPixmap::fromImage(image));
-//             qDebug() << "Cover image set!";
-//         } else {
-//             qDebug() << "Image variant is null.";
-//             ui->Label_AlbumCover->clear();
-//         }
-//     } else {
-//         ui->Label_AlbumCover->clear();
-//      }
 }
 
 void MusicRoom::on_PushButton_SwitchView_clicked()
@@ -203,19 +182,17 @@ void MusicRoom::on_PushButton_SwitchView_clicked()
     qDebug() << "SwitchView clicked. isShowingCover:" << isShowingCover;
 
     if (isShowingCover) {
-        ui->Widget_MusicDisplay->setCurrentIndex(1); // اکولایزر
+        ui->Widget_MusicDisplay->setCurrentIndex(1);
                                  ui->Label_AlbumCover->hide();
                                  visualizer->show();
         ui->PushButton_SwitchView->setText("Album Cover");
-        //isShowingCover = false;
         qDebug() << "Switched to Visualizer";
 
     } else {
-        ui->Widget_MusicDisplay->setCurrentIndex(0); // کاور
+        ui->Widget_MusicDisplay->setCurrentIndex(0);
                                         visualizer->hide();
                                        ui->Label_AlbumCover->show();
         ui->PushButton_SwitchView->setText("Visualizer");
-       // isShowingCover = true;
         qDebug() << "Switched to Album Cover";
 
     }
@@ -248,7 +225,7 @@ void MusicRoom::on_PushButton_Browse_clicked()
     if (!dir.isEmpty())
     {
         ui->LineEdit_Path->setText(dir);
-        hasSetFolder = true;                   // save folder addres in suer file (dir)
+        hasSetFolder = true;
         if (client)
         {
             client->folderPath = dir;
@@ -308,7 +285,6 @@ void MusicRoom::on_TreeWidget_Category_itemActivated(QTreeWidgetItem *item, int 
         musicPlayer->clearAudioTrack();
         clearTracksListView();
         showFaveriteTracks();
-        // create method in musicroom.h for show faverite
         return;
     }
 }
@@ -360,7 +336,7 @@ void MusicRoom::on_PushButton_CreatePlayList_clicked()
     
     QString playlistName = ui->LineEdit_PlayListName->text();
     ui->LineEdit_PlayListName->setText("");
-    playlists.append(PlayList(playlistName));            // save play list to user file
+    playlists.append(PlayList(playlistName));
     reloadPlaylistsInListView();
     reloadPlaylistsInTree();
 }

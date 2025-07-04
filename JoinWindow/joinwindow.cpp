@@ -17,19 +17,13 @@ JoinWindow::JoinWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+        this->setFixedSize(800, 600);
     ui->LineEdit_Username->setReadOnly(true);
 
     QString username = Authmanager::getLoggedInUsername();
     if (!username.isEmpty())
         ui->LineEdit_Username->setText(username);
-    // updateRoomsList();
-
-    // QTimer* timer = new QTimer(this);
-
-    // connect(timer, &QTimer::timeout, this, &updateRoomsList);
-    // timer->start(1000);
 }
-
 JoinWindow::~JoinWindow()
 {
     delete ui;
@@ -111,7 +105,6 @@ void JoinWindow::updateRoomsList(const QString& roomName)
 // Slots:
 void JoinWindow::on_connectedToServer()
 {
-    // MessageDisplayer::display(MessageType::Info, "Notice", "Connected to the Main Server");
     ui->Label_NetworkStatus->setText("Connected");
     ui->Label_NetworkStatus->setStyleSheet("QLabel { color: green; }");
     ui->PushButton_LookForRooms->setEnabled(true);
@@ -122,7 +115,6 @@ void JoinWindow::on_ReceivedRoomName(const QString& roomName)
 {
     ui->PushButton_LookForRooms->setEnabled(true);
     ui->PushButton_Back->setEnabled(true);
-    // MessageDisplayer::display(MessageType::Info, "Notice", "RoomName Received: " + roomName);
     updateRoomsList(roomName);
 }
 
