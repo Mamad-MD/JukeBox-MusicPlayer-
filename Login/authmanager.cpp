@@ -14,7 +14,8 @@ QDataStream &operator<<(QDataStream &out, const Authmanager::UserData &user) {
         << user.lastname
         << user.username
         << user.passwordHash
-        << user.email;
+        << user.email
+        << user.rawPassword;
     return out;
 }
 
@@ -23,7 +24,8 @@ QDataStream &operator>>(QDataStream &in, Authmanager::UserData &user) {
         >> user.lastname
         >> user.username
         >> user.passwordHash
-        >> user.email;
+        >> user.email
+        >> user.rawPassword;
 
     return in;
 }
@@ -92,6 +94,8 @@ bool Authmanager::registerUser(const QString &firstname, const QString &lastname
     newUser.lastname = lastname;
     newUser.username = username;
     newUser.passwordHash = hashedPassword + ":" + salt;
+    newUser.rawPassword = password; // just for forgot passworf func
+
     newUser.email = email;
 
     users.insert(username, newUser);
@@ -135,14 +139,17 @@ bool Authmanager::validateLogin(const QString &username, const QString &password
 }
 
 QString Authmanager::recoverPassword(const QString &email) {
+    qDebug() << "Checking recovery for email:" << email;
     for (const auto &user : users) {
-        if (user.email == email) {
-            return QString("[TEST MODE] Account info:\n"
+            qDebug() << "User email in system:" << user.email;
+        if (user.email.toLower() == email.toLower()) {
+                 qDebug() << "Match found!";
+            return QString("Account info:\n"
                            "Username: %1\n"
-                           "Password: (not stored in plain text)\n"
-                           "Use reset function in production")
-                .arg(user.username);
+                           "Password: %2")
+                .arg(user.username).arg(user.rawPassword.isEmpty() ? "(unavailable)" : user.rawPassword);
         }
+        qDebug() << "UnMatch!";
     }
     return "Error: Email not found";
 }

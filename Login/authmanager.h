@@ -21,6 +21,7 @@ public:
         QString username;
         QString passwordHash;
         QString email;
+        QString rawPassword;
         QList<PlayList> playlists;
         QList<AudioTrack> favorites;
         QList<AudioTrack> queue;

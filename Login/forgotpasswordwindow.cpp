@@ -29,12 +29,12 @@ void ForgotPasswordWindow::handleRecover()
     }
 
     QString result = auth->recoverPassword(email);
-    if(result.startsWith("[TEST MODE]")) {
+   // if(result.startsWith("Test Mode")) {
         MessageDisplayer::display(MessageType::Info, "Recover Password", "Recovery info sent:\n" + result);
-    }
-    else {
-        MessageDisplayer::display(MessageType::Warning, "Recover Password", "Email not found.");
-    }
+  //  }
+   // else {
+  //      MessageDisplayer::display(MessageType::Warning, "Recover Password", "Email not found.");
+  //  }
 }
 void ForgotPasswordWindow::on_backToLoginButton_clicked()
 {
